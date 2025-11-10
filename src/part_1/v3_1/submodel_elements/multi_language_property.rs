@@ -21,11 +21,13 @@ pub struct MultiLanguageProperty {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-    value: Option<Vec<LangString>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<Vec<LangString>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "valueId")]
-    value_id: Option<Reference>,
+    pub value_id: Option<Reference>,
 }
 
 #[cfg(test)]

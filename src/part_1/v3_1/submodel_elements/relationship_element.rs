@@ -11,6 +11,7 @@ pub struct RelationshipElement {
     
     #[serde(skip_serializing_if = "Option::is_none")]
     first: Option<Reference>,
+    
     #[serde(skip_serializing_if = "Option::is_none")]
     second: Option<Reference>,
 }
@@ -23,9 +24,11 @@ pub struct AnnotatedRelationshipElement {
     pub submodel_element_fields: SubmodelElementFields,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    first: Option<Reference>,
+    pub first: Option<Reference>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second: Option<Reference>,
+    pub second: Option<Reference>,
     // ----
-    annotations: Option<Vec<DataElement>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<Vec<DataElement>>,
 }

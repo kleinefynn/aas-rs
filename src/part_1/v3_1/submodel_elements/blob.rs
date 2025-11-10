@@ -22,6 +22,7 @@ pub struct Blob {
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     // TODO "contentEncoding": "base64"
     pub value: Option<String>,
 

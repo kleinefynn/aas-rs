@@ -3,7 +3,7 @@ use std::str::FromStr;
 use thiserror::Error;
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct HasKind {
-    kind: ModellingKind,
+    pub kind: ModellingKind,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]

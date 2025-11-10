@@ -11,19 +11,20 @@ use serde::{Deserialize, Serialize};
 #[serde(tag = "modelKind")]
 pub struct Submodel {
     #[serde(flatten)]
-    identifiable: Identifiable,
+    pub identifiable: Identifiable,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kind: Option<ModellingKind>,
 
     #[serde(flatten)]
-    semantics: HasSemantics,
+    pub semantics: HasSemantics,
 
     #[serde(flatten)]
-    qualifier: Qualifiable,
+    pub qualifier: Qualifiable,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(flatten)]
-    data_specification: Option<HasDataSpecification>,
+    pub data_specification: Option<HasDataSpecification>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "submodelElements")]

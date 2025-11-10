@@ -9,26 +9,26 @@ use crate::part_1::v3_1::primitives::Identifier;
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct AdministrativeInformation {
     #[serde(flatten)]
-    version: Version,
+    pub version: Version,
 
     /// The subject ID of the subject responsible for making the element
     #[serde(skip_serializing_if = "Option::is_none")]
-    creator: Option<Reference>,
+    pub creator: Option<Reference>,
     
     #[serde(rename = "templateId")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    template_id: Option<Identifier>,
+    pub template_id: Option<Identifier>,
 
     #[serde(flatten)]
-    data_specification: HasDataSpecification,
+    pub data_specification: HasDataSpecification,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize)]
 struct Version {
     #[serde(skip_serializing_if = "Option::is_none")]
-    version: Option<String>,
+    pub version: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    revision: Option<String>,
+    pub revision: Option<String>,
 }
 
 #[derive(Debug, Error)]

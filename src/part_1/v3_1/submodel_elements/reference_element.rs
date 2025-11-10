@@ -7,5 +7,5 @@ pub struct ReferenceElement {
     /// to another element within the same or another Asset Administration Shell
     /// (i.e. a model reference to a Referable)
     #[serde(skip_serializing_if = "Option::is_none")]
-    value: Option<Reference>,
+    pub value: Option<Reference>,
 }

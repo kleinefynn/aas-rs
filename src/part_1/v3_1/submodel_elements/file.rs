@@ -24,8 +24,9 @@ pub struct File {
     /// Path and name of the file (with file extension)
     /// The path can be absolute or relative.
     #[serde(skip_serializing_if = "Option::is_none")]
-    value: Option<Uri>,
+    pub value: Option<Uri>,
+    
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
-    content_type: Option<ContentType>,
+    pub content_type: Option<ContentType>,
 }

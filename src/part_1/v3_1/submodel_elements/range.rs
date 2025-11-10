@@ -2,12 +2,18 @@ use chrono::{DateTime, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 
+// TODO: If the min value is missing, the value is assumed to be negative infinite.
+// TODO: If the max value is missing, the value is assumed to be positive infinite.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 pub struct RangeInner<T> {
-    min: T,
-    max: T,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min: Option<T>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max: Option<T>,
 }
 
+// TODO: update to big decimal
+// TODO: Only allow xsd atomic types.
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType")]
 pub enum Range {

@@ -1,8 +1,8 @@
-use crate::part_1::v3_1::core::asset_administration_shell::SpecificAssetId;
 use crate::part_1::v3_1::primitives::Identifier;
 use crate::part_1::v3_1::submodel_elements::SubmodelElement;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
+use crate::part_1::v3_1::core::SpecificAssetId;
 
 /// The entity submodel element is designed to be used in submodels defining the relationship between the parts of the composite asset
 /// it is composed of (e.g. bill of material).
@@ -22,11 +22,13 @@ pub enum Entity {
 pub struct EntityInner {
     /// Statement applicable to the entity,
     /// each statement described by submodel element - typically with a qualified value
-    statement: Option<Vec<SubmodelElement>>,
+    pub statement: Option<Vec<SubmodelElement>>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "globalAssetId")]
-    global_asset_id: Option<Identifier>,
+    pub global_asset_id: Option<Identifier>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "specificAssetId")]
-    specific_asset_id: Option<Vec<SpecificAssetId>>,
+    pub specific_asset_id: Option<Vec<SpecificAssetId>>,
 }

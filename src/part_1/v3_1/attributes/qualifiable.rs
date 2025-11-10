@@ -12,18 +12,18 @@ pub struct Qualifiable {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct QualifierInner {
     #[serde(flatten)]
-    semantics: HasSemantics,
+    pub semantics: HasSemantics,
 
     // TODO: Text parsing
     #[serde(rename = "type")]
-    ty: String,
+    pub ty: String,
 
     #[serde(flatten)]
-    value: DataXsd,
+    pub value: DataXsd,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "valueId")]
-    value_id: Option<Reference>,
+    pub value_id: Option<Reference>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

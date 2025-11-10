@@ -9,18 +9,21 @@ use strum::{Display, EnumString};
 #[serde(tag = "AssetAdministrationShell")]
 pub struct AssetAdministrationShell {
     #[serde(rename = "assetInformation")]
-    asset_information: AssetInformation,
+    pub asset_information: AssetInformation,
 
     #[serde(flatten)]
-    identifiable: Identifiable,
+    pub identifiable: Identifiable,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(flatten)]
-    data_specification: Option<HasDataSpecification>,
+    pub data_specification: Option<HasDataSpecification>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "derivedFrom")]
-    derived_from: Option<Reference>,
+    pub derived_from: Option<Reference>,
 
-    submodels: Option<Vec<Reference>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submodels: Option<Vec<Reference>>,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, EnumString, Display)]
@@ -35,30 +38,39 @@ pub enum AssetInformation {
 // TODO: Skip option serialization
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
 pub struct AssetInformationInner {
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "globalAssetId")]
     pub global_asset_id: Option<Identifier>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "specificAssetIds")]
     pub specific_asset_ids: Option<SpecificAssetId>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "assetType")]
     pub asset_type: Option<Identifier>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "defaultThumbnail")]
     pub default_thumbnail: Option<Resource>,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct SpecificAssetId {
-    name: LabelType,
-    value: Identifier,
+    pub name: LabelType,
+
+    pub value: Identifier,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "externalSubjectId")]
-    external_subject_id: Option<Resource>,
+    pub external_subject_id: Option<Resource>,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Resource {
     path: Uri,
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
     content_type: Option<ContentType>,
 }

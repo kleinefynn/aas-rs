@@ -29,46 +29,46 @@ pub struct EmbeddedDataSpecification {
 #[serde(tag = "modelType")]
 pub struct DataSpecificationIec61360 {
     #[serde(rename = "preferredName")]
-    preferred_name: Vec<LangString>,
+    pub preferred_name: Vec<LangString>,
 
     #[serde(rename = "shortName")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    short_name: Option<Vec<LangString>>,
+    pub short_name: Option<Vec<LangString>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit: Option<String>,
+    pub unit: Option<String>,
 
     #[serde(rename = "unitId")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit_id: Option<Reference>,
+    pub unit_id: Option<Reference>,
 
     #[serde(rename = "sourceOfDefinition")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_of_definition: Option<String>,
+    pub source_of_definition: Option<String>,
 
     #[serde(rename = "symbol")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    symbol: Option<String>,
+    pub symbol: Option<String>,
 
     #[serde(rename = "dataType")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    data_type: Option<DataTypeIec61360>,
+    pub data_type: Option<DataTypeIec61360>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    definition: Option<LangString>,
+    pub definition: Option<LangString>,
 
     #[serde(rename = "valueFormat")]
-    value_format: Option<String>,
+    pub value_format: Option<String>,
 
     #[serde(rename = "valueList")]
-    value_list: Option<Vec<ValueList>>,
+    pub value_list: Option<Vec<ValueList>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    value: Option<String>,
+    pub value: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "levelType")]
-    level_type: Option<LevelType>,
+    pub level_type: Option<LevelType>,
 }
 
 #[derive(EnumString, Display, Clone, PartialEq, Debug, Deserialize, Serialize)]
