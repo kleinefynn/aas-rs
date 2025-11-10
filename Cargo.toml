@@ -1,8 +1,10 @@
 [package]
 name = "aas"
-authors = ["Fynn Kleine <code@onlyfynns.de>"]
 version = "0.1.0"
 edition = "2024"
+authors = ["Fynn Kleine <code@onlyfynns.de>"]
+license = "MIT"
+description = "Data type bindings for the Asset Administration Shell Specs"
 
 [dependencies]
 oxilangtag = { version = "0.1.5", features = ["serde"] }
