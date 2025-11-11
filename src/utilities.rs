@@ -1,5 +1,6 @@
 use oxilangtag::LanguageTag;
 use serde::{Deserialize, Deserializer};
+use std::fmt::format;
 
 /// check if all chars of the text are valid using
 /// the regex for text from the AAS Spec as the baseline.
@@ -22,6 +23,90 @@ where
     D: Deserializer<'de>,
 {
     let buf = String::deserialize(deserializer)?;
+
+    let valid = validate_text(&buf);
+
+    match valid {
+        true => Ok(buf),
+        false => Err(serde::de::Error::custom(
+            "Non valid character (control ones) found.",
+        )),
+    }
+}
+
+/// deserialize, validate chars, check length (min 1, max 2048)
+pub fn deserialize_identifier<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let buf = String::deserialize(deserializer)?;
+
+    if buf.len() < 1 {
+        return Err(serde::de::Error::custom("Identifier is too short. Min 1."));
+    }
+
+    if buf.len() > 2048 {
+        return Err(serde::de::Error::custom(format!(
+            "Identifier is too long. Max 2048 chars, is {}",
+            buf.len()
+        )));
+    }
+
+    let valid = validate_text(&buf);
+
+    match valid {
+        true => Ok(buf),
+        false => Err(serde::de::Error::custom(
+            "Non valid character (control ones) found.",
+        )),
+    }
+}
+
+/// deserialize, validate chars, check length (min 1, max 64)
+pub fn deserialize_label_type<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let buf = String::deserialize(deserializer)?;
+
+    if buf.len() < 1 {
+        return Err(serde::de::Error::custom("Identifier is too short. Min 1."));
+    }
+
+    if buf.len() > 64 {
+        return Err(serde::de::Error::custom(format!(
+            "Identifier is too long. Max 64 chars, is {}",
+            buf.len()
+        )));
+    }
+
+    let valid = validate_text(&buf);
+
+    match valid {
+        true => Ok(buf),
+        false => Err(serde::de::Error::custom(
+            "Non valid character (control ones) found.",
+        )),
+    }
+}
+
+/// deserialize, validate chars, check length (min 1, max 255)
+pub fn deserialize_message_topic_type<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let buf = String::deserialize(deserializer)?;
+
+    if buf.len() < 1 {
+        return Err(serde::de::Error::custom("Identifier is too short. Min 1."));
+    }
+
+    if buf.len() > 255 {
+        return Err(serde::de::Error::custom(format!(
+            "Identifier is too long. Max 255 chars, is {}",
+            buf.len()
+        )));
+    }
 
     let valid = validate_text(&buf);
 
