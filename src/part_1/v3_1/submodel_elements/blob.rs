@@ -2,8 +2,8 @@ use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part_1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part_1::v3_1::attributes::referable::Referable;
 use crate::part_1::v3_1::attributes::semantics::HasSemantics;
-use serde::{Deserialize, Serialize};
 use crate::part_1::v3_1::primitives::ContentType;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 #[serde(tag = "modelType")]
@@ -21,7 +21,6 @@ pub struct Blob {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-
     #[serde(skip_serializing_if = "Option::is_none")]
     // TODO "contentEncoding": "base64"
     pub value: Option<String>,

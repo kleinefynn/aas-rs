@@ -20,12 +20,11 @@ pub struct File {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-    
     /// Path and name of the file (with file extension)
     /// The path can be absolute or relative.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Uri>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
     pub content_type: Option<ContentType>,

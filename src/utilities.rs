@@ -1,6 +1,5 @@
 use oxilangtag::LanguageTag;
 use serde::{Deserialize, Deserializer};
-use std::fmt::format;
 
 /// check if all chars of the text are valid using
 /// the regex for text from the AAS Spec as the baseline.

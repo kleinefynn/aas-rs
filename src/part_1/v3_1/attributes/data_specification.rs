@@ -1,10 +1,10 @@
+use crate::part_1::v3_1::level_type::LevelType;
 use crate::part_1::v3_1::primitives::lang_string::LangString;
 use crate::part_1::v3_1::reference::Reference;
 use crate::part_1::v3_1::reference::deserialize_external_reference;
 use crate::part_1::v3_1::value_list::ValueList;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
-use crate::part_1::v3_1::level_type::LevelType;
 
 /// HasDataSpecification
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]

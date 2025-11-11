@@ -1,8 +1,8 @@
+use crate::part_1::v3_1::core::SpecificAssetId;
 use crate::part_1::v3_1::primitives::Identifier;
 use crate::part_1::v3_1::submodel_elements::SubmodelElement;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
-use crate::part_1::v3_1::core::SpecificAssetId;
 
 /// The entity submodel element is designed to be used in submodels defining the relationship between the parts of the composite asset
 /// it is composed of (e.g. bill of material).

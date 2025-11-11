@@ -1,9 +1,9 @@
 use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
+use crate::part_1::v3_1::primitives::Identifier;
 use crate::part_1::v3_1::reference::Reference;
 use serde::de::{self};
 use serde::{Deserialize, Deserializer, Serialize};
 use thiserror::Error;
-use crate::part_1::v3_1::primitives::Identifier;
 
 /// Administrative metainformation for an element like version information
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -14,7 +14,7 @@ pub struct AdministrativeInformation {
     /// The subject ID of the subject responsible for making the element
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creator: Option<Reference>,
-    
+
     #[serde(rename = "templateId")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template_id: Option<Identifier>,

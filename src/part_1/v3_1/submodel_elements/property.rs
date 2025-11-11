@@ -20,7 +20,6 @@ pub struct Property {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-    
     #[serde(flatten)]
     pub value: DataXsd,
 }

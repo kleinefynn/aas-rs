@@ -1,8 +1,8 @@
+use crate::part_1::v3_1::primitives::Iri;
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
-use crate::part_1::v3_1::primitives::Iri;
 
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 pub enum DataTypeXSDef {
@@ -135,7 +135,7 @@ pub enum DataXsd {
 
     #[serde(rename = "xs:unsignedShort")]
     UnsignedShort(Option<u16>),
-    
+
     #[serde(rename = "xs:decimal")]
     Decimal(Option<BigDecimal>),
 
@@ -203,6 +203,6 @@ impl Default for DataXsd {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
     use super::*;
+    use std::str::FromStr;
 }

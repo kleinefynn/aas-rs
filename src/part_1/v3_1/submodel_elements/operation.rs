@@ -20,7 +20,6 @@ pub struct Operation {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-    
     #[serde(rename = "inputVariable")]
     pub input_variable: Option<Box<SubmodelElement>>,
 

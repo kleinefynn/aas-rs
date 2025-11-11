@@ -1,8 +1,8 @@
 use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part_1::v3_1::attributes::identifiable::Identifiable;
+use crate::part_1::v3_1::core::{AssetAdministrationShell, Submodel};
 use crate::part_1::v3_1::reference::Reference;
 use serde::{Deserialize, Serialize};
-use crate::part_1::v3_1::core::{AssetAdministrationShell, Submodel};
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Environment {

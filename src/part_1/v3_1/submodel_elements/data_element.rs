@@ -7,7 +7,6 @@ use crate::part_1::v3_1::submodel_elements::reference_element::ReferenceElement;
 use serde::{Deserialize, Serialize};
 use strum::Display;
 
-
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
 pub enum DataElement {
     Blob(Blob),

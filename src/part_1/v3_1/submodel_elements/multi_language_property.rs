@@ -21,7 +21,6 @@ pub struct MultiLanguageProperty {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Vec<LangString>>,
 
@@ -32,8 +31,8 @@ pub struct MultiLanguageProperty {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
     use super::*;
+    use std::str::FromStr;
 
     #[test]
     fn it_serializes() {
@@ -42,12 +41,12 @@ mod tests {
         let mut ml_property = MultiLanguageProperty::default();
         ml_property.value = Some(vec![
             LangString::from_str(r#""Das ist ein deutscher Bezeichner"@de"#).unwrap(),
-            LangString::from_str(r#""That's an English label"@en"#).unwrap()
+            LangString::from_str(r#""That's an English label"@en"#).unwrap(),
         ]);
 
-        let actual = serde_json::to_string(&ml_property).expect("Can't serialize MultiLanguageProperty.");
+        let actual =
+            serde_json::to_string(&ml_property).expect("Can't serialize MultiLanguageProperty.");
 
         assert_eq!(actual, expected);
-
     }
 }

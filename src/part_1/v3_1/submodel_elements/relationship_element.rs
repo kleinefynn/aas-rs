@@ -8,10 +8,10 @@ use serde::{Deserialize, Serialize};
 pub struct RelationshipElement {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     first: Option<Reference>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     second: Option<Reference>,
 }
@@ -28,7 +28,6 @@ pub struct AnnotatedRelationshipElement {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub second: Option<Reference>,
     // ----
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotations: Option<Vec<DataElement>>,
 }

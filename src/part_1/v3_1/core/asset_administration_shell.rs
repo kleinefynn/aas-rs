@@ -69,7 +69,7 @@ pub struct SpecificAssetId {
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Resource {
     path: Uri,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
     content_type: Option<ContentType>,
