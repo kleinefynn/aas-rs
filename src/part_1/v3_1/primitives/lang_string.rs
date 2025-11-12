@@ -41,6 +41,12 @@ impl LangString {
         let language = LanguageTag::parse_and_normalize(language)?;
         Ok(Self { language, text })
     }
+    
+    /// Returns String in the RDF format "Text@TAG"
+    /// i.e. "Speed"@en
+    pub fn to_string(&self) -> String {
+        format!(r#""{}"@{}"#, self.text, self.language.to_string())
+    }
 }
 
 impl FromStr for LangString {
@@ -59,6 +65,7 @@ impl FromStr for LangString {
     /// let actual = LangString::from_str(r#""Speed"@EN"#).ok().unwrap();
     ///
     /// assert_eq!(actual, expected);
+    /// assert_eq!(actual.to_string(), r#""Speed"@en"#);
     /// ```
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let lang_string: Vec<&str> = s.split('@').collect();
