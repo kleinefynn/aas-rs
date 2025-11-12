@@ -11,16 +11,16 @@ I.e. you can find the types of Part 1 version 3.1 under `src/part_1/v3_1`.
 
 ## Todos:
 
-- [*] Part 1
-  - [] Version 3.1.1
+- [ ] Part 1 🚧
+  - [ ] Version 3.1.1 🚧
     - [x] Type definitions
-    - [] Move DataSpecifications to part 3
-    - [*] Test coverage for serializing to json
-- [] Part 3a
-- [] Documentation
-- [] JSON
-  - [] "Normal" De-/Serialization for APIs (Part 2)
-  - [] Metdadata only
-  - [] Value only
-- [] XML
-- AASX Package Format
+    - [ ] Move DataSpecifications to part 3
+- [ ] Part 3a 
+- [ ] Documentation 🚧
+- [ ] Tests 🚧
+- [ ] JSON 🚧
+  - [x] "Normal" De-/Serialization for APIs (Part 2)
+  - [ ] Metdadata only
+  - [ ] Value only
+- [ ] XML
+- [ ] AASX Package Format
