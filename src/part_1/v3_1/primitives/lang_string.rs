@@ -41,7 +41,7 @@ impl LangString {
         let language = LanguageTag::parse_and_normalize(language)?;
         Ok(Self { language, text })
     }
-    
+
     /// Returns String in the RDF format "Text@TAG"
     /// i.e. "Speed"@en
     pub fn to_string(&self) -> String {

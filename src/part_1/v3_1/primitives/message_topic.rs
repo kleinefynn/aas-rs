@@ -1,9 +1,9 @@
-use crate::utilities::{validate_text};
-use serde::{de, Deserialize, Deserializer, Serialize};
+use crate::utilities::validate_text;
+use serde::de::Visitor;
+use serde::{Deserialize, Deserializer, Serialize, de};
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::ops::Deref;
-use serde::de::Visitor;
 use thiserror::Error;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize)]
@@ -41,7 +41,7 @@ impl TryFrom<String> for MessageTopic {
             return Err(MessageTopicError::TooShort);
         }
 
-        if value.chars().count()  > 64 {
+        if value.chars().count() > 64 {
             return Err(MessageTopicError::TooLong);
         }
 

@@ -1,6 +1,7 @@
 mod environment;
 pub use primitives::lang_string::*;
 mod attributes;
+mod concept_description;
 pub mod core;
 mod key;
 mod level_type;
