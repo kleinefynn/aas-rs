@@ -16,7 +16,11 @@ I.e. you can find the types of Part 1 version 3.1 under `src/part_1/v3_1`.
     - [x] Type definitions
     - [] Move DataSpecifications to part 3
     - [*] Test coverage for serializing to json
-    - [] Metadata-only de-/serialization
-    - [] Value-only de-/serialization
 - [] Part 3a
 - [] Documentation
+- [] JSON
+  - [] "Normal" De-/Serialization for APIs (Part 2)
+  - [] Metdadata only
+  - [] Value only
+- [] XML
+- AASX Package Format
