@@ -3,6 +3,7 @@ use crate::part_1::v3_1::attributes::identifiable::Identifiable;
 use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
 use crate::part_1::v3_1::reference::Reference;
+use crate::part_1::v3_1::reference::deserialize_optional_external_reference;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 
@@ -65,18 +66,23 @@ pub struct SpecificAssetId {
 
     pub value: Identifier,
 
+    /// The unique ID of the (external) subject the specific asset ID value belongs to or
+    /// has meaning to
+    /// Needs to be an external reference!
+    /// TODO: Typesafe with Newtype pattern
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "externalSubjectId")]
+    #[serde(deserialize_with = "deserialize_optional_external_reference")]
     pub external_subject_id: Option<Reference>,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Resource {
-    path: Uri,
+    pub path: Uri,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
-    content_type: Option<ContentType>,
+    pub content_type: Option<ContentType>,
 }
 
 #[cfg(test)]

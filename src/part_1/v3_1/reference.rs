@@ -117,3 +117,77 @@ where
 
     deserializer.deserialize_option(SubmodelsVisitor)
 }
+
+pub fn deserialize_optional_model_reference<'de, D>(
+    deserializer: D,
+) -> Result<Option<Reference>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Define a visitor to handle deserialization from sequence of ModelReference
+    struct SubmodelsVisitor;
+
+    impl<'de> Visitor<'de> for SubmodelsVisitor {
+        type Value = Option<Reference>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("an optional sequence of ModelReference")
+        }
+
+        fn visit_none<E>(self) -> Result<Self::Value, E> {
+            Ok(None)
+        }
+
+        fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            let reference: Reference = Reference::deserialize(deserializer)?;
+
+            if let Reference::ModelReference(model_ref_inner) = reference {
+                // Convert model_ref_inner into Submodel
+                // Assuming From<ReferenceInner> for Submodel is implemented
+                Ok(Some(Reference::ModelReference(model_ref_inner)))
+            } else {
+                Err(D::Error::custom("unexpected reference type"))
+            }
+        }
+    }
+
+    deserializer.deserialize_option(SubmodelsVisitor)
+}
+
+pub fn deserialize_optional_external_reference<'de, D>(
+    deserializer: D,
+) -> Result<Option<Reference>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // Define a visitor to handle deserialization from sequence of ModelReference
+    struct SubmodelsVisitor;
+
+    impl<'de> Visitor<'de> for SubmodelsVisitor {
+        type Value = Option<Reference>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("an optional sequence of ModelReference")
+        }
+
+        fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            let reference: Reference = Reference::deserialize(deserializer)?;
+
+            if let Reference::ExternalReference(model_ref_inner) = reference {
+                // Convert model_ref_inner into Submodel
+                // Assuming From<ReferenceInner> for Submodel is implemented
+                Ok(Some(Reference::ExternalReference(model_ref_inner)))
+            } else {
+                Err(D::Error::custom("unexpected reference type"))
+            }
+        }
+    }
+
+    deserializer.deserialize_option(SubmodelsVisitor)
+}
