@@ -1,5 +1,6 @@
 use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part_1::v3_1::attributes::identifiable::Identifiable;
+use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
 use crate::part_1::v3_1::reference::Reference;
 use serde::{Deserialize, Serialize};
@@ -44,7 +45,7 @@ pub struct AssetInformationInner {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "specificAssetIds")]
-    pub specific_asset_ids: Option<SpecificAssetId>,
+    pub specific_asset_ids: Option<Vec<SpecificAssetId>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "assetType")]
@@ -57,13 +58,16 @@ pub struct AssetInformationInner {
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct SpecificAssetId {
+    #[serde(flatten)]
+    pub has_semantics: HasSemantics,
+
     pub name: Label,
 
     pub value: Identifier,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "externalSubjectId")]
-    pub external_subject_id: Option<Resource>,
+    pub external_subject_id: Option<Reference>,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -73,4 +77,39 @@ pub struct Resource {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
     content_type: Option<ContentType>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use iref::UriBuf;
+    use std::str::FromStr;
+
+    #[test]
+    fn deserialize_resource() {
+        let json = r#"
+        {
+            "path": "file:://anywhere.json",
+            "contentType": "application/json"
+        }"#;
+
+        let res: Resource = serde_json::from_str(json).unwrap();
+
+        assert_eq!(
+            res,
+            Resource {
+                path: UriBuf::from_str("file:://anywhere.json").unwrap(),
+                content_type: Some("application/json".into()),
+            }
+        )
+    }
+
+    #[test]
+    fn deserialize_asset_info() {
+        let json = include_str!("../../../../tests/asset_information.json");
+
+        let asset_info: AssetInformation = serde_json::from_str(json).unwrap();
+
+        println!("{:?}", asset_info);
+    }
 }
