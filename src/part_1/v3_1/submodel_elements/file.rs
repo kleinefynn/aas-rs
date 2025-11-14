@@ -8,7 +8,6 @@ use crate::part_1::v3_1::primitives::{ContentType, Uri};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType")]
 pub struct File {
     // Inherited from DataElement
     #[serde(flatten)]

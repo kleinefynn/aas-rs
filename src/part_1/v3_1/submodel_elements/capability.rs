@@ -7,7 +7,6 @@ use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType")]
 pub struct Capability {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -39,6 +38,7 @@ impl ToJsonMetamodel for Capability {
     type Error = MetamodelError;
 
     fn to_json_metamodel(&self) -> Result<String, Self::Error> {
+        // TODO: Add modelType!
         serde_json::to_string(&self).map_err(|e| MetamodelError::FailedSerialisation(e))
     }
 }

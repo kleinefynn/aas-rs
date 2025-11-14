@@ -6,7 +6,6 @@ use strum::{Display, EnumString};
 // TODO: If the min value is missing, the value is assumed to be negative infinite.
 // TODO: If the max value is missing, the value is assumed to be positive infinite.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType", rename = "Range")]
 pub struct RangeInner<T> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min: Option<T>,
@@ -127,6 +126,7 @@ impl ToJsonMetamodel for Range {
     type Error = ();
 
     fn to_json_metamodel(&self) -> Result<String, Self::Error> {
+        // Todo: add modelType tag
         Ok(format!(r#"{{"valueType":{}}}"#, self.to_string()))
     }
 }

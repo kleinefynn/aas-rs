@@ -9,7 +9,6 @@ use strum::{Display, EnumString};
 /// it is composed of (e.g. bill of material).
 /// These parts are called entities. Not all entities have a global asset ID.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Display, EnumString)]
-#[serde(tag = "entityType")]
 pub enum Entity {
     /// There is no separate Asset Administration Shell for co-managed entities.
     /// Co-managed entities need to be part of a self-managed entity.
@@ -39,6 +38,7 @@ impl ToJsonMetamodel for Entity {
     type Error = ();
 
     fn to_json_metamodel(&self) -> Result<String, Self::Error> {
+        // TODO: Add modelType
         match self {
             Entity::CoManagedEntity(_) => Ok(r#"{"entityType":"CoManagedEntity"}"#.into()),
             Entity::SelfManagedEntity(_) => Ok(r#"{"entityType":"SelfManagedEntity"}"#.into()),

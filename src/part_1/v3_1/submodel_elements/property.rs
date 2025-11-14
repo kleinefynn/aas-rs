@@ -8,7 +8,6 @@ use crate::part_1::v3_1::primitives::data_type_def_xs::DataXsd;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(tag = "modelType")]
 pub struct Property {
     // Inherited from DataElement
     #[serde(flatten)]

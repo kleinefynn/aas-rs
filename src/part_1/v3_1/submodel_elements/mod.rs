@@ -107,9 +107,11 @@ impl ToJsonMetamodel for SubmodelElement {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::part_1::v3_1::LangString;
+    use crate::part_1::v3_1::primitives::Identifier;
 
     #[test]
-    fn serialize_blob() {
+    fn deserialize_blob() {
         let expect = SubmodelElement::Blob(Blob::default());
 
         let json = r#"
@@ -123,5 +125,49 @@ mod tests {
         let blob: Blob = serde_json::from_str(json).unwrap();
 
         assert_eq!(expect, SubmodelElement::Blob(blob));
+    }
+
+    #[test]
+    fn serialize_blob() {
+        let expected = r#"{
+  "modelType": "Blob",
+  "idShort": "AnShortId",
+  "displayName": [
+    {
+      "language": "en",
+      "text": "Sample text"
+    }
+  ],
+  "description": [
+    {
+      "language": "en",
+      "text": "Sample description"
+    }
+  ],
+  "value": "sample base64 string not in base64",
+  "contentType": "application/json"
+}"#;
+        let actual = SubmodelElement::Blob(Blob {
+            referable: Referable {
+                id_short: Some(Identifier::try_from("AnShortId").unwrap()),
+                display_name: Some(vec![
+                    LangString::try_new("en", "Sample text".into()).unwrap(),
+                ]),
+                description: Some(vec![
+                    LangString::try_new("en", "Sample description".into()).unwrap(),
+                ]),
+                category: None,
+                extensions: Default::default(),
+            },
+            semantics: Default::default(),
+            qualifiable: Default::default(),
+            embedded_data_specifications: Default::default(),
+            value: Some("sample base64 string not in base64".into()),
+            content_type: "application/json".to_string(),
+        });
+
+        let actual = serde_json::to_string_pretty(&actual).unwrap();
+
+        assert_eq!(expected, actual);
     }
 }

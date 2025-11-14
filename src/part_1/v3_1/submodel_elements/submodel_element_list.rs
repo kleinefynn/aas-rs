@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 
 /// A submodel element list is an ordered list of submodel elements.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(tag = "modelType")]
 pub struct SubmodelElementList {
     /// Defines whether order in list is relevant. If orderRelevant = false, the list represents a set or a bag.
     #[serde(rename = "orderRelevant")]

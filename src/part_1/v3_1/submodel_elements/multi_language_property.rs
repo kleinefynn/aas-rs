@@ -9,7 +9,6 @@ use crate::part_1::v3_1::reference::Reference;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType")]
 pub struct MultiLanguageProperty {
     // Inherited from DataElement
     #[serde(flatten)]

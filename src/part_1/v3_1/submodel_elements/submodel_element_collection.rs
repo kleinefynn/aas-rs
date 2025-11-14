@@ -3,7 +3,6 @@ use crate::part_1::v3_1::submodel_elements::SubmodelElement;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
-#[serde(tag = "modelType")]
 pub struct SubmodelElementCollection {
     value: Option<Vec<SubmodelElement>>,
 }

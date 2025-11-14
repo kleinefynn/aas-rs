@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[serde(tag = "modelType")]
 pub struct BasicEventElement {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,

@@ -5,7 +5,6 @@ use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[serde(tag = "modelType")]
 pub struct RelationshipElement {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
@@ -18,7 +17,6 @@ pub struct RelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[serde(tag = "modelType")]
 pub struct AnnotatedRelationshipElement {
     // Inherited from RelationshipElement
     #[serde(flatten)]

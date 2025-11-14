@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 
 // ToJsonMetadata implemented from upper enum.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType")]
 pub struct ReferenceElement {
     /// External reference to an external object or entity or a logical reference
     /// to another element within the same or another Asset Administration Shell
