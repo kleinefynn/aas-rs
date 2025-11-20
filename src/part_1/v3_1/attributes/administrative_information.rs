@@ -23,6 +23,13 @@ pub struct AdministrativeInformation {
     pub data_specification: HasDataSpecification,
 }
 
+/// Versioning
+/// Constraint AASd-005:
+/// If AdministrativeInformation/version is not specified,
+/// AdministrativeInformation/revision shall also be unspecified.
+/// This means that a revision requires a version.
+/// If there is no version, there is no revision.
+/// Revision is optional.
 #[derive(Clone, PartialEq, Debug, Serialize)]
 pub struct Version {
     #[serde(skip_serializing_if = "Option::is_none")]

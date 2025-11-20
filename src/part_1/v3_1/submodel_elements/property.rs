@@ -27,7 +27,6 @@ pub struct Property {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(tag = "modelType", rename = "PropertyMeta")]
 pub struct PropertyMeta {
     // Inherited from DataElement
     #[serde(flatten)]

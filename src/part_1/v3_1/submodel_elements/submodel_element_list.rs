@@ -16,24 +16,28 @@ pub struct SubmodelElementList {
     #[serde(default = "ordering_default")]
     is_order_relevant: bool,
 
-    /// Submodel elements contained in the list
-    value: Option<Vec<SubmodelElement>>,
-
     /// Semantic ID which the submodel elements contained in the list match
     #[serde(rename = "semanticIdListElement")]
     semantic_id_list_element: Option<Reference>,
 
+
+    // Question: can value, type_value_list_element be merged into an enum?
+    // maybe together with value_type_list_element?
+    // newtype or something for type safety.
+
+    /// Submodel elements contained in the list
+    value: Option<Vec<SubmodelElement>>,
+
     /// The submodel element type of the submodel elements contained in the list
     #[serde(rename = "typeValueListElement")]
-    type_value_list_element: Box<AasSubmodelElements>,
+    type_value_list_element: AasSubmodelElements,
 
     /// The value type of the submodel element contained in the list
     #[serde(rename = "valueTypeListElement")]
-    value_type_list_element: DataTypeXSDef,
+    value_type_list_element: Option<DataTypeXSDef>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(tag = "modelType", rename = "SubmodelElementList")]
 pub struct SubmodelElementListMeta {
     /// Defines whether order in list is relevant. If orderRelevant = false, the list represents a set or a bag.
     #[serde(rename = "orderRelevant")]
@@ -46,11 +50,11 @@ pub struct SubmodelElementListMeta {
 
     /// The submodel element type of the submodel elements contained in the list
     #[serde(rename = "typeValueListElement")]
-    type_value_list_element: Box<AasSubmodelElements>,
+    type_value_list_element: AasSubmodelElements,
 
     /// The value type of the submodel element contained in the list
     #[serde(rename = "valueTypeListElement")]
-    value_type_list_element: DataTypeXSDef,
+    value_type_list_element: Option<DataTypeXSDef>,
 }
 
 fn ordering_default() -> bool {

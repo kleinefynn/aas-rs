@@ -17,6 +17,7 @@ pub struct RangeInner<T> {
 // TODO: Only allow xsd atomic types.
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType")]
+#[strum(prefix = "xs:", serialize_all = "camelCase")]
 pub enum Range {
     // basic types
     #[serde(rename = "xs:int")]
@@ -126,8 +127,7 @@ impl ToJsonMetamodel for Range {
     type Error = ();
 
     fn to_json_metamodel(&self) -> Result<String, Self::Error> {
-        // Todo: add modelType tag
-        Ok(format!(r#"{{"valueType":{}}}"#, self.to_string()))
+        Ok(format!(r#"{{"valueType":"{}"}}"#, self.to_string()))
     }
 }
 
@@ -137,12 +137,47 @@ mod tests {
 
     #[test]
     fn test_range_to_json() {
-        let expected = r#"{"valueType":"xs:int","modelType":"Range","min":1,"max":10}"#;
+        let expected = r#"{"valueType":"xs:int","min":1,"max":10}"#;
         let actual = Range::Int(RangeInner {
             min: Some(1),
             max: Some(10),
         });
         let actual = serde_json::to_string(&actual).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_json_to_range() {
+        let expected = Range::Int(RangeInner {
+            min: Some(1),
+            max: Some(10),
+        });
+        let actual = r#"{"valueType":"xs:int","min":1,"max":10}"#;
+        let actual = serde_json::from_str(&actual).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_range_to_metamodel() {
+        let expected = r#"{"valueType":"xs:int"}"#;
+        let actual = Range::Int(RangeInner {
+            min: Some(1),
+            max: Some(10),
+        });
+        let actual = actual.to_json_metamodel().unwrap();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_range_to_metamodel_camel_case() {
+        let expected = r#"{"valueType":"xs:anyUri"}"#;
+        let actual = Range::AnyURI(RangeInner {
+            min: Some("https://example.com".into()),
+            max: Some("https://example.com".into()),
+        });
+        let actual = actual.to_json_metamodel().unwrap();
+
         assert_eq!(expected, actual);
     }
 }

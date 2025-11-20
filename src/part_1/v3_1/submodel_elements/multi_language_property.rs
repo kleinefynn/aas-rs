@@ -32,7 +32,6 @@ pub struct MultiLanguageProperty {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType", rename = "MultiLanguagePropertyMeta")]
 pub struct MultiLanguagePropertyMeta {
     // Inherited from DataElement
     #[serde(flatten)]

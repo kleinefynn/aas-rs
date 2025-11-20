@@ -4,44 +4,61 @@ use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 
-#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
+/// Type mapping of XSDef types.
+#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
+#[strum(prefix = "xs:", serialize_all = "camelCase")]
 pub enum DataTypeXSDef {
     // basic types
     #[serde(rename = "xs:int")]
     Int(i32),
-    #[serde(rename = "xs:integer")]
-    Integer(i32),
+
     #[serde(rename = "xs:long")]
     Long(i64),
+
+    #[serde(rename = "xs:integer")]
+    Integer(BigDecimal),
+
     #[serde(rename = "xs:negativeInteger")]
-    NegativeInteger(i32),
+    NegativeInteger(BigDecimal),
+
     #[serde(rename = "xs:nonNegativeInteger")]
-    NonNegativeInteger(u32),
+    NonNegativeInteger(BigDecimal),
+
     #[serde(rename = "xs:nonPositiveInteger")]
-    NonPositiveInteger(i32),
+    NonPositiveInteger(BigDecimal),
+
     #[serde(rename = "xs:positiveInteger")]
-    PositiveInteger(u32),
+    PositiveInteger(BigDecimal),
+
     #[serde(rename = "xs:short")]
     Short(u16),
+
     #[serde(rename = "xs:string")]
     String(String),
+
     #[serde(rename = "xs:boolean")]
     Boolean(bool),
     #[serde(rename = "xs:byte")]
     Byte(i8),
+
     #[serde(rename = "xs:unsignedByte")]
     UnsignedByte(u8),
+
     #[serde(rename = "xs:unsignedInt")]
     UnsignedInt(u32),
+
     #[serde(rename = "xs:unsignedLong")]
     UnsignedLong(u64),
+
     #[serde(rename = "xs:unsignedShort")]
     UnsignedShort(u16),
-    /// TODO: using proper type
+
     #[serde(rename = "xs:decimal")]
-    Decimal(String),
+    Decimal(BigDecimal),
+
     #[serde(rename = "xs:float")]
     Float(f32),
+
     #[serde(rename = "xs:double")]
     Double(f64),
 
@@ -49,27 +66,34 @@ pub enum DataTypeXSDef {
     // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
     Time(NaiveTime),
+
     // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
     Date(NaiveDate),
-    /// TODO: using proper type
+
     #[serde(rename = "xs:dateTime")]
     DateTime(DateTime<Utc>),
+
     /// TODO: using proper type
     #[serde(rename = "xs:duration")]
     Duration(String),
+
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gDay")]
     GDay(String),
+
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gMonth")]
     GMonth(String),
+
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gMonthDay")]
     GMonthDay(String),
+
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gYear")]
     GYear(String),
+
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gYearMonth")]
     GYearMonth(String),
@@ -77,12 +101,14 @@ pub enum DataTypeXSDef {
     // binary
     #[serde(rename = "xs:base64Binary")]
     Base64Binary(Vec<u8>),
+
     #[serde(rename = "xs:hexBinary")]
     HexBinary(Vec<u8>),
 
-    // string related
+    // Miscellaneous types
+    /// URI and IRI possible
     #[serde(rename = "xs:anyURI")]
-    AnyURI(String),
+    AnyURI(Iri),
 }
 
 /// represents the valueType/value pair typesafe. Used i.e. by Extension or Property.
@@ -90,6 +116,7 @@ pub enum DataTypeXSDef {
 /// Default: String(None)
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType", content = "value")]
+#[strum(prefix = "xs:", serialize_all = "camelCase")]
 pub enum DataXsd {
     // basic types
     #[serde(rename = "xs:int")]
@@ -204,5 +231,4 @@ impl Default for DataXsd {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::str::FromStr;
 }

@@ -45,7 +45,6 @@ impl Blob {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType", rename = "Blob")]
 pub struct BlobMeta {
     // Inherited from DataElement
     #[serde(flatten)]

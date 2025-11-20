@@ -11,6 +11,8 @@ mod range;
 mod reference_element;
 mod relationship_element;
 mod submodel_element_collection;
+
+use std::collections::HashMap;
 pub use submodel_element_collection::*;
 mod submodel_element_list;
 pub use submodel_element_list::*;
@@ -35,8 +37,10 @@ use crate::part_1::v3_1::submodel_elements::relationship_element::{
 };
 use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
+use strum::Display;
+
 // TODO
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
 #[serde(tag = "modelType")]
 pub enum SubmodelElement {
     RelationshipElement(RelationshipElement),
@@ -76,13 +80,32 @@ pub struct SubmodelElementFields {
 }
 
 // maybe without variants?
-pub type AasSubmodelElements = SubmodelElement;
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
+pub enum AasSubmodelElements {
+    RelationshipElement,
+    AnnotatedRelationshipElement,
+    BasicEventElement,
+    Blob,
+    Capability,
+    // TODO: is this needed? Deserializes??
+    DataElement,
+    Entity,
+    File,
+    MultiLanguageProperty,
+    Operation,
+    Property,
+    Range,
+    ReferenceElement,
+    SubmodelElementCollection,
+    SubmodelElementList
+}
 
 impl ToJsonMetamodel for SubmodelElement {
     type Error = MetamodelError;
 
     fn to_json_metamodel(&self) -> Result<String, Self::Error> {
-        match self {
+
+        let data = match self {
             SubmodelElement::RelationshipElement(_) => Err(MetamodelError::MetamodelNotSupported),
             SubmodelElement::AnnotatedRelationshipElement(_) => {
                 Err(MetamodelError::MetamodelNotSupported)
@@ -100,7 +123,13 @@ impl ToJsonMetamodel for SubmodelElement {
             SubmodelElement::ReferenceElement(elm) => Ok(elm.to_json_metamodel().unwrap()),
             SubmodelElement::SubmodelElementCollection(elm) => Ok(elm.to_json_metamodel().unwrap()),
             SubmodelElement::SubmodelElementList(elm) => elm.to_json_metamodel(),
-        }
+        };
+
+        data.and_then(|str| {
+            let mut map: HashMap<&str, serde_json::Value> = serde_json::from_str(&str).unwrap();
+            map.insert("modelType", serde_json::Value::String(self.to_string()));
+            Ok(serde_json::to_string(&map).unwrap())
+        })
     }
 }
 
@@ -169,5 +198,12 @@ mod tests {
         let actual = serde_json::to_string_pretty(&actual).unwrap();
 
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn serialize_metamodel_blob() {
+        let actual = SubmodelElement::Blob(Blob::default());
+
+        println!("{}", &actual.to_json_metamodel().unwrap());
     }
 }

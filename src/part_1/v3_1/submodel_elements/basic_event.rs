@@ -40,7 +40,6 @@ pub struct BasicEventElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[serde(tag = "modelType", rename = "BasicEventElement")]
 pub struct BasicEventElementMeta {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,

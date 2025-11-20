@@ -33,7 +33,6 @@ pub struct File {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[serde(tag = "modelType", rename = "File")]
 pub struct FileMeta {
     // Inherited from DataElement
     #[serde(flatten)]
