@@ -6,16 +6,14 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct Qualifiable {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub qualifiers: Option<Vec<Qualifier>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct QualifierInner {
     #[serde(flatten)]
     pub semantics: HasSemantics,
@@ -34,8 +32,7 @@ pub struct QualifierInner {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum Qualifier {
     ConceptQualifier(QualifierInner),
     TemplateQualifier(QualifierInner),

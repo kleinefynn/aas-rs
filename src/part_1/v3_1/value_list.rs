@@ -4,16 +4,14 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct ValueList {
     #[serde(rename = "valueReferencePairs")]
     pub value_reference_pairs: Vec<ValueReferencePair>,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct ValueReferencePair {
     pub value: String,
     #[serde(rename = "valueId")]

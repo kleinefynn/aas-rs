@@ -9,8 +9,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct Capability {
     // Inherited from DataElement
     #[serde(flatten)]

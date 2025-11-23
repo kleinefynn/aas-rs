@@ -10,8 +10,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct Property {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -31,8 +30,7 @@ pub struct Property {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct PropertyMeta {
     // Inherited from DataElement
     #[serde(flatten)]

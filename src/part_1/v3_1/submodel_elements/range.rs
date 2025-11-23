@@ -8,8 +8,7 @@ use utoipa::ToSchema;
 // TODO: If the min value is missing, the value is assumed to be negative infinite.
 // TODO: If the max value is missing, the value is assumed to be positive infinite.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct RangeInner<T> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min: Option<T>,
@@ -22,8 +21,7 @@ pub struct RangeInner<T> {
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum Range {
     // basic types
     #[serde(rename = "xs:int")]

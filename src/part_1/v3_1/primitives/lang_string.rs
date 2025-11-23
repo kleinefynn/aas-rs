@@ -9,12 +9,10 @@ use thiserror::Error;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct LangString {
     #[serde(deserialize_with = "deserialize_normalized_lang_tag")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String, example = "en-EN")]
+    #[cfg_attr(feature = "openapi", schema(value_type = String, example = "en-EN"))]
     pub language: LanguageTag<String>,
 
     #[serde(deserialize_with = "deserialize_normalized_text")]

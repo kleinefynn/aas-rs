@@ -6,8 +6,7 @@ use utoipa::ToSchema;
 
 /// HasExtensions
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct HasExtensions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "extensions")]
@@ -28,8 +27,7 @@ pub struct HasExtensions {
 /// - If present, the extensions list must contain at least one element.
 /// - Extension names must be unique within this container.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct Extension {
     pub name: String,
 

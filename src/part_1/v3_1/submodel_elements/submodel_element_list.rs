@@ -12,8 +12,7 @@ use utoipa::ToSchema;
 
 /// A submodel element list is an ordered list of submodel elements.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct SubmodelElementList {
     /// Defines whether order in list is relevant. If orderRelevant = false, the list represents a set or a bag.
     #[serde(rename = "orderRelevant")]

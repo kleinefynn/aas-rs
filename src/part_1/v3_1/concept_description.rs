@@ -10,8 +10,7 @@ use utoipa::ToSchema;
 /// The description of the concept should follow a standardized schema
 /// (realized as data specification template).
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct ConceptDescription {
     #[serde(flatten)]
     pub identifiable: Identifiable,

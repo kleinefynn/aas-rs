@@ -12,8 +12,7 @@ use utoipa::ToSchema;
 /// Constraints:
 /// string with max 2048 and min 1 characters
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct Identifier(String);
 
 #[derive(Error, Debug, PartialEq)]

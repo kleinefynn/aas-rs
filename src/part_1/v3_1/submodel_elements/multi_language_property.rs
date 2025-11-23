@@ -11,8 +11,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct MultiLanguageProperty {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -36,8 +35,7 @@ pub struct MultiLanguageProperty {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct MultiLanguagePropertyMeta {
     // Inherited from DataElement
     #[serde(flatten)]

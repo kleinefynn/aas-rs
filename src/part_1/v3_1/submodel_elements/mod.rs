@@ -45,8 +45,7 @@ use utoipa::ToSchema;
 // TODO
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
 #[serde(tag = "modelType")]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum SubmodelElement {
     RelationshipElement(RelationshipElement),
     AnnotatedRelationshipElement(AnnotatedRelationshipElement),
@@ -68,8 +67,7 @@ pub enum SubmodelElement {
 
 /// Every SubmodelElement has these
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct SubmodelElementFields {
     #[serde(flatten)]
     pub referable: Referable,
@@ -88,8 +86,7 @@ pub struct SubmodelElementFields {
 
 // maybe without variants?
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum AasSubmodelElements {
     RelationshipElement,
     AnnotatedRelationshipElement,

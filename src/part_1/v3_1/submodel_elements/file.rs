@@ -10,8 +10,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct File {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -29,8 +28,7 @@ pub struct File {
     /// Path and name of the file (with file extension)
     /// The path can be absolute or relative.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     pub value: Option<Uri>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,8 +37,7 @@ pub struct File {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct FileMeta {
     // Inherited from DataElement
     #[serde(flatten)]

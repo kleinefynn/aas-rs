@@ -9,8 +9,7 @@ use utoipa::ToSchema;
 /// Type mapping of XSDef types.
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum DataTypeXSDef {
     // basic types
     #[serde(rename = "xs:int")]
@@ -20,28 +19,23 @@ pub enum DataTypeXSDef {
     Long(i64),
 
     #[serde(rename = "xs:integer")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     Integer(BigDecimal),
 
     #[serde(rename = "xs:negativeInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     NegativeInteger(BigDecimal),
 
     #[serde(rename = "xs:nonNegativeInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     NonNegativeInteger(BigDecimal),
 
     #[serde(rename = "xs:nonPositiveInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     NonPositiveInteger(BigDecimal),
 
     #[serde(rename = "xs:positiveInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     PositiveInteger(BigDecimal),
 
     #[serde(rename = "xs:short")]
@@ -68,8 +62,7 @@ pub enum DataTypeXSDef {
     UnsignedShort(u16),
 
     #[serde(rename = "xs:decimal")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     Decimal(BigDecimal),
 
     #[serde(rename = "xs:float")]
@@ -81,19 +74,16 @@ pub enum DataTypeXSDef {
     // Date Time related
     // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     Time(NaiveTime),
 
     // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     Date(NaiveDate),
 
     #[serde(rename = "xs:dateTime")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     DateTime(DateTime<Utc>),
 
     /// TODO: using proper type
@@ -130,8 +120,7 @@ pub enum DataTypeXSDef {
     // Miscellaneous types
     /// URI and IRI possible
     #[serde(rename = "xs:anyURI")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = String)]
+    #[cfg_attr(feature = "openapi", schema(value_type = String))]
     AnyURI(Iri),
 }
 
@@ -141,8 +130,7 @@ pub enum DataTypeXSDef {
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType", content = "value")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum DataXsd {
     // basic types
     #[serde(rename = "xs:int")]
@@ -152,28 +140,23 @@ pub enum DataXsd {
     Long(Option<i64>),
 
     #[serde(rename = "xs:integer")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     Integer(Option<BigDecimal>),
 
     #[serde(rename = "xs:negativeInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     NegativeInteger(Option<BigDecimal>),
 
     #[serde(rename = "xs:nonNegativeInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     NonNegativeInteger(Option<BigDecimal>),
 
     #[serde(rename = "xs:nonPositiveInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     NonPositiveInteger(Option<BigDecimal>),
 
     #[serde(rename = "xs:positiveInteger")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     PositiveInteger(Option<BigDecimal>),
 
     #[serde(rename = "xs:short")]
@@ -200,8 +183,7 @@ pub enum DataXsd {
     UnsignedShort(Option<u16>),
 
     #[serde(rename = "xs:decimal")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     Decimal(Option<BigDecimal>),
 
     #[serde(rename = "xs:float")]
@@ -213,20 +195,17 @@ pub enum DataXsd {
     // Date Time related
     // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     Time(Option<NaiveTime>),
 
     // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     Date(Option<NaiveDate>),
 
     /// TODO: using proper type
     #[serde(rename = "xs:dateTime")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     DateTime(Option<DateTime<Utc>>),
 
     /// TODO: using proper type
@@ -263,8 +242,7 @@ pub enum DataXsd {
     // Miscellaneous types
     /// URI and IRI possible
     #[serde(rename = "xs:anyURI")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = Option<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     AnyURI(Option<Iri>),
 }
 

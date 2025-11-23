@@ -6,8 +6,7 @@ use utoipa::ToSchema;
 
 // ToJsonMetadata implemented from upper enum.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct ReferenceElement {
     /// External reference to an external object or entity or a logical reference
     /// to another element within the same or another Asset Administration Shell

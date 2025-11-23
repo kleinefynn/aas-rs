@@ -12,8 +12,7 @@ use utoipa::ToSchema;
 // make it an enum of ModellingKind?
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 #[serde(tag = "modelKind")]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct Submodel {
     #[serde(flatten)]
     pub identifiable: Identifiable,

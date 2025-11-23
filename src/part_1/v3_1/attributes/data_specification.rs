@@ -10,8 +10,7 @@ use utoipa::ToSchema;
 
 /// HasDataSpecification
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct HasDataSpecification {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "embeddedDataSpecifications")]
@@ -19,8 +18,7 @@ pub struct HasDataSpecification {
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct EmbeddedDataSpecification {
     #[serde(rename = "dataSpecification")]
     #[serde(deserialize_with = "deserialize_external_reference")]
@@ -32,8 +30,7 @@ pub struct EmbeddedDataSpecification {
 
 // THIS IS PART 3. TODO?
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 #[serde(tag = "modelType")]
 pub struct DataSpecificationIec61360 {
     #[serde(rename = "preferredName")]
@@ -80,8 +77,7 @@ pub struct DataSpecificationIec61360 {
 }
 
 #[derive(EnumString, Display, Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum DataTypeIec61360 {
     #[serde(rename = "BLOB")]
     Blob,

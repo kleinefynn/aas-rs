@@ -10,8 +10,7 @@ use thiserror::Error;
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct MessageTopic(String);
 
 #[derive(Error, Debug)]

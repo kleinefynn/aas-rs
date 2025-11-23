@@ -7,8 +7,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct RelationshipElement {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
@@ -21,8 +20,7 @@ pub struct RelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct AnnotatedRelationshipElement {
     // Inherited from RelationshipElement
     #[serde(flatten)]
@@ -38,16 +36,14 @@ pub struct AnnotatedRelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct RelationshipElementMeta {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg(feature = "openapi")]
-#[derive(ToSchema)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct AnnotatedRelationshipElementMeta {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
