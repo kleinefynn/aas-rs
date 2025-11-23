@@ -5,8 +5,12 @@ use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::submodel_elements::SubmodelElement;
 use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Operation {
     // Inherited from DataElement
     #[serde(flatten)]

@@ -3,8 +3,12 @@ use crate::part_1::v3_1::submodel_elements::SubmodelElementFields;
 use crate::part_1::v3_1::submodel_elements::data_element::DataElement;
 use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct RelationshipElement {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
@@ -17,6 +21,8 @@ pub struct RelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct AnnotatedRelationshipElement {
     // Inherited from RelationshipElement
     #[serde(flatten)]
@@ -32,12 +38,16 @@ pub struct AnnotatedRelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct RelationshipElementMeta {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct AnnotatedRelationshipElementMeta {
     #[serde(flatten)]
     pub submodel_element_fields: SubmodelElementFields,
@@ -95,13 +105,13 @@ impl ToJsonMetamodel for AnnotatedRelationshipElement {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use crate::part_1::v3_1::attributes::qualifiable::Qualifiable;
     use crate::part_1::v3_1::attributes::referable::Referable;
     use crate::part_1::v3_1::attributes::semantics::HasSemantics;
-    use crate::part_1::v3_1::key::{Key};
+    use crate::part_1::v3_1::key::Key;
     use crate::part_1::v3_1::primitives::Identifier;
     use crate::part_1::v3_1::reference::ReferenceInner;
-    use super::*;
     #[test]
     fn test_relationship_element_to_metamodel() {
         // expect to remove "first" & "second" fields.
@@ -119,22 +129,16 @@ mod tests {
                     semantic_id: None,
                     supplemental_semantic_ids: None,
                 },
-                qualifiable: Qualifiable {
-                    qualifiers: None,
-                },
+                qualifiable: Qualifiable { qualifiers: None },
                 embedded_data_specifications: Default::default(),
             },
             first: Some(Reference::ExternalReference(ReferenceInner {
                 referred_semantic_id: None,
-                keys: vec![Key::RelationshipElement(
-                    "https://example.com/1".into()
-                )],
+                keys: vec![Key::RelationshipElement("https://example.com/1".into())],
             })),
             second: Some(Reference::ExternalReference(ReferenceInner {
                 referred_semantic_id: None,
-                keys: vec![Key::RelationshipElement(
-                    "https://example.com/2".into()
-                )],
+                keys: vec![Key::RelationshipElement("https://example.com/2".into())],
             })),
         };
 

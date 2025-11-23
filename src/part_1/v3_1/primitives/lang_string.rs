@@ -5,10 +5,16 @@ use oxilangtag::{LanguageTag, LanguageTagParseError};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use thiserror::Error;
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct LangString {
     #[serde(deserialize_with = "deserialize_normalized_lang_tag")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = String, example = "en-EN")]
     pub language: LanguageTag<String>,
 
     #[serde(deserialize_with = "deserialize_normalized_text")]

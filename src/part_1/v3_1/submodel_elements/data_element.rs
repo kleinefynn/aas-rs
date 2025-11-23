@@ -7,8 +7,12 @@ use crate::part_1::v3_1::submodel_elements::reference_element::ReferenceElement;
 use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 use strum::Display;
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum DataElement {
     Blob(Blob),
     File(File),

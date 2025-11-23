@@ -6,10 +6,14 @@ use crate::part_1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::submodel_elements::SubmodelElement;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 // make it an enum of ModellingKind?
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 #[serde(tag = "modelKind")]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Submodel {
     #[serde(flatten)]
     pub identifiable: Identifiable,

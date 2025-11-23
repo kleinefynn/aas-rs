@@ -3,8 +3,12 @@ use serde::de::{Error, Visitor};
 use serde::{Deserialize, Deserializer, Serialize};
 use std::fmt;
 use strum::EnumString;
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct ReferenceInner {
     /// E.g. semantic id of a standard submodel
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31,6 +35,8 @@ pub struct ReferenceInner {
 /// enabling precise targeting of nested submodels, submodel elements, or fragments.
 #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(tag = "type")]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum Reference {
     ExternalReference(ReferenceInner),
     ModelReference(ReferenceInner),

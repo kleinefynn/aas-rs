@@ -4,8 +4,12 @@ use crate::part_1::v3_1::submodel_elements::SubmodelElementFields;
 use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct BasicEventElement {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,
@@ -26,6 +30,8 @@ pub struct BasicEventElement {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "lastUpdate")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = Option<String>)]
     pub last_update: Option<DateTimeUTC>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40,6 +46,8 @@ pub struct BasicEventElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct BasicEventElementMeta {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,
@@ -58,6 +66,8 @@ pub struct BasicEventElementMeta {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "lastUpdate")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = Option<String>)]
     pub last_update: Option<DateTimeUTC>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -102,6 +112,8 @@ impl ToJsonMetamodel for BasicEventElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Display, EnumString)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum StateOfEvent {
     #[serde(rename = "on")]
     On,
@@ -110,6 +122,8 @@ pub enum StateOfEvent {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Display, EnumString)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum Direction {
     #[serde(rename = "input")]
     Input,

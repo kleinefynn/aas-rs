@@ -6,8 +6,12 @@ use crate::part_1::v3_1::attributes::referable::Referable;
 use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::primitives::data_type_def_xs::DataXsd;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Property {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -27,6 +31,8 @@ pub struct Property {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct PropertyMeta {
     // Inherited from DataElement
     #[serde(flatten)]

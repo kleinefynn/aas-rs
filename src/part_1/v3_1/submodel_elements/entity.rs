@@ -4,11 +4,15 @@ use crate::part_1::v3_1::primitives::Identifier;
 use crate::part_1::v3_1::submodel_elements::SubmodelElement;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 /// The entity submodel element is designed to be used in submodels defining the relationship between the parts of the composite asset
 /// it is composed of (e.g. bill of material).
 /// These parts are called entities. Not all entities have a global asset ID.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Display, EnumString)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum Entity {
     /// There is no separate Asset Administration Shell for co-managed entities.
     /// Co-managed entities need to be part of a self-managed entity.
@@ -20,6 +24,8 @@ pub enum Entity {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct EntityInner {
     /// Statement applicable to the entity,
     /// each statement described by submodel element - typically with a qualified value

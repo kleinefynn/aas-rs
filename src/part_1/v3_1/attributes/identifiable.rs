@@ -2,10 +2,14 @@ use crate::part_1::v3_1::attributes::administrative_information::AdministrativeI
 use crate::part_1::v3_1::attributes::referable::Referable;
 use crate::part_1::v3_1::primitives::Identifier;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 ///use crate::v3_1::asset_administration_shell::AdministrativeInformation;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Identifiable {
     pub id: Identifier,
 

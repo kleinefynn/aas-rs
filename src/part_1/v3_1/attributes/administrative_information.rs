@@ -4,9 +4,13 @@ use crate::part_1::v3_1::reference::Reference;
 use serde::de::{self};
 use serde::{Deserialize, Deserializer, Serialize};
 use thiserror::Error;
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 /// Administrative metainformation for an element like version information
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct AdministrativeInformation {
     #[serde(flatten)]
     pub version: Version,
@@ -31,6 +35,8 @@ pub struct AdministrativeInformation {
 /// If there is no version, there is no revision.
 /// Revision is optional.
 #[derive(Clone, PartialEq, Debug, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Version {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -39,6 +45,8 @@ pub struct Version {
 }
 
 #[derive(Debug, Error)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum VersionError {
     #[error("Revision can not exist without version")]
     RevisionNotApplicable,

@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 pub type KeyReference = String;
 
@@ -20,6 +22,8 @@ pub type KeyReference = String;
 /// explicitly naming the referenced element to enable precise navigation within the AAS environment.
 #[derive(EnumString, Display, Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(tag = "type", content = "value")]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum Key {
     AnnotatedRelationshipElement(KeyReference),
     AssetAdministrationShell(KeyReference),

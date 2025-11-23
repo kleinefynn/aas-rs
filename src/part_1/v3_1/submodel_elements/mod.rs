@@ -39,9 +39,14 @@ use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 use strum::Display;
 
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
+
 // TODO
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
 #[serde(tag = "modelType")]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum SubmodelElement {
     RelationshipElement(RelationshipElement),
     AnnotatedRelationshipElement(AnnotatedRelationshipElement),
@@ -63,6 +68,8 @@ pub enum SubmodelElement {
 
 /// Every SubmodelElement has these
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct SubmodelElementFields {
     #[serde(flatten)]
     pub referable: Referable,
@@ -81,6 +88,8 @@ pub struct SubmodelElementFields {
 
 // maybe without variants?
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum AasSubmodelElements {
     RelationshipElement,
     AnnotatedRelationshipElement,
@@ -97,14 +106,13 @@ pub enum AasSubmodelElements {
     Range,
     ReferenceElement,
     SubmodelElementCollection,
-    SubmodelElementList
+    SubmodelElementList,
 }
 
 impl ToJsonMetamodel for SubmodelElement {
     type Error = MetamodelError;
 
     fn to_json_metamodel(&self) -> Result<String, Self::Error> {
-
         let data = match self {
             SubmodelElement::RelationshipElement(_) => Err(MetamodelError::MetamodelNotSupported),
             SubmodelElement::AnnotatedRelationshipElement(_) => {

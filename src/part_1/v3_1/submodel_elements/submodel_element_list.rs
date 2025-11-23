@@ -3,6 +3,8 @@ use crate::part_1::v3_1::reference::Reference;
 use crate::part_1::v3_1::submodel_elements::{AasSubmodelElements, SubmodelElement};
 use crate::part_1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 // TODO: TYPING
 // We could make the pair value / type_value_list_element one enum
@@ -10,6 +12,8 @@ use serde::{Deserialize, Serialize};
 
 /// A submodel element list is an ordered list of submodel elements.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct SubmodelElementList {
     /// Defines whether order in list is relevant. If orderRelevant = false, the list represents a set or a bag.
     #[serde(rename = "orderRelevant")]
@@ -20,11 +24,9 @@ pub struct SubmodelElementList {
     #[serde(rename = "semanticIdListElement")]
     semantic_id_list_element: Option<Reference>,
 
-
     // Question: can value, type_value_list_element be merged into an enum?
     // maybe together with value_type_list_element?
     // newtype or something for type safety.
-
     /// Submodel elements contained in the list
     value: Option<Vec<SubmodelElement>>,
 

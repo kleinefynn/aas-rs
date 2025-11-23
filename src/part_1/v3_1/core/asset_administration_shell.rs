@@ -7,8 +7,12 @@ use crate::part_1::v3_1::reference::deserialize_optional_external_reference;
 use crate::part_1::{ToJsonMetamodel, ToJsonValue};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 #[serde(tag = "AssetAdministrationShell")]
 pub struct AssetAdministrationShell {
     #[serde(rename = "assetInformation")]
@@ -67,6 +71,8 @@ impl ToJsonMetamodel for AssetAdministrationShell {
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, EnumString, Display)]
 #[serde(tag = "assetKind")]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum AssetInformation {
     Instance(AssetInformationInner),
     NotApplicable(AssetInformationInner),
@@ -76,6 +82,8 @@ pub enum AssetInformation {
 
 // TODO: Skip option serialization
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct AssetInformationInner {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "globalAssetId")]
@@ -95,6 +103,8 @@ pub struct AssetInformationInner {
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct SpecificAssetId {
     #[serde(flatten)]
     pub has_semantics: HasSemantics,
@@ -114,11 +124,17 @@ pub struct SpecificAssetId {
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Resource {
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = String)]
     pub path: Uri,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "contentType")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = Option<String>)]
     pub content_type: Option<ContentType>,
 }
 

@@ -2,10 +2,14 @@ use crate::part_1::ToJsonMetamodel;
 use chrono::{DateTime, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 // TODO: If the min value is missing, the value is assumed to be negative infinite.
 // TODO: If the max value is missing, the value is assumed to be positive infinite.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct RangeInner<T> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min: Option<T>,
@@ -18,6 +22,8 @@ pub struct RangeInner<T> {
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub enum Range {
     // basic types
     #[serde(rename = "xs:int")]
@@ -78,13 +84,19 @@ pub enum Range {
     // Date Time related
     // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = RangeInner<String>)]
     Time(RangeInner<NaiveTime>),
 
     // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = RangeInner<String>)]
     Date(RangeInner<NaiveTime>),
 
     #[serde(rename = "xs:dateTime")]
+    #[cfg(feature = "openapi")]
+    #[schema(value_type = RangeInner<String>)]
     DateTime(RangeInner<DateTime<Utc>>),
 
     /// TODO: using proper type

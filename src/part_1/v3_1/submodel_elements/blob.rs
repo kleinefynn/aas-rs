@@ -6,8 +6,12 @@ use crate::part_1::v3_1::attributes::referable::Referable;
 use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::primitives::ContentType;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct Blob {
     // Inherited from DataElement
     #[serde(flatten)]

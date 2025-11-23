@@ -3,6 +3,7 @@ use crate::part_1::v3_1::core::{AssetAdministrationShell, Submodel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+
 pub struct Environment {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "assetAdministrationShells")]

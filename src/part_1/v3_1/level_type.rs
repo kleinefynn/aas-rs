@@ -1,6 +1,10 @@
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[cfg(feature = "openapi")]
+#[derive(ToSchema)]
 pub struct LevelType {
     pub max: bool,
     pub min: bool,
