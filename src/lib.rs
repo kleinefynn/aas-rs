@@ -9,6 +9,11 @@
 /// Part1: Metamodel
 pub mod part_1;
 
+/// Part 2: Http Endpoints
+/// Can be used with feature = "part2"
+#[cfg(feature = "part2")]
+pub mod part2;
+
 /// Utility functions like validating text to specific formats and deserializers to specific needs,
 /// like text with defined constraints.
 pub mod utilities;
