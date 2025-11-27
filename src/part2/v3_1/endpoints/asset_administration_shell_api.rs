@@ -1,7 +1,11 @@
 //! Asset Administration Shell API
 
+use crate::part_1::v3_1::core::AssetAdministrationShell;
+use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASShellService;
+use axum::Json;
 use axum::extract::State;
+use axum::http::StatusCode;
 use std::sync::Arc;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
@@ -12,12 +16,21 @@ use utoipa_axum::routes;
     tag = "Asset Administration Shell API",
     summary = "Returns a specific Asset Administration Shell",
     responses(
-        (status = 200, description = "Requested Asset Administration Shell"),
-        (status = 404, description = "Asset Administration Shell not found")
+        (status = 200, body = AssetAdministrationShell, description = "Requested Asset Administration Shell"),
+        (status = 400, body = AASError, description = "Bad Request, e.g. the request parameters of the format of the request body is wrong."),
+        (status = 401, body = AASError, description = "Unauthorized"),
+        (status = 403, body = AASError, description = "Forbidden"),
+        (status = 404, body = AASError, description = "Asset Administration Shell not found")
     )
 )]
-pub async fn get_asset_administration_shell<S: AASShellService>(State(_service): State<Arc<S>>) {
-    unimplemented!()
+pub async fn get_asset_administration_shell<S: AASShellService>(
+    State(service): State<Arc<S>>,
+) -> Result<Json<AssetAdministrationShell>, Json<AASError>> {
+    service
+        .find_all_aas()
+        .await
+        .and_then(|aas| Ok(Json(aas)))
+        .map_err(|err| Json(err))
 }
 
 #[utoipa::path(
@@ -26,14 +39,22 @@ pub async fn get_asset_administration_shell<S: AASShellService>(State(_service):
     tag = "Asset Administration Shell API",
     summary = "Creates or updates an existing Asset Administration Shell",
     responses(
-        (status = 200, description = "Asset Administration Shell updated successfully"),
         (status = 201, description = "Asset Administration Shell created successfully"),
+        (status = 204, description = "Asset Administration Shell updated successfully"),
         (status = 400, description = "Bad Request"),
+        (status = 401, body = AASError, description = "Unauthorized"),
+        (status = 403, body = AASError, description = "Forbidden"),
         (status = 404, description = "Asset Administration Shell not found")
     )
 )]
-pub async fn put_asset_administration_shell<S: AASShellService>(State(_service): State<Arc<S>>) {
-    unimplemented!()
+pub async fn put_asset_administration_shell<S: AASShellService>(
+    State(service): State<Arc<S>>,
+    Json(aas): Json<AssetAdministrationShell>,
+) -> Result<StatusCode, Json<AASError>> {
+    service
+        .create_or_update_aas(&aas)
+        .await
+        .map_err(|err| Json(err))
 }
 
 #[utoipa::path(

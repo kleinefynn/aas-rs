@@ -176,7 +176,9 @@ pub async fn post_submodel_element<S: SubmodelService>(State(_service): State<Ar
         (status = 404, description = "Submodel not found")
     )
 )]
-pub async fn get_all_submodel_elements_metadata<S: SubmodelService>(State(_service): State<Arc<S>>) {
+pub async fn get_all_submodel_elements_metadata<S: SubmodelService>(
+    State(_service): State<Arc<S>>,
+) {
     unimplemented!()
 }
 

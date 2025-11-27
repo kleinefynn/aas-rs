@@ -105,7 +105,9 @@ pub async fn delete_submodel_descriptor_by_id<S: SubmodelRegistryService>(
         (status = 400, description = "Bad Request - Invalid query syntax")
     )
 )]
-pub async fn query_submodel_descriptors<S: SubmodelRegistryService>(State(_service): State<Arc<S>>) {
+pub async fn query_submodel_descriptors<S: SubmodelRegistryService>(
+    State(_service): State<Arc<S>>,
+) {
     unimplemented!()
 }
 

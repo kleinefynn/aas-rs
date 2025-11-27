@@ -1,7 +1,11 @@
 //! Asset Administration Shell Repository API
 
+use crate::part_1::v3_1::core::AssetAdministrationShell;
+use crate::part_1::v3_1::reference::Reference;
+use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASRepositoryService;
-use axum::extract::State;
+use axum::Json;
+use axum::extract::{Query, State};
 use std::sync::Arc;
 use utoipa::OpenApi;
 use utoipa_axum::router::OpenApiRouter;
@@ -12,13 +16,22 @@ use utoipa_axum::routes;
     path = "/shells",
     tag = "Asset Administration Shell Repository API",
     responses(
-        (status = 200, description = "List of all Asset Administration Shells")
+        (status = 200, description = "List of all Asset Administration Shells"),
+        (status = 400, body = AASError, description = "Bad Request, e.g. the request parameters of the format of the request body is wrong."),
+        (status = 401, body = AASError, description = "Unauthorized"),
+        (status = 403, body = AASError, description = "Forbidden"),
+        (status = 404, body = AASError, description = "Asset Administration Shell not found"),
+        (status = 500, body = AASError)
     )
 )]
 pub async fn get_all_asset_administration_shells<S: AASRepositoryService>(
-    State(_service): State<Arc<S>>,
-) {
-    unimplemented!()
+    State(service): State<Arc<S>>,
+) -> Result<Json<Vec<AssetAdministrationShell>>, Json<AASError>> {
+    service
+        .find_all_aas()
+        .await
+        .and_then(|aas| Ok(Json(aas)))
+        .map_err(|err| Json(err))
 }
 
 #[utoipa::path(
@@ -26,13 +39,19 @@ pub async fn get_all_asset_administration_shells<S: AASRepositoryService>(
     path = "/shells",
     tag = "Asset Administration Shell Repository API",
     responses(
-        (status = 201, description = "Asset Administration Shell created successfully")
+        (status = 201, description = "Asset Administration Shell created successfully"),
+        (status = 400, body = AASError, description = "Bad Request, e.g. the request parameters of the format of the request body is wrong."),
+        (status = 401, body = AASError, description = "Unauthorized"),
+        (status = 403, body = AASError, description = "Forbidden"),
+        (status = 409, body = AASError, description = "Conflict, a resource which shall be created exists already. Might be thrown if an object with the same id (for Identifiables) or idShort (for Referables within the same Container Element or Submodel) is contained in a POST request."),
+        (status = 500, body = AASError)
     )
 )]
 pub async fn post_asset_administration_shell<S: AASRepositoryService>(
-    State(_service): State<Arc<S>>,
-) {
-    unimplemented!()
+    State(service): State<Arc<S>>,
+    Json(aas): Json<AssetAdministrationShell>,
+) -> Result<(), Json<AASError>> {
+    service.create_aas(&aas).await.map_err(|err| Json(err))
 }
 
 #[utoipa::path(
@@ -40,13 +59,25 @@ pub async fn post_asset_administration_shell<S: AASRepositoryService>(
     path = "/shells/$reference",
     tag = "Asset Administration Shell Repository API",
     responses(
-        (status = 200, description = "References to all Asset Administration Shells")
+        (status = 200, description = "Requested Asset Administration Shells as a list of References"),
+    (status = 400, body = AASError, description = "Bad Request, e.g. the request parameters of the format of the request body is wrong."),
+        (status = 401, body = AASError, description = "Unauthorized"),
+        (status = 403, body = AASError, description = "Forbidden"),
+        (status = 500, body = AASError)
     )
 )]
 pub async fn get_all_asset_administration_shells_reference<S: AASRepositoryService>(
-    State(_service): State<Arc<S>>,
-) {
-    unimplemented!()
+    State(service): State<Arc<S>>,
+    Query(assetIds): Query<Option<Vec<String>>>,
+    Query(idShort): Query<Option<String>>,
+    Query(limit): Query<Option<usize>>,
+    Query(cursor): Query<Option<usize>>,
+) -> Result<Json<Vec<Reference>>, Json<AASError>> {
+    service
+        .get_aas_as_references(assetIds, idShort, limit, cursor)
+        .await
+        .and_then(|aas| Ok(Json(aas)))
+        .map_err(|err| Json(err))
 }
 
 #[utoipa::path(
@@ -301,7 +332,9 @@ pub async fn put_submodel_by_id_aas_repository<S: AASRepositoryService>(
         (status = 204, description = "Submodel updated successfully")
     )
 )]
-pub async fn patch_submodel_aas_repository<S: AASRepositoryService>(State(_service): State<Arc<S>>) {
+pub async fn patch_submodel_aas_repository<S: AASRepositoryService>(
+    State(_service): State<Arc<S>>,
+) {
     unimplemented!()
 }
 
@@ -954,65 +987,6 @@ pub async fn query_asset_administration_shells<S: AASRepositoryService>(
 ) {
     unimplemented!()
 }
-
-// Define OpenApi documentation object including all paths
-#[derive(OpenApi)]
-#[openapi(paths(
-    get_all_asset_administration_shells,
-    post_asset_administration_shell,
-    get_all_asset_administration_shells_reference,
-    get_asset_administration_shell_by_id,
-    put_asset_administration_shell_by_id,
-    delete_asset_administration_shell_by_id,
-    get_asset_administration_shell_by_id_reference_aas_repository,
-    get_asset_information_aas_repository,
-    put_asset_information_aas_repository,
-    get_thumbnail_aas_repository,
-    put_thumbnail_aas_repository,
-    delete_thumbnail_aas_repository,
-    get_all_submodel_references_aas_repository,
-    post_submodel_reference_aas_repository,
-    delete_submodel_reference_aas_repository,
-    get_submodel_by_id_aas_repository,
-    put_submodel_by_id_aas_repository,
-    patch_submodel_aas_repository,
-    delete_submodel_by_id_aas_repository,
-    get_submodel_by_id_metadata_aas_repository,
-    patch_submodel_by_id_metadata_aas_repository,
-    get_submodel_by_id_value_only_aas_repository,
-    patch_submodel_by_id_value_only_aas_repository,
-    get_submodel_by_id_reference_aas_repository,
-    get_submodel_by_id_path_aas_repository,
-    get_all_submodel_elements_aas_repository,
-    post_submodel_element_aas_repository,
-    get_all_submodel_elements_metadata_aas_repository,
-    get_all_submodel_elements_value_only_aas_repository,
-    get_all_submodel_elements_reference_aas_repository,
-    get_all_submodel_elements_path_aas_repository,
-    get_submodel_element_by_path_aas_repository,
-    post_submodel_element_by_path_aas_repository,
-    put_submodel_element_by_path_aas_repository,
-    patch_submodel_element_value_by_path_aas_repository,
-    delete_submodel_element_by_path_aas_repository,
-    get_submodel_element_by_path_metadata_aas_repository,
-    patch_submodel_element_value_by_path_metadata,
-    get_submodel_element_by_path_value_only_aas_repository,
-    patch_submodel_element_value_by_path_value_only,
-    get_submodel_element_by_path_reference_aas_repository,
-    get_submodel_element_by_path_path_aas_repository,
-    get_file_by_path_aas_repository,
-    put_file_by_path_aas_repository,
-    delete_file_by_path_aas_repository,
-    invoke_operation_aas_repository,
-    invoke_operation_value_only_aas_repository,
-    invoke_operation_async_aas_repository,
-    invoke_operation_async_value_only_aas_repository,
-    get_operation_async_status_aas_repository,
-    get_operation_async_result_aas_repository,
-    get_operation_async_result_value_only_aas_repository,
-    query_asset_administration_shells,
-))]
-pub struct AASRepositoryAPI;
 
 // Create router using utoipa_axum OpenApiRouter
 pub fn router(service: impl AASRepositoryService) -> OpenApiRouter {

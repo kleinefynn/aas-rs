@@ -17,7 +17,9 @@ use utoipa_axum::routes;
         (status = 404, description = "Not Found")
     )
 )]
-pub async fn generate_serialization_by_ids<S: SerializationService>(State(_service): State<Arc<S>>) {
+pub async fn generate_serialization_by_ids<S: SerializationService>(
+    State(_service): State<Arc<S>>,
+) {
     unimplemented!()
 }
 

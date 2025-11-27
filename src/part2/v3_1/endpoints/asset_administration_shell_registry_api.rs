@@ -190,23 +190,6 @@ pub async fn query_asset_administration_shell_descriptors<S: AASRegistryService>
     unimplemented!()
 }
 
-// Define OpenApi documentation object including all paths
-#[derive(OpenApi)]
-#[openapi(paths(
-    get_all_asset_administration_shell_descriptors,
-    post_asset_administration_shell_descriptor,
-    get_asset_administration_shell_descriptor_by_id,
-    put_asset_administration_shell_descriptor_by_id,
-    delete_asset_administration_shell_descriptor_by_id,
-    get_all_submodel_descriptors_through_superpath,
-    post_submodel_descriptor_through_superpath,
-    get_submodel_descriptor_by_id_through_superpath,
-    put_submodel_descriptor_by_id_through_superpath,
-    delete_submodel_descriptor_by_id_through_superpath,
-    query_asset_administration_shell_descriptors,
-))]
-pub struct AASRegistryAPI;
-
 pub fn router(service: impl AASRegistryService) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(get_all_asset_administration_shell_descriptors))

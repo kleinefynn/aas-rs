@@ -1,10 +1,10 @@
+use crate::part_1::ToJsonMetamodel;
 use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part_1::v3_1::attributes::identifiable::Identifiable;
 use crate::part_1::v3_1::attributes::semantics::HasSemantics;
 use crate::part_1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
 use crate::part_1::v3_1::reference::Reference;
 use crate::part_1::v3_1::reference::deserialize_optional_external_reference;
-use crate::part_1::{ToJsonMetamodel, ToJsonValue};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
@@ -28,6 +28,9 @@ pub struct AssetAdministrationShell {
     #[serde(rename = "derivedFrom")]
     pub derived_from: Option<Reference>,
 
+    // TODO: What kind of submodel keys are supported?
+    // 1. Only one Key
+    // Only key type "Submodel" allowed?
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submodels: Option<Vec<Reference>>,
 }

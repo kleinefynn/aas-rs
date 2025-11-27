@@ -48,7 +48,9 @@ pub async fn search_all_asset_administration_shell_ids_by_asset_link<
         (status = 200, description = "List of asset links by AAS ID")
     )
 )]
-pub async fn get_all_asset_links_by_id<S: AASBasicDiscoveryService>(State(_service): State<Arc<S>>) {
+pub async fn get_all_asset_links_by_id<S: AASBasicDiscoveryService>(
+    State(_service): State<Arc<S>>,
+) {
     unimplemented!()
 }
 

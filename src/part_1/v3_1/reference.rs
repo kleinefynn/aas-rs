@@ -2,7 +2,7 @@ use crate::part_1::v3_1::key::Key;
 use serde::de::{Error, Visitor};
 use serde::{Deserialize, Deserializer, Serialize};
 use std::fmt;
-use strum::EnumString;
+use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
@@ -12,6 +12,7 @@ pub struct ReferenceInner {
     /// E.g. semantic id of a standard submodel
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "referredSemanticId")]
+    #[cfg_attr(feature = "openapi", schema(no_recursion))]
     pub referred_semantic_id: Option<Box<Reference>>,
 
     pub keys: Vec<Key>,
@@ -32,7 +33,7 @@ pub struct ReferenceInner {
 ///
 /// A `Reference` supports multi-level navigation through composite structures by chaining multiple keys,
 /// enabling precise targeting of nested submodels, submodel elements, or fragments.
-#[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
 #[serde(tag = "type")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum Reference {

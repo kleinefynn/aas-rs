@@ -1,11 +1,13 @@
 //! AASX File Server API
 
+use crate::part2::v3_1::error::AASError;
+use crate::part2::v3_1::services::AASXFileServerService;
+use axum::Json;
 use axum::extract::State;
 use axum::http::StatusCode;
 use std::sync::Arc;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
-use crate::part2::v3_1::services::AASXFileServerService;
 
 #[utoipa::path(
     get,
@@ -33,9 +35,12 @@ pub async fn get_all_aasx_package_ids<S: AASXFileServerService>(
     )
 )]
 pub async fn post_aasx_package<S: AASXFileServerService>(
-    State(_service): State<Arc<S>>,
-) -> StatusCode {
-    unimplemented!()
+    State(service): State<Arc<S>>,
+) -> Result<Json<String>, Json<AASError>> {
+    service
+        .get_all_aasx_package_ids()
+        .await
+        .map_err(|err| Json(err))
 }
 
 #[utoipa::path(

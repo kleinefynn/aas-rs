@@ -52,9 +52,7 @@ pub enum AASErrorMessageType {
 impl IntoResponse for AASError {
     fn into_response(self) -> Response {
         let (status, err) = match &self {
-            AASError::Internal { messages: _ } => {
-                (StatusCode::INTERNAL_SERVER_ERROR, self)
-            }
+            AASError::Internal { messages: _ } => (StatusCode::INTERNAL_SERVER_ERROR, self),
 
             AASError::BadRequest { .. } => (StatusCode::BAD_REQUEST, self),
             AASError::Unauthorized { .. } => (StatusCode::UNAUTHORIZED, self),
