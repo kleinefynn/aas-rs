@@ -15,7 +15,7 @@ pub trait AASShellService: Send + Sync + 'static {
     /// Get all aas
     fn find_all_aas(
         &self,
-    ) -> impl Future<Output = Result<AssetAdministrationShell, AASError>> + Send;
+    ) -> impl Future<Output = Result<Vec<AssetAdministrationShell>, AASError>> + Send;
     fn create_or_update_aas(
         &self,
         aas: &AssetAdministrationShell,

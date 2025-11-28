@@ -25,7 +25,7 @@ use utoipa_axum::routes;
 )]
 pub async fn get_asset_administration_shell<S: AASShellService>(
     State(service): State<Arc<S>>,
-) -> Result<Json<AssetAdministrationShell>, Json<AASError>> {
+) -> Result<Json<Vec<AssetAdministrationShell>>, Json<AASError>> {
     service
         .find_all_aas()
         .await
