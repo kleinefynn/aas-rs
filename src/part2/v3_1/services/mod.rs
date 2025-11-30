@@ -4,6 +4,7 @@ use crate::part_1::v3_1::reference::Reference;
 use crate::part2::v3_1::error::AASError;
 use axum::Json;
 use axum::http::StatusCode;
+use crate::part_1::v3_1::core::Submodel;
 
 pub trait AASXFileServerService: Send + Sync + 'static {
     fn get_all_aasx_package_ids(
@@ -86,5 +87,5 @@ pub trait SubmodelRegistryService: Send + Sync + 'static {
 }
 
 pub trait SubmodelRepositoryService: Send + Sync + 'static {
-    fn smth() -> impl std::future::Future<Output = ()> + Send;
+    fn find_all_submodels(&self) -> impl std::future::Future<Output = Result<Vec<Submodel>, AASError>> + Send;
 }

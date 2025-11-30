@@ -3,8 +3,11 @@
 use crate::part2::v3_1::services::SubmodelRepositoryService;
 use axum::extract::State;
 use std::sync::Arc;
+use axum::Json;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
+use crate::part2::v3_1::error::AASError;
+use crate::part_1::v3_1::core::Submodel;
 
 #[utoipa::path(
     get,
@@ -16,8 +19,10 @@ use utoipa_axum::routes;
         (status = 400, description = "Bad Request")
     )
 )]
-pub async fn get_all_submodels<S: SubmodelRepositoryService>(State(_service): State<Arc<S>>) {
-    unimplemented!()
+pub async fn get_all_submodels<S: SubmodelRepositoryService>(State(service): State<Arc<S>>) -> Result<Json<Vec<Submodel>>, Json<AASError>> {
+        service.find_all_submodels().await
+            .and_then(|submodels| Ok(Json(submodels)))
+            .map_err(|e| e.into())
 }
 
 #[utoipa::path(
