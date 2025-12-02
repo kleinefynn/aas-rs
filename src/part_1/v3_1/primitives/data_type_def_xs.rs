@@ -8,6 +8,35 @@ use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
+// TODO: Properly use "time"-crate for this? Proper support for Time/Date/DateTime without zones.
+
+
+#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
+#[serde(untagged)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
+pub enum DateTimeXS {
+    NaiveDateTime(NaiveDateTime),
+    DateTime(DateTime<Utc>),
+}
+
+#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
+#[serde(untagged)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
+pub enum DateXS {
+    NaiveDate(NaiveDate),
+    Date(DateTime<Utc>),
+}
+
+#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
+#[serde(untagged)]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
+pub enum TimeXS {
+    NaiveTime(NaiveTime),
+    // TODO: Custom type to wrap with time with offset.
+    Time(chrono::DateTime<Utc>),
+}
+
+
 /// Type mapping of XSDef types.
 #[serde_as]
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
@@ -77,21 +106,17 @@ pub enum DataTypeXSDef {
     // Date Time related
     // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Time(NaiveTime),
+    Time(TimeXS),
 
     // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Date(String),
+    Date(DateXS),
 
     #[serde(rename = "xs:dateTime")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    DateTime(NaiveDateTime),
+    DateTime(DateTimeXS),
 
-    /// TODO: using proper type
     #[serde(rename = "xs:duration")]
-    Duration(String),
+    Duration(iso8601_duration::Duration),
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gDay")]
@@ -199,22 +224,17 @@ pub enum DataXsd {
     // Date Time related
     // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    Time(Option<NaiveTime>),
+    Time(Option<TimeXS>),
 
-    // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    Date(Option<NaiveDate>),
+    Date(Option<DateXS>),
 
-    /// TODO: using proper type
     #[serde(rename = "xs:dateTime")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    DateTime(Option<NaiveDateTime>),
+    DateTime(Option<DateTimeXS>),
 
     /// TODO: using proper type
     #[serde(rename = "xs:duration")]
-    Duration(Option<String>),
+    Duration(Option<iso8601_duration::Duration>),
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gDay")]
@@ -259,4 +279,99 @@ impl Default for DataXsd {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn deserialize_double_from_string() {
+        let json = r#"{
+            "valueType": "xs:double",
+            "value": "1.2"
+        }"#;
+
+        let expected = DataXsd::Double(Some(1.2));
+        let actual: DataXsd = serde_json::from_str(json).unwrap();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn deserialize_duration() {
+        let json = r#"{
+            "valueType": "xs:duration",
+            "value": "P1Y"
+        }"#;
+
+        let expected = DataXsd::Duration(Some(iso8601_duration::Duration::new(1f32,0f32,0f32,0f32,0f32,0f32)));
+        let actual: DataXsd = serde_json::from_str(json).unwrap();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn deserialize_naive_date_time() {
+        let json = r#"{
+            "valueType": "xs:dateTime",
+            "value": "2001-10-26T21:32:52"
+        }"#;
+
+        let expected = DataXsd::DateTime(Some(
+            DateTimeXS::NaiveDateTime(
+                NaiveDateTime::new(
+                NaiveDate::from_ymd_opt(2001i32, 10, 26).unwrap(),
+                NaiveTime::from_hms_opt(21, 32, 52).unwrap(),
+        ))));
+        let actual: DataXsd = serde_json::from_str(json).unwrap();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn deserialize_naive_date_time_with_zone() {
+        let json = r#"{
+            "valueType": "xs:dateTime",
+            "value": "2001-10-26T21:32:52Z"
+        }"#;
+
+        let expected = DataXsd::DateTime(Some(DateTimeXS::DateTime(chrono::DateTime::from_naive_utc_and_offset(
+            NaiveDateTime::new(
+            NaiveDate::from_ymd_opt(2001i32, 10, 26).unwrap(),
+            NaiveTime::from_hms_opt(21, 32, 52).unwrap(),
+        ), Utc))));
+        let actual: DataXsd = serde_json::from_str(json).unwrap();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn deserialize_time_with_zone() {
+        let json = r#"{
+            "valueType": "xs:time",
+            "value": "21:32:52T"
+        }"#;
+
+        let expected = DataXsd::Time(Some(TimeXS::Time(chrono::DateTime::from_naive_utc_and_offset(
+            NaiveDateTime::new(
+                NaiveDate::from_ymd_opt(2001i32, 10, 26).unwrap(),
+                NaiveTime::from_hms_opt(21, 32, 52).unwrap(),
+            ), Utc))));
+        let actual: DataXsd = serde_json::from_str(json).unwrap();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn deserialize_date_with_zone() {
+        let json = r#"{
+            "valueType": "xs:date",
+            "value": "2001-10-26Z"
+        }"#;
+
+        let expected = DataXsd::Date(Some(DateXS::Date(chrono::DateTime::from_naive_utc_and_offset(
+            NaiveDateTime::new(
+                NaiveDate::from_ymd_opt(2001i32, 10, 26).unwrap(),
+                NaiveTime::from_hms_opt(0, 0, 0).unwrap(),
+            ), Utc))));
+        let actual: DataXsd = serde_json::from_str(json).unwrap();
+
+        assert_eq!(expected, actual);
+    }
 }
