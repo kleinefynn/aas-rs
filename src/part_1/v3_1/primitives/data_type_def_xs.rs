@@ -1,12 +1,15 @@
+use serde_with::DisplayFromStr;
 use crate::part_1::v3_1::primitives::Iri;
 use bigdecimal::BigDecimal;
-use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
+use chrono::{DateTime, NaiveDate, NaiveDateTime, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_with::serde_as;
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 /// Type mapping of XSDef types.
+#[serde_as]
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
@@ -69,7 +72,7 @@ pub enum DataTypeXSDef {
     Float(f32),
 
     #[serde(rename = "xs:double")]
-    Double(f64),
+    Double(#[serde_as(as = "DisplayFromStr")] f64),
 
     // Date Time related
     // TODO: TIMEZONES?
@@ -80,11 +83,11 @@ pub enum DataTypeXSDef {
     // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
     #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Date(NaiveDate),
+    Date(String),
 
     #[serde(rename = "xs:dateTime")]
     #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    DateTime(DateTime<Utc>),
+    DateTime(NaiveDateTime),
 
     /// TODO: using proper type
     #[serde(rename = "xs:duration")]
@@ -127,6 +130,7 @@ pub enum DataTypeXSDef {
 /// represents the valueType/value pair typesafe. Used i.e. by Extension or Property.
 /// ValueType has to be always present, value can be optional.
 /// Default: String(None)
+#[serde_as]
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType", content = "value")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
@@ -187,10 +191,10 @@ pub enum DataXsd {
     Decimal(Option<BigDecimal>),
 
     #[serde(rename = "xs:float")]
-    Float(Option<f32>),
+    Float(#[serde_as(as = "Option<DisplayFromStr>")] Option<f32>),
 
     #[serde(rename = "xs:double")]
-    Double(Option<f64>),
+    Double (#[serde_as(as = "Option<DisplayFromStr>")] Option<f64>),
 
     // Date Time related
     // TODO: TIMEZONES?
@@ -206,7 +210,7 @@ pub enum DataXsd {
     /// TODO: using proper type
     #[serde(rename = "xs:dateTime")]
     #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    DateTime(Option<DateTime<Utc>>),
+    DateTime(Option<NaiveDateTime>),
 
     /// TODO: using proper type
     #[serde(rename = "xs:duration")]

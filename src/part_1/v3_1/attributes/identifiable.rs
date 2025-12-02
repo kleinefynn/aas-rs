@@ -13,7 +13,7 @@ pub struct Identifiable {
     pub id: Identifier,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub administrative_information: Option<AdministrativeInformation>,
+    pub administration: Option<AdministrativeInformation>,
 
     #[serde(flatten)]
     pub referable: Referable,

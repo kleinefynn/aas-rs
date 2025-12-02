@@ -21,5 +21,5 @@ pub struct ConceptDescription {
 
     #[serde(rename = "isCaseOf")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_case_of: Option<Reference>,
+    pub is_case_of: Option<Vec<Reference>>,
 }

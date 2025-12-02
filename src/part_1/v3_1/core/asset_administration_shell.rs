@@ -137,7 +137,7 @@ pub struct Resource {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use iref::UriBuf;
+    use iref::UriRefBuf;
     use std::str::FromStr;
 
     #[test]
@@ -153,7 +153,7 @@ mod tests {
         assert_eq!(
             res,
             Resource {
-                path: UriBuf::from_str("file:://anywhere.json").unwrap(),
+                path: UriRefBuf::from_str("file:://anywhere.json").unwrap(),
                 content_type: Some("application/json".into()),
             }
         )

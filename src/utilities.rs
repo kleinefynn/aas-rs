@@ -3,15 +3,15 @@ use serde::{Deserialize, Deserializer};
 
 /// check if all chars of the text are valid using
 /// the regex for text from the AAS Spec as the baseline.
+/// see https://industrialdigitaltwin.io/aas-specifications/IDTA-01001/v3.1.2/spec-metamodel/constraints.html#constraints-for-types
 pub fn validate_text(txt: &str) -> bool {
     txt.chars().all(|c| {
         matches!(c,
             '\t'                            // horizontal tab
             | '\n'                          // Line feed
             | '\r'                          // carriage return
-            | ' '..='\u{7F}'                // visible ascii
-            | '\u{E000}'..= '\u{FFFD}'      // BMP after surrogates and private use
-            | '\u{10000}'..='\u{10FFFF}'    // Supplementary planes
+            | ' '..='\u{D7FF}'              //  all the characters of the Basic Multilingual Plane, and
+            | '\u{10000}'..='\u{10FFFF}'    // all the characters beyond the Basic Multilingual Plane (e.g., emoticons).
         )
     })
 }
@@ -28,7 +28,7 @@ where
     match valid {
         true => Ok(buf),
         false => Err(serde::de::Error::custom(
-            "Non valid character (control ones) found.",
+            format!("(Normalized Text) Non valid character (control ones) found, found '{}'", &buf)
         )),
     }
 }
