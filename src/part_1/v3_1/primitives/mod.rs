@@ -16,14 +16,14 @@ pub type BlobType = Vec<u8>;
 // TODO: Mime Parsing?
 pub type ContentType = String;
 
-pub type DateTimeUTC = chrono::DateTime<chrono::Utc>;
+pub type DateTimeUTC = iso8601::DateTime;
 
 pub type LangStringSet = Vec<LangString>;
 
 pub type MultiLanguageNameType = LangStringSet;
 
 
-// UriBuf/IriBuf or UriRefBuf/IriRefBuf??
+// UriBuf/IriBuf or UriRefBuf/IriRefBuf?
 
 pub type Uri = iref::UriRefBuf;
 pub type Iri = iref::IriRefBuf;

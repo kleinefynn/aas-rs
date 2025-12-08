@@ -1,5 +1,4 @@
 use crate::part_1::ToJsonMetamodel;
-use chrono::{DateTime, NaiveTime, Utc};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
@@ -80,22 +79,20 @@ pub enum Range {
     Double(RangeInner<f64>),
 
     // Date Time related
-    // TODO: TIMEZONES?
     #[serde(rename = "xs:time")]
     #[cfg(feature = "openapi")]
     #[schema(value_type = RangeInner<String>)]
-    Time(RangeInner<NaiveTime>),
+    Time(RangeInner<iso8601::Time>),
 
-    // TODO: TIMEZONES?
     #[serde(rename = "xs:date")]
     #[cfg(feature = "openapi")]
     #[schema(value_type = RangeInner<String>)]
-    Date(RangeInner<NaiveTime>),
+    Date(RangeInner<iso8601::Date>),
 
     #[serde(rename = "xs:dateTime")]
     #[cfg(feature = "openapi")]
     #[schema(value_type = RangeInner<String>)]
-    DateTime(RangeInner<DateTime<Utc>>),
+    DateTime(RangeInner<iso8601::DateTime>),
 
     /// TODO: using proper type
     #[serde(rename = "xs:duration")]
@@ -129,6 +126,7 @@ pub enum Range {
     HexBinary(RangeInner<Vec<u8>>),
 
     // string related
+    // TODO: is this supported??
     #[serde(rename = "xs:anyURI")]
     AnyURI(RangeInner<String>),
 }
