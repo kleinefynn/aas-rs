@@ -3,7 +3,6 @@
 use crate::part2::v3_1::services::AASRegistryService;
 use axum::extract::State;
 use std::sync::Arc;
-use utoipa::OpenApi;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 

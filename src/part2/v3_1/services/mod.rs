@@ -1,10 +1,10 @@
 #[allow(async_fn_in_trait)]
 use crate::part_1::v3_1::core::AssetAdministrationShell;
+use crate::part_1::v3_1::core::Submodel;
 use crate::part_1::v3_1::reference::Reference;
 use crate::part2::v3_1::error::AASError;
 use axum::Json;
 use axum::http::StatusCode;
-use crate::part_1::v3_1::core::Submodel;
 
 pub trait AASXFileServerService: Send + Sync + 'static {
     fn get_all_aasx_package_ids(
@@ -17,10 +17,16 @@ pub trait AASShellService: Send + Sync + 'static {
     fn find_all_aas(
         &self,
     ) -> impl Future<Output = Result<Vec<AssetAdministrationShell>, AASError>> + Send;
+
     fn create_or_update_aas(
         &self,
         aas: &AssetAdministrationShell,
     ) -> impl Future<Output = Result<StatusCode, AASError>> + Send;
+
+    fn get_thumbnail(
+        &self,
+        aas_id: String,
+    ) -> impl Future<Output = Result<Vec<u8>, AASError>> + Send;
 }
 
 pub trait AASBasicDiscoveryService: Send + Sync + 'static {
@@ -36,6 +42,7 @@ pub trait AASRepositoryService: Send + Sync + 'static {
     fn find_all_aas(
         &self,
     ) -> impl Future<Output = Result<Vec<AssetAdministrationShell>, AASError>> + Send;
+
     fn create_aas(
         &self,
         aas: &AssetAdministrationShell,
@@ -48,6 +55,11 @@ pub trait AASRepositoryService: Send + Sync + 'static {
         limit: Option<usize>,
         cursor: Option<usize>,
     ) -> impl Future<Output = Result<Vec<Reference>, AASError>> + Send;
+
+    fn get_thumbnail(
+        &self,
+        aas_id: String,
+    ) -> impl Future<Output = Result<Vec<u8>, AASError>> + Send;
 }
 
 pub trait AsyncBulkAASRegistryService: Send + Sync + 'static {
@@ -87,5 +99,7 @@ pub trait SubmodelRegistryService: Send + Sync + 'static {
 }
 
 pub trait SubmodelRepositoryService: Send + Sync + 'static {
-    fn find_all_submodels(&self) -> impl std::future::Future<Output = Result<Vec<Submodel>, AASError>> + Send;
+    fn find_all_submodels(
+        &self,
+    ) -> impl std::future::Future<Output = Result<Vec<Submodel>, AASError>> + Send;
 }

@@ -4,8 +4,10 @@ use crate::part_1::v3_1::core::AssetAdministrationShell;
 use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASShellService;
 use axum::Json;
-use axum::extract::State;
+use axum::body::Body;
+use axum::extract::{Path, State};
 use axum::http::StatusCode;
+use axum::response::IntoResponse;
 use std::sync::Arc;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
@@ -103,16 +105,32 @@ pub async fn put_asset_information<S: AASShellService>(State(_service): State<Ar
 
 #[utoipa::path(
     get,
-    path = "/aas/asset-information/thumbnail",
+    path = "/aas/{aasIdentifier}/asset-information/thumbnail",
     tag = "Asset Administration Shell API",
     summary = "Returns the thumbnail of the Asset Information",
+    params(
+        ("aasIdentifier" = String, Path, description = "Base64-URLSafe-NoPadding encoded aas id"),
+    ),
     responses(
-        (status = 200, description = "Requested thumbnail"),
-        (status = 404, description = "Asset Administration Shell or thumbnail not found")
+        (status = 200, body = String,   content_type = "application/octet-stream",  description = "The thumbnail of the Asset Information"),
+        (status = 400, body = AASError, description = "Asset Administration Shell or thumbnail not found"),
+        (status = 401, body = AASError, description = "Unauthorized, e.g. the server refused the authorization attempt."),
+        (status = 403, body = AASError, description = "Forbidden"),
+        (status = 404, body = AASError, description = "Asset Administration Shell or thumbnail not found"),
+        (status = 500, body = AASError, description = "Internal Server Error"),
+        (status = "default", body = AASError, description = "Default error handling for unmentioned error codes")
     )
 )]
-pub async fn get_thumbnail<S: AASShellService>(State(_service): State<Arc<S>>) {
-    unimplemented!()
+pub async fn get_thumbnail<S: AASShellService>(
+    State(service): State<Arc<S>>,
+    Path(aas_identifier): Path<String>,
+) -> Result<impl IntoResponse, AASError> {
+    let thumbnail: Vec<u8> = service.get_thumbnail(aas_identifier).await?;
+    let body = Body::from(thumbnail);
+    Ok(axum::response::Response::builder()
+        .header("Content-Type", "application/octet-stream")
+        .body(body)
+        .unwrap())
 }
 
 #[utoipa::path(

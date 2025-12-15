@@ -5,9 +5,10 @@ use crate::part_1::v3_1::reference::Reference;
 use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASRepositoryService;
 use axum::Json;
-use axum::extract::{Query, State};
+use axum::body::Body;
+use axum::extract::{Path, Query, State};
+use axum::response::IntoResponse;
 use std::sync::Arc;
-use utoipa::OpenApi;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
@@ -68,13 +69,13 @@ pub async fn post_asset_administration_shell<S: AASRepositoryService>(
 )]
 pub async fn get_all_asset_administration_shells_reference<S: AASRepositoryService>(
     State(service): State<Arc<S>>,
-    Query(assetIds): Query<Option<Vec<String>>>,
-    Query(idShort): Query<Option<String>>,
+    Query(asset_ids): Query<Option<Vec<String>>>,
+    Query(id_short): Query<Option<String>>,
     Query(limit): Query<Option<usize>>,
     Query(cursor): Query<Option<usize>>,
 ) -> Result<Json<Vec<Reference>>, Json<AASError>> {
     service
-        .get_aas_as_references(assetIds, idShort, limit, cursor)
+        .get_aas_as_references(asset_ids, id_short, limit, cursor)
         .await
         .and_then(|aas| Ok(Json(aas)))
         .map_err(|err| Json(err))
@@ -196,8 +197,16 @@ pub async fn put_asset_information_aas_repository<S: AASRepositoryService>(
         (status = 200, description = "Thumbnail retrieved successfully")
     )
 )]
-pub async fn get_thumbnail_aas_repository<S: AASRepositoryService>(State(_service): State<Arc<S>>) {
-    unimplemented!()
+pub async fn get_thumbnail_aas_repository<S: AASRepositoryService>(
+    State(service): State<Arc<S>>,
+    Path(aas_identifier): Path<String>,
+) -> impl IntoResponse {
+    let thumbnail: Vec<u8> = service.get_thumbnail(aas_identifier).await.unwrap();
+    let body = Body::from(thumbnail);
+    axum::response::Response::builder()
+        .header("Content-Type", "application/octet-stream")
+        .body(body)
+        .unwrap()
 }
 
 #[utoipa::path(

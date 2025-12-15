@@ -3,7 +3,6 @@
 use crate::part2::v3_1::services::AASBasicDiscoveryService;
 use axum::extract::State;
 use std::sync::Arc;
-use utoipa::OpenApi;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
@@ -87,17 +86,6 @@ pub async fn delete_all_asset_links_by_id<S: AASBasicDiscoveryService>(
 ) {
     unimplemented!()
 }
-
-// Define OpenApi documentation object including above paths
-#[derive(OpenApi)]
-#[openapi(paths(
-    get_all_asset_administration_shell_ids_by_asset_link,
-    search_all_asset_administration_shell_ids_by_asset_link,
-    get_all_asset_links_by_id,
-    post_all_asset_links_by_id,
-    delete_all_asset_links_by_id,
-))]
-pub struct AASBasicDiscoveryAPI;
 
 pub fn router(service: impl AASBasicDiscoveryService) -> OpenApiRouter {
     OpenApiRouter::new()

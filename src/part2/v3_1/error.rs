@@ -11,6 +11,7 @@ use utoipa::ToSchema;
 #[derive(Clone, Deserialize, Serialize, Debug, ToSchema)]
 #[serde(untagged)]
 pub enum AASError {
+    NotFound { messages: Vec<AASMessage> },
     BadRequest { messages: Vec<AASMessage> },
     Unauthorized { messages: Vec<AASMessage> },
     Forbidden { messages: Vec<AASMessage> },
@@ -52,8 +53,8 @@ pub enum AASErrorMessageType {
 impl IntoResponse for AASError {
     fn into_response(self) -> Response {
         let (status, err) = match &self {
+            AASError::NotFound { messages: _ } => (StatusCode::NOT_FOUND, self),
             AASError::Internal { messages: _ } => (StatusCode::INTERNAL_SERVER_ERROR, self),
-
             AASError::BadRequest { .. } => (StatusCode::BAD_REQUEST, self),
             AASError::Unauthorized { .. } => (StatusCode::UNAUTHORIZED, self),
             AASError::Forbidden { .. } => (StatusCode::FORBIDDEN, self),
