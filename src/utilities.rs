@@ -1,5 +1,6 @@
 use oxilangtag::LanguageTag;
 use serde::{Deserialize, Deserializer};
+use crate::part_1::v3_1::primitives::Identifier;
 
 /// check if all chars of the text are valid using
 /// the regex for text from the AAS Spec as the baseline.
@@ -44,3 +45,19 @@ where
 
     LanguageTag::parse_and_normalize(&buf).map_err(serde::de::Error::custom)
 }
+
+// "" => None for identifiers.
+pub fn deserialize_empty_identifier_as_none<'de, D>(deserializer: D) -> Result<Option<Identifier>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    if s.trim().is_empty() {
+        Ok(None)
+    } else {
+        Identifier::try_from(s)
+            .map(Some)
+            .map_err(serde::de::Error::custom)
+    }
+}
+

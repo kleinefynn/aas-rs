@@ -30,5 +30,5 @@ utoipa = { version = "5.4.0", optional = true, features = ["chrono", "decimal", 
 
 # feature "part2"
 utoipa-axum = { version = "0.2.0", optional = true }
-axum = { version = "0.8.7", optional = true, features = ["macros"] }
+axum = { version = "0.8.7", optional = true, features = ["macros", "form"] }
 chrono = { version = "0.4.42", optional = true, features = ["serde"]  }

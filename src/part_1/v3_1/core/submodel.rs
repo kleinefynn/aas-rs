@@ -77,3 +77,15 @@ impl ToJsonMetamodel for Submodel {
         serde_json::to_string(&meta)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::part_1::v3_1::core::Submodel;
+
+    #[test]
+    fn deserialize_submodel_mvpdpp() {
+        let json = include_str!("../../../../tests/submodel_test_mvpdpp.json");
+
+        serde_json::from_str::<Submodel>(json).unwrap();
+    }
+}

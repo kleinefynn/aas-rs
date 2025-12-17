@@ -104,4 +104,45 @@ mod tests {
 
         assert_eq!(actual, expected);
     }
+
+    #[test]
+    fn deserialize_complex() {
+        let json = r#"
+        {
+                  "idShort": "CityTown",
+                  "displayName": [
+                    {
+                      "language": "en",
+                      "text": "city"
+                    }
+                  ],
+                  "semanticId": {
+                    "type": "ExternalReference",
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-AAO132#002"
+                      }
+                    ]
+                  },
+                  "qualifiers": [
+                    {
+                      "kind": "ConceptQualifier",
+                      "type": "Multiplicity",
+                      "valueType": "xs:string",
+                      "value": "ZeroToOne"
+                    }
+                  ],
+                  "value": [
+                    {
+                      "language": "de",
+                      "text": "Lemgo"
+                    }
+                  ],
+                  "modelType": "MultiLanguageProperty"
+                }
+        "#;
+
+        serde_json::from_str::<MultiLanguageProperty>(json).unwrap();
+    }
 }

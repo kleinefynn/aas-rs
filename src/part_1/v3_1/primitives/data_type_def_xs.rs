@@ -12,116 +12,104 @@ use utoipa::ToSchema;
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[cfg_attr(feature = "openapi", schema(as = String))]
 pub enum DataTypeXSDef {
     // basic types
     #[serde(rename = "xs:int")]
-    Int(i32),
-
+    Int,
     #[serde(rename = "xs:long")]
-    Long(i64),
-
+    Long,
     #[serde(rename = "xs:integer")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Integer(BigDecimal),
+    Integer,
 
     #[serde(rename = "xs:negativeInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    NegativeInteger(BigDecimal),
+    NegativeInteger,
 
     #[serde(rename = "xs:nonNegativeInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    NonNegativeInteger(BigDecimal),
+    NonNegativeInteger,
 
     #[serde(rename = "xs:nonPositiveInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    NonPositiveInteger(BigDecimal),
+    NonPositiveInteger,
 
     #[serde(rename = "xs:positiveInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    PositiveInteger(BigDecimal),
+    PositiveInteger,
 
     #[serde(rename = "xs:short")]
-    Short(u16),
+    Short,
 
     #[serde(rename = "xs:string")]
-    String(String),
+    String,
 
     #[serde(rename = "xs:boolean")]
-    Boolean(bool),
+    Boolean,
     #[serde(rename = "xs:byte")]
-    Byte(i8),
+    Byte,
 
     #[serde(rename = "xs:unsignedByte")]
-    UnsignedByte(u8),
+    UnsignedByte,
 
     #[serde(rename = "xs:unsignedInt")]
-    UnsignedInt(u32),
+    UnsignedInt,
 
     #[serde(rename = "xs:unsignedLong")]
-    UnsignedLong(u64),
+    UnsignedLong,
 
     #[serde(rename = "xs:unsignedShort")]
-    UnsignedShort(u16),
+    UnsignedShort,
 
     #[serde(rename = "xs:decimal")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Decimal(BigDecimal),
+    Decimal,
 
     #[serde(rename = "xs:float")]
-    Float(f32),
+    Float,
 
     #[serde(rename = "xs:double")]
-    Double(#[serde_as(as = "DisplayFromStr")] f64),
+    Double,
 
     // Date Time related
     #[serde(rename = "xs:time")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Time(iso8601::Time),
-    
+    Time,
+
     #[serde(rename = "xs:date")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Date(iso8601::Date),
+    Date,
 
     #[serde(rename = "xs:dateTime")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    DateTime(iso8601::DateTime),
+    DateTime,
 
     #[serde(rename = "xs:duration")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Duration(iso8601::Duration),
+    Duration,
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gDay")]
-    GDay(String),
+    GDay,
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gMonth")]
-    GMonth(String),
+    GMonth,
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gMonthDay")]
-    GMonthDay(String),
+    GMonthDay,
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gYear")]
-    GYear(String),
+    GYear,
 
     /// TODO: using proper type or parsing
     #[serde(rename = "xs:gYearMonth")]
-    GYearMonth(String),
+    GYearMonth,
 
     // binary
     #[serde(rename = "xs:base64Binary")]
-    Base64Binary(Vec<u8>),
+    Base64Binary,
 
     #[serde(rename = "xs:hexBinary")]
-    HexBinary(Vec<u8>),
+    HexBinary,
 
     // Miscellaneous types
     /// URI and IRI possible
     #[serde(rename = "xs:anyURI")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    AnyURI(Iri),
+    AnyURI,
 }
 
 /// represents the valueType/value pair typesafe. Used i.e. by Extension or Property.
@@ -252,6 +240,13 @@ impl Default for DataXsd {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn deserialize_xs_string() {
+        let json = r#""xs:string""#;
+
+        serde_json::from_str::<DataTypeXSDef>(&json).unwrap();
+    }
 
     #[test]
     fn deserialize_double_from_string() {

@@ -87,3 +87,97 @@ impl ToJsonMetamodel for SubmodelElementList {
             .map_err(|e| MetamodelError::FailedSerialisation(e))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::part_1::v3_1::submodel_elements::SubmodelElementList;
+
+    #[test]
+    fn deserialize_complex() {
+        let json = r#"
+            {
+              "idShort": "PcfCalculationMethods",
+              "displayName": [
+                {
+                  "language": "en",
+                  "text": "impact assessment methods"
+                }
+              ],
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Standards, methods for determining the greenhouse gas emissions of a product."
+                }
+              ],
+              "semanticId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/CarbonFootprint/PcfCalculationMethods/1/0"
+                  }
+                ]
+              },
+              "qualifiers": [
+                {
+                  "type": "SMT/Cardinality",
+                  "valueType": "xs:string",
+                  "value": "One"
+                }
+              ],
+              "orderRelevant": true,
+              "semanticIdListElement": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-ABG854#003"
+                  }
+                ]
+              },
+              "typeValueListElement": "Property",
+              "valueTypeListElement": "xs:string",
+              "value": [
+                {
+                  "category": "PARAMETER",
+                  "displayName": [
+                    {
+                      "language": "en",
+                      "text": "impact assessment method / calculation method"
+                    }
+                  ],
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Standard, method for determining the greenhouse gas emissions of a product."
+                    }
+                  ],
+                  "semanticId": {
+                    "type": "ExternalReference",
+                    "keys": [
+                      {
+                        "type": "GlobalReference",
+                        "value": "0173-1#02-ABG854#003"
+                      }
+                    ]
+                  },
+                  "qualifiers": [
+                    {
+                      "type": "SMT/Cardinality",
+                      "valueType": "xs:string",
+                      "value": "One"
+                    }
+                  ],
+                  "valueType": "xs:string",
+                  "value": "in-house method - see documentation",
+                  "modelType": "Property"
+                }
+              ],
+              "modelType": "SubmodelElementList"
+            }
+        "#;
+
+        serde_json::from_str::<SubmodelElementList>(json).unwrap();
+    }
+
+}

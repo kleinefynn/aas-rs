@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use crate::part_1::ToJsonMetamodel;
 use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part_1::v3_1::attributes::identifiable::Identifiable;
@@ -79,6 +80,21 @@ pub enum AssetInformation {
     NotApplicable(AssetInformationInner),
     Role(AssetInformationInner),
     Type(AssetInformationInner),
+}
+
+impl Deref for AssetInformation {
+    type Target = AssetInformationInner;
+
+    fn deref(&self) -> &Self::Target {
+        match self {
+            AssetInformation::Instance(i) |
+            AssetInformation::NotApplicable(i) |
+            AssetInformation::Role(i) |
+            AssetInformation::Type(i) => {
+                i
+            }
+        }
+    }
 }
 
 // TODO: Skip option serialization
