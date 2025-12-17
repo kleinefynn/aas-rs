@@ -194,7 +194,13 @@ pub async fn put_asset_information_aas_repository<S: AASRepositoryService>(
     ),
     tag = "Asset Administration Shell Repository API",
     responses(
-        (status = 200, description = "Thumbnail retrieved successfully")
+        (status = 200, body = String,   content_type = "application/octet-stream",  description = "The thumbnail of the Asset Information"),
+        (status = 400, body = AASError, description = "Asset Administration Shell or thumbnail not found"),
+        (status = 401, body = AASError, description = "Unauthorized, e.g. the server refused the authorization attempt."),
+        (status = 403, body = AASError, description = "Forbidden"),
+        (status = 404, body = AASError, description = "Asset Administration Shell or thumbnail not found"),
+        (status = 500, body = AASError, description = "Internal Server Error"),
+        (status = "default", body = AASError, description = "Default error handling for unmentioned error codes")
     )
 )]
 pub async fn get_thumbnail_aas_repository<S: AASRepositoryService>(

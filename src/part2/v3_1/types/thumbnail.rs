@@ -1,9 +1,9 @@
 use serde::Deserialize;
 use utoipa::ToSchema;
 
+/// only used as a type for utoipa. Axum uses multipart as a type/struct
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct PutThumbnail {
-    #[serde(rename = "fileName")]
-    pub file_name: String,
+    #[schema(value_type = String, format = Binary)]
     pub file: Vec<u8>,
 }

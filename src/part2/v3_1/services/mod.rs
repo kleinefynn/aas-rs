@@ -1,9 +1,9 @@
+use axum::extract::Multipart;
 #[allow(async_fn_in_trait)]
 use crate::part_1::v3_1::core::AssetAdministrationShell;
 use crate::part_1::v3_1::core::Submodel;
 use crate::part_1::v3_1::reference::Reference;
 use crate::part2::v3_1::error::AASError;
-use crate::part2::v3_1::types::PutThumbnail;
 use axum::Json;
 use axum::http::StatusCode;
 
@@ -32,7 +32,7 @@ pub trait AASShellService: Send + Sync + 'static {
     fn put_thumbnail(
         &self,
         aas_id: String,
-        thumbnail: PutThumbnail,
+        thumbnail: Multipart,
     ) -> impl Future<Output = Result<(), AASError>> + Send;
 }
 

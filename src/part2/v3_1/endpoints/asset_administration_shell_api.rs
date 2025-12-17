@@ -5,10 +5,10 @@ use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASShellService;
 use crate::part2::v3_1::types::PutThumbnail;
 use axum::body::Body;
-use axum::extract::{Path, State};
+use axum::extract::{Multipart, Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::{Form, Json};
+use axum::{Json};
 use std::sync::Arc;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
@@ -136,10 +136,13 @@ pub async fn get_thumbnail<S: AASShellService>(
 
 #[utoipa::path(
     put,
-    path = "/aas/asset-information/thumbnail",
+    path = "/aas/{aasIdentifier}/asset-information/thumbnail",
+    params(
+        ("aasIdentifier" = String, Path, description = "Base64-URLSafe-NoPadding encoded aas id"),
+    ),
     tag = "Asset Administration Shell API",
     summary = "Updates the thumbnail of the Asset Information",
-    request_body = PutThumbnail,
+    request_body(content = PutThumbnail, content_type = "multipart/form-data"),
     responses(
         (status = 204, description = "Thumbnail updated successfully"),
         (status = 400, body = AASError, description = "Error"),
@@ -153,14 +156,17 @@ pub async fn get_thumbnail<S: AASShellService>(
 pub async fn put_thumbnail<S: AASShellService>(
     State(service): State<Arc<S>>,
     Path(asset_id): Path<String>,
-    Form(thumbnail): Form<PutThumbnail>,
+    thumbnail: Multipart,
 ) -> Result<(), AASError> {
     service.put_thumbnail(asset_id, thumbnail).await
 }
 
 #[utoipa::path(
     delete,
-    path = "/aas/asset-information/thumbnail",
+    path = "/aas/{aasIdentifier}/asset-information/thumbnail",
+    params(
+        ("aasIdentifier" = String, Path, description = "Base64-URLSafe-NoPadding encoded aas id"),
+    ),
     tag = "Asset Administration Shell API",
     summary = "Deletes the thumbnail from the Asset Information",
     responses(
