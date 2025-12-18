@@ -6,6 +6,7 @@ use crate::part_1::v3_1::reference::Reference;
 use crate::part2::v3_1::error::AASError;
 use axum::Json;
 use axum::http::StatusCode;
+use axum::response::IntoResponse;
 
 pub trait AASXFileServerService: Send + Sync + 'static {
     fn get_all_aasx_package_ids(
@@ -24,10 +25,12 @@ pub trait AASShellService: Send + Sync + 'static {
         aas: &AssetAdministrationShell,
     ) -> impl Future<Output = Result<StatusCode, AASError>> + Send;
 
+    // maximum flexibility with return type "response", so body and headers can are editable by the
+    // implementing service
     fn get_thumbnail(
         &self,
         aas_id: String,
-    ) -> impl Future<Output = Result<Vec<u8>, AASError>> + Send;
+    ) -> impl Future<Output = Result<axum::response::Response, AASError>> + Send;
 
     fn put_thumbnail(
         &self,

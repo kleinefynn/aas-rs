@@ -7,7 +7,7 @@ use crate::part2::v3_1::types::PutThumbnail;
 use axum::body::Body;
 use axum::extract::{Multipart, Path, State};
 use axum::http::StatusCode;
-use axum::response::IntoResponse;
+use axum::response::{IntoResponse, Response};
 use axum::{Json};
 use std::sync::Arc;
 use utoipa_axum::router::OpenApiRouter;
@@ -125,13 +125,10 @@ pub async fn put_asset_information<S: AASShellService>(State(_service): State<Ar
 pub async fn get_thumbnail<S: AASShellService>(
     State(service): State<Arc<S>>,
     Path(aas_identifier): Path<String>,
-) -> Result<impl IntoResponse, AASError> {
-    let thumbnail: Vec<u8> = service.get_thumbnail(aas_identifier).await?;
-    let body = Body::from(thumbnail);
-    Ok(axum::response::Response::builder()
-        .header("Content-Type", "application/octet-stream")
-        .body(body)
-        .unwrap())
+) -> Result<Response, AASError> {
+    service
+        .get_thumbnail(aas_identifier)
+        .await
 }
 
 #[utoipa::path(
