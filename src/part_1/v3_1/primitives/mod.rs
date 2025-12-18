@@ -22,7 +22,6 @@ pub type LangStringSet = Vec<LangString>;
 
 pub type MultiLanguageNameType = LangStringSet;
 
-
 // UriBuf/IriBuf or UriRefBuf/IriRefBuf?
 
 pub type Uri = iref::UriRefBuf;

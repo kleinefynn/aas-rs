@@ -4,11 +4,11 @@ use crate::part_1::v3_1::core::AssetAdministrationShell;
 use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASShellService;
 use crate::part2::v3_1::types::PutThumbnail;
+use axum::Json;
 use axum::body::Body;
 use axum::extract::{Multipart, Path, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
-use axum::{Json};
 use std::sync::Arc;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
@@ -126,9 +126,7 @@ pub async fn get_thumbnail<S: AASShellService>(
     State(service): State<Arc<S>>,
     Path(aas_identifier): Path<String>,
 ) -> Result<Response, AASError> {
-    service
-        .get_thumbnail(aas_identifier)
-        .await
+    service.get_thumbnail(aas_identifier).await
 }
 
 #[utoipa::path(

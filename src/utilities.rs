@@ -1,6 +1,6 @@
+use crate::part_1::v3_1::primitives::Identifier;
 use oxilangtag::LanguageTag;
 use serde::{Deserialize, Deserializer};
-use crate::part_1::v3_1::primitives::Identifier;
 
 /// check if all chars of the text are valid using
 /// the regex for text from the AAS Spec as the baseline.
@@ -28,9 +28,10 @@ where
 
     match valid {
         true => Ok(buf),
-        false => Err(serde::de::Error::custom(
-            format!("(Normalized Text) Non valid character (control ones) found, found '{}'", &buf)
-        )),
+        false => Err(serde::de::Error::custom(format!(
+            "(Normalized Text) Non valid character (control ones) found, found '{}'",
+            &buf
+        ))),
     }
 }
 
@@ -47,7 +48,9 @@ where
 }
 
 // "" => None for identifiers.
-pub fn deserialize_empty_identifier_as_none<'de, D>(deserializer: D) -> Result<Option<Identifier>, D::Error>
+pub fn deserialize_empty_identifier_as_none<'de, D>(
+    deserializer: D,
+) -> Result<Option<Identifier>, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -60,4 +63,3 @@ where
             .map_err(serde::de::Error::custom)
     }
 }
-

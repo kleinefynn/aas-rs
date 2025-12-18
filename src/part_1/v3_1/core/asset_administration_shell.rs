@@ -1,4 +1,3 @@
-use std::ops::Deref;
 use crate::part_1::ToJsonMetamodel;
 use crate::part_1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part_1::v3_1::attributes::identifiable::Identifiable;
@@ -7,6 +6,7 @@ use crate::part_1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
 use crate::part_1::v3_1::reference::Reference;
 use crate::part_1::v3_1::reference::deserialize_optional_external_reference;
 use serde::{Deserialize, Serialize};
+use std::ops::Deref;
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
@@ -87,12 +87,10 @@ impl Deref for AssetInformation {
 
     fn deref(&self) -> &Self::Target {
         match self {
-            AssetInformation::Instance(i) |
-            AssetInformation::NotApplicable(i) |
-            AssetInformation::Role(i) |
-            AssetInformation::Type(i) => {
-                i
-            }
+            AssetInformation::Instance(i)
+            | AssetInformation::NotApplicable(i)
+            | AssetInformation::Role(i)
+            | AssetInformation::Type(i) => i,
         }
     }
 }

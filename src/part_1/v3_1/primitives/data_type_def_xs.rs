@@ -1,7 +1,7 @@
-use serde_with::DisplayFromStr;
 use crate::part_1::v3_1::primitives::Iri;
 use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
+use serde_with::DisplayFromStr;
 use serde_with::serde_as;
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
@@ -179,7 +179,7 @@ pub enum DataXsd {
     Float(#[serde_as(as = "Option<DisplayFromStr>")] Option<f32>),
 
     #[serde(rename = "xs:double")]
-    Double (#[serde_as(as = "Option<DisplayFromStr>")] Option<f64>),
+    Double(#[serde_as(as = "Option<DisplayFromStr>")] Option<f64>),
 
     #[serde(rename = "xs:time")]
     #[cfg_attr(feature = "openapi", schema(value_type = String))]
@@ -268,17 +268,15 @@ mod tests {
             "value": "P1Y"
         }"#;
 
-        let expected = DataXsd::Duration(Some(
-            iso8601::Duration::YMDHMS {
-                year: 1,
-                month: 0,
-                day: 0,
-                hour: 0,
-                minute: 0,
-                second: 0,
-                millisecond: 0,
-            }
-        ));
+        let expected = DataXsd::Duration(Some(iso8601::Duration::YMDHMS {
+            year: 1,
+            month: 0,
+            day: 0,
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+        }));
         let actual: DataXsd = serde_json::from_str(json).unwrap();
 
         assert_eq!(expected, actual);
@@ -291,23 +289,21 @@ mod tests {
             "value": "2001-10-26T21:32:52"
         }"#;
 
-        let expected = DataXsd::DateTime(Some(
-            iso8601::DateTime {
-                date: iso8601::Date::YMD {
-                    year: 2001,
-                    month: 10,
-                    day: 26,
-                },
-                time: iso8601::Time {
-                    hour: 21,
-                    minute: 32,
-                    second: 52,
-                    millisecond: 0,
-                    tz_offset_hours: 0,
-                    tz_offset_minutes: 0,
-                },
-            }
-        ));
+        let expected = DataXsd::DateTime(Some(iso8601::DateTime {
+            date: iso8601::Date::YMD {
+                year: 2001,
+                month: 10,
+                day: 26,
+            },
+            time: iso8601::Time {
+                hour: 21,
+                minute: 32,
+                second: 52,
+                millisecond: 0,
+                tz_offset_hours: 0,
+                tz_offset_minutes: 0,
+            },
+        }));
         let actual: DataXsd = serde_json::from_str(json).unwrap();
 
         assert_eq!(expected, actual);
@@ -320,23 +316,21 @@ mod tests {
             "value": "2001-10-26T21:32:52Z"
         }"#;
 
-        let expected = DataXsd::DateTime(Some(
-            iso8601::DateTime {
-                date: iso8601::Date::YMD {
-                    year: 2001,
-                    month: 10,
-                    day: 26,
-                },
-                time: iso8601::Time {
-                    hour: 21,
-                    minute: 32,
-                    second: 52,
-                    millisecond: 0,
-                    tz_offset_hours: 0,
-                    tz_offset_minutes: 0,
-                },
-            }
-        ));
+        let expected = DataXsd::DateTime(Some(iso8601::DateTime {
+            date: iso8601::Date::YMD {
+                year: 2001,
+                month: 10,
+                day: 26,
+            },
+            time: iso8601::Time {
+                hour: 21,
+                minute: 32,
+                second: 52,
+                millisecond: 0,
+                tz_offset_hours: 0,
+                tz_offset_minutes: 0,
+            },
+        }));
 
         let actual: DataXsd = serde_json::from_str(json).unwrap();
 

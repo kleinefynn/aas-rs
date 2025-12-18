@@ -179,5 +179,4 @@ mod tests {
 
         serde_json::from_str::<SubmodelElementList>(json).unwrap();
     }
-
 }
