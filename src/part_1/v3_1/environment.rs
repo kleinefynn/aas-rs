@@ -3,7 +3,6 @@ use crate::part_1::v3_1::core::{AssetAdministrationShell, Submodel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-
 pub struct Environment {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "assetAdministrationShells")]
@@ -27,6 +26,15 @@ mod tests {
 
         let env: Environment = serde_json::from_str(json).expect("Deserialize works");
 
+        println!("{:#?}", env);
+    }
+
+    #[cfg(feature = "xml")]
+    #[test]
+    #[ignore]
+    fn deserialize_xml() {
+        let xml = include_str!("../../../tests/mvp-dpp-1.0.0.xml");
+        let env: Environment = quick_xml::de::from_str(xml).expect("Deserialize works");
         println!("{:#?}", env);
     }
 }

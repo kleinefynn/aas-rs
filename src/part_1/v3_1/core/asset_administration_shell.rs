@@ -13,7 +13,7 @@ use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[serde(tag = "AssetAdministrationShell")]
+#[serde(rename = "assetAdministrationShell")]
 pub struct AssetAdministrationShell {
     #[serde(rename = "assetInformation")]
     pub asset_information: AssetInformation,
@@ -180,5 +180,20 @@ mod tests {
         let asset_info: AssetInformation = serde_json::from_str(json).unwrap();
 
         println!("{:?}", asset_info);
+    }
+
+    #[cfg(feature = "xml")]
+    #[test]
+    fn deserialize_asset_administration_shell_xml() {
+        let json = r#"
+            <assetAdministrationShell>
+              <id>https://smartfactory-owl.de/ids/aas/2001_1172_9042_4560</id>
+            </assetAdministrationShell>
+            "#;
+
+        let asset_administration_shell: AssetAdministrationShell =
+            serde_json::from_str(json).unwrap();
+
+        println!("{:?}", asset_administration_shell);
     }
 }

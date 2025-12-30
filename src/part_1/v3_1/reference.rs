@@ -8,6 +8,7 @@ use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[serde(rename = "Reference")]
 pub struct ReferenceInner {
     /// E.g. semantic id of a standard submodel
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -195,4 +196,83 @@ where
     }
 
     deserializer.deserialize_option(SubmodelsVisitor)
+}
+
+pub mod xml {
+    use serde::{Deserialize, Serialize};
+    use strum::{Display, EnumString};
+    use crate::part_1::v3_1::key::xml::{KeysXML};
+
+    #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
+    #[serde(tag = "type")]
+    pub enum ReferenceXML {
+        ExternalReference(ReferenceXMLInner),
+        ModelReference(ReferenceXMLInner),
+    }
+
+    #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+    #[serde(rename = "Reference")]
+    pub struct ReferenceXMLInner {
+        /// E.g. semantic id of a standard submodel
+        #[serde(skip_serializing_if = "Option::is_none")]
+        #[serde(rename = "referredSemanticId")]
+        pub referred_semantic_id: Option<Box<ReferenceXML>>,
+
+        pub keys: KeysXML,
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use crate::part_1::v3_1::key::{Key};
+        use super::*;
+
+        #[test]
+        fn test_xml_serialize() {
+            let reference = ReferenceXML::ExternalReference(ReferenceXMLInner {
+                referred_semantic_id: None,
+                keys: KeysXML {
+                    key: vec![
+                        Key::Blob("http://example/blob".into())
+                    ],
+                }
+            });
+
+            let xml = quick_xml::se::to_string(&reference).unwrap();
+
+            println!("{}", xml);
+        }
+
+        #[test]
+        #[ignore]
+        fn deserialize_submodel_reference_xml() {
+            let xml = r#"
+        <reference>
+          <type>ModelReference</type>
+          <keys>
+            <key>
+              <type>Submodel</type>
+              <value>https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/3/0</value>
+            </key>
+          </keys>
+        </reference>"#;
+
+            todo!();
+
+            /*let expected = ReferenceXML::ModelReference(
+                ReferenceXMLInner {
+                    referred_semantic_id: None,
+                    keys: vec![
+                        KeyXML {
+                            ty: KeyType::Submodel,
+                            value: "https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/3/0".into()
+                        }
+                    ],
+                }
+            );
+
+            let actual = quick_xml::de::from_str(xml).unwrap();
+
+            assert_eq!(expected, actual);*/
+        }
+    }
 }

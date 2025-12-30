@@ -50,6 +50,53 @@ pub enum Key {
     SubmodelElementList(KeyReference),
 }
 
+pub mod xml {
+    use serde::{Deserialize, Serialize};
+    use strum::{Display, EnumString};
+    use crate::part_1::v3_1::key::{Key};
+
+    #[derive(EnumString, Display, Clone, PartialEq, Debug, Deserialize, Serialize)]
+    pub enum KeyType {
+        AnnotatedRelationshipElement,
+        AssetAdministrationShell,
+        BasicEventElement,
+        Blob,
+        Capability,
+        ConceptDescription,
+        DataElement,
+        Entity,
+        EventElement,
+        File,
+        FragmentReference,
+        GlobalReference,
+        Identifiable,
+        MultiLanguageProperty,
+        Operation,
+        Property,
+        Range,
+        Referable,
+        ReferenceElement,
+        RelationshipElement,
+        Submodel,
+        SubmodelElement,
+        SubmodelElementCollection,
+        SubmodelElementList,
+    }
+
+    #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+    #[serde(rename = "key")]
+    pub struct KeysXML {
+        pub key: Vec<Key>,
+    }
+
+
+    #[cfg(test)]
+    mod tests {
+
+    }
+
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

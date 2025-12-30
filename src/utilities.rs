@@ -54,12 +54,13 @@ pub fn deserialize_empty_identifier_as_none<'de, D>(
 where
     D: Deserializer<'de>,
 {
-    let s = String::deserialize(deserializer)?;
-    if s.trim().is_empty() {
-        Ok(None)
-    } else {
-        Identifier::try_from(s)
+    let o: Option<String> = Option::deserialize(deserializer)?;
+
+    match o {
+        None => Ok(None),
+        Some(s) if s.trim().is_empty() => Ok(None),
+        Some(s) => Identifier::try_from(s)
             .map(Some)
-            .map_err(serde::de::Error::custom)
+            .map_err(serde::de::Error::custom),
     }
 }
