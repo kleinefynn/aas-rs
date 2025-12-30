@@ -1,6 +1,6 @@
 //! Submodel Repository API
 
-use crate::part_1::v3_1::core::Submodel;
+use crate::part1::v3_1::core::Submodel;
 use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::SubmodelRepositoryService;
 use axum::Json;

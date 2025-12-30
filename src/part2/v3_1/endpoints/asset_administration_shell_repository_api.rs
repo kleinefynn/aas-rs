@@ -1,7 +1,7 @@
 //! Asset Administration Shell Repository API
 
-use crate::part_1::v3_1::core::AssetAdministrationShell;
-use crate::part_1::v3_1::reference::Reference;
+use crate::part1::v3_1::core::AssetAdministrationShell;
+use crate::part1::v3_1::reference::Reference;
 use crate::part2::v3_1::error::AASError;
 use crate::part2::v3_1::services::AASRepositoryService;
 use axum::Json;

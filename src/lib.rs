@@ -7,7 +7,7 @@
 //! `version/specs`, i.e. `aas::part1::v3.1`.
 
 /// Part1: Metamodel
-pub mod part_1;
+pub mod part1;
 
 /// Part 2: Http Endpoints
 /// Can be used with feature = "part2"

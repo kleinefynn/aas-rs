@@ -1,4 +1,4 @@
-use crate::part_1::v3_1::primitives::Identifier;
+use crate::part1::v3_1::primitives::Identifier;
 use oxilangtag::LanguageTag;
 use serde::{Deserialize, Deserializer};
 
