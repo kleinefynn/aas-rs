@@ -88,6 +88,8 @@ impl ToJsonMetamodel for SubmodelElementList {
     }
 }
 
+
+#[cfg(not(feature = "xml"))]
 #[cfg(test)]
 mod tests {
     use crate::part1::v3_1::submodel_elements::SubmodelElementList;

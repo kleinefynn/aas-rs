@@ -2,6 +2,7 @@ use crate::part1::v3_1::key::Key;
 use serde::de::{Error, Visitor};
 use serde::{Deserialize, Deserializer, Serialize};
 use std::fmt;
+use std::ops::Deref;
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
@@ -37,6 +38,7 @@ pub struct ReferenceInner {
 #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
 #[serde(tag = "type")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[cfg_attr(feature = "xml", serde( from = "xml::ReferenceXML", into = "xml::ReferenceXML"))]
 pub enum Reference {
     ExternalReference(ReferenceInner),
     ModelReference(ReferenceInner),
@@ -54,6 +56,17 @@ impl ReferenceInner {
         Self {
             referred_semantic_id: None,
             keys,
+        }
+    }
+}
+
+impl Deref for Reference {
+    type Target = ReferenceInner;
+
+    fn deref(&self) -> &Self::Target {
+        match self {
+            Reference::ExternalReference(i) |
+            Reference::ModelReference(i) => i
         }
     }
 }
@@ -198,27 +211,86 @@ where
     deserializer.deserialize_option(SubmodelsVisitor)
 }
 
+#[cfg(feature = "xml")]
 pub mod xml {
+    use std::ops::Deref;
     use serde::{Deserialize, Serialize};
     use strum::{Display, EnumString};
-    use crate::part1::v3_1::key::xml::{KeysXML};
+    use crate::part1::v3_1::key::Key;
+    use crate::part1::v3_1::reference::{Reference, ReferenceInner};
 
     #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
-    #[serde(tag = "type")]
-    pub enum ReferenceXML {
-        ExternalReference(ReferenceXMLInner),
-        ModelReference(ReferenceXMLInner),
+    enum ReferenceType {
+        ExternalReference,
+        ModelReference
     }
 
-    #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+    #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
     #[serde(rename = "Reference")]
-    pub struct ReferenceXMLInner {
-        /// E.g. semantic id of a standard submodel
+    pub struct ReferenceXML {
+        #[serde(rename = "type")]
+        ty: ReferenceType,
         #[serde(skip_serializing_if = "Option::is_none")]
         #[serde(rename = "referredSemanticId")]
         pub referred_semantic_id: Option<Box<ReferenceXML>>,
-
+        /// needed for <keys><key>...</key></keys>
         pub keys: KeysXML,
+    }
+
+
+    impl From<ReferenceXML> for Reference {
+        fn from(value: ReferenceXML) -> Self {
+            match value.ty {
+                ReferenceType::ExternalReference => {
+                    Reference::ExternalReference(ReferenceInner {
+                        referred_semantic_id: value.referred_semantic_id
+                            .map(|v| *v)
+                            .map(|v| Box::new(Reference::from(v))),
+                        keys: value.keys.key
+                    })
+                }
+                ReferenceType::ModelReference => {
+                    Reference::ModelReference(ReferenceInner {
+                        referred_semantic_id: value.referred_semantic_id
+                            .map(|v| *v)
+                            .map(|v| Box::new(Reference::from(v))),
+                        keys: value.keys.key
+                    })
+                }
+            }
+        }
+    }
+
+    impl From<Reference> for ReferenceXML {
+        fn from(value: Reference) -> Self {
+            match value {
+                Reference::ExternalReference(inner) => {
+                    ReferenceXML {
+                        ty: ReferenceType::ExternalReference,
+                        keys: KeysXML { key: inner.keys },
+                        referred_semantic_id: inner.referred_semantic_id
+                            .map(|v| *v)
+                            .map(|v| Box::new(ReferenceXML::from(v)))
+                    }
+                }
+                Reference::ModelReference(inner) => {
+                    ReferenceXML {
+                        ty: ReferenceType::ModelReference,
+                        keys: KeysXML { key: inner.keys },
+                        referred_semantic_id: inner.referred_semantic_id
+                            .map(|v| *v)
+                            .map(|v| Box::new(ReferenceXML::from(v)))
+                    }
+                }
+            }
+        }
+    }
+
+    /// needed for <key>...</key>
+    #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
+    #[serde(rename = "key")]
+    pub struct KeysXML {
+        pub key: Vec<Key>,
     }
 
     #[cfg(test)]
@@ -228,14 +300,15 @@ pub mod xml {
 
         #[test]
         fn test_xml_serialize() {
-            let reference = ReferenceXML::ExternalReference(ReferenceXMLInner {
+            let reference = ReferenceXML {
+                ty: ReferenceType::ExternalReference,
                 referred_semantic_id: None,
                 keys: KeysXML {
                     key: vec![
                         Key::Blob("http://example/blob".into())
                     ],
                 }
-            });
+            };
 
             let xml = quick_xml::se::to_string(&reference).unwrap();
 
@@ -243,36 +316,22 @@ pub mod xml {
         }
 
         #[test]
-        #[ignore]
-        fn deserialize_submodel_reference_xml() {
+        fn deserialize_blob_reference_xml() {
             let xml = r#"
-        <reference>
-          <type>ModelReference</type>
-          <keys>
-            <key>
-              <type>Submodel</type>
-              <value>https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/3/0</value>
-            </key>
-          </keys>
-        </reference>"#;
+        <Reference><type>ExternalReference</type><keys><key><type>Blob</type><value>http://example/blob</value></key></keys></Reference>"#;
 
-            todo!();
-
-            /*let expected = ReferenceXML::ModelReference(
-                ReferenceXMLInner {
+            let expected = Reference::ExternalReference(
+                ReferenceInner {
                     referred_semantic_id: None,
                     keys: vec![
-                        KeyXML {
-                            ty: KeyType::Submodel,
-                            value: "https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/3/0".into()
-                        }
+                        Key::Blob("http://example/blob".into())
                     ],
                 }
             );
 
             let actual = quick_xml::de::from_str(xml).unwrap();
 
-            assert_eq!(expected, actual);*/
+            assert_eq!(expected, actual);
         }
     }
 }

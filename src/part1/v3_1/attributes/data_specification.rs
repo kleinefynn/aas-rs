@@ -14,7 +14,7 @@ use utoipa::ToSchema;
 pub struct HasDataSpecification {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "embeddedDataSpecifications")]
-    embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
+    pub embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]

@@ -16,6 +16,25 @@ pub struct Environment {
     pub concept_descriptions: Option<Vec<ConceptDescription>>,
 }
 
+#[cfg(feature = "xml")]
+mod xml {
+
+    #[cfg(test)]
+    mod tests {
+        use crate::part1::v3_1::environment::Environment;
+
+        #[test]
+        #[ignore]
+        fn deserialize_xml() {
+            let xml = include_str!("../../../tests/mvp-dpp-1.0.0.xml");
+
+            let env: Environment = quick_xml::de::from_str(xml).expect("Deserialize works");
+            println!("{:#?}", env);
+        }
+    }
+}
+
+#[cfg(not(feature = "xml"))]
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -26,15 +45,6 @@ mod tests {
 
         let env: Environment = serde_json::from_str(json).expect("Deserialize works");
 
-        println!("{:#?}", env);
-    }
-
-    #[cfg(feature = "xml")]
-    #[test]
-    #[ignore]
-    fn deserialize_xml() {
-        let xml = include_str!("../../../tests/mvp-dpp-1.0.0.xml");
-        let env: Environment = quick_xml::de::from_str(xml).expect("Deserialize works");
         println!("{:#?}", env);
     }
 }

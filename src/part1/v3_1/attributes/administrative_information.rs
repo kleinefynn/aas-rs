@@ -10,6 +10,13 @@ use utoipa::ToSchema;
 /// Administrative metainformation for an element like version information
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[cfg_attr(
+    feature = "xml",
+    serde(
+        from = "xml::AdministrativeInformationXML",
+        into = "xml::AdministrativeInformationXML"
+    )
+)]
 pub struct AdministrativeInformation {
     #[serde(flatten)]
     pub version: Version,
@@ -73,5 +80,80 @@ impl<'de> Deserialize<'de> for Version {
             version: raw.version,
             revision: raw.revision,
         })
+    }
+}
+
+mod xml {
+    use crate::part1::v3_1::attributes::administrative_information::{
+        AdministrativeInformation, Version, VersionError,
+    };
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
+    use crate::part1::v3_1::primitives::Identifier;
+    use crate::part1::v3_1::reference::Reference;
+    use serde::{Deserialize, Deserializer, Serialize, de};
+
+    #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+    pub(super) struct AdministrativeInformationXML {
+        version: Option<String>,
+        revision: Option<String>,
+
+        /// The subject ID of the subject responsible for making the element
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub creator: Option<Reference>,
+
+        #[serde(rename = "templateId")]
+        #[serde(skip_serializing_if = "Option::is_none")]
+        pub template_id: Option<Identifier>,
+
+        #[serde(skip_serializing_if = "Option::is_none")]
+        #[serde(rename = "embeddedDataSpecifications")]
+        pub embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
+    }
+
+    /*impl<'de> Deserialize<'de> for AdministrativeInformationXML {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            let ai = AdministrativeInformationXML::deserialize(deserializer)?;
+
+            // TODO: Max Length of 3
+            if ai.revision.is_some() && ai.version.is_none() {
+                return Err(de::Error::custom(
+                    VersionError::RevisionNotApplicable.to_string(),
+                ));
+            }
+
+            Ok(ai)
+        }
+    }*/
+
+    impl From<AdministrativeInformationXML> for AdministrativeInformation {
+        fn from(value: AdministrativeInformationXML) -> Self {
+            Self {
+                version: Version {
+                    version: value.version,
+                    revision: value.revision,
+                },
+                creator: value.creator,
+                template_id: value.template_id,
+                data_specification: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
+            }
+        }
+    }
+    impl From<AdministrativeInformation> for AdministrativeInformationXML {
+        fn from(value: AdministrativeInformation) -> Self {
+            Self {
+                version: value.version.version,
+                revision: value.version.revision,
+                creator: value.creator,
+                template_id: value.template_id,
+                embedded_data_specifications: value.data_specification.embedded_data_specifications,
+            }
+        }
     }
 }

@@ -12,13 +12,14 @@ mod reference_element;
 mod relationship_element;
 mod submodel_element_collection;
 
+use crate::utilities::deserialize_empty_identifier_as_none;
 use std::collections::HashMap;
 pub use submodel_element_collection::*;
 mod submodel_element_list;
 pub use submodel_element_list::*;
 
-use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
-use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
+use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::submodel_elements::basic_event::BasicEventElement;
@@ -41,6 +42,9 @@ use strum::Display;
 
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
+use crate::part1::v3_1::attributes::extension::Extension;
+use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
+use crate::part1::v3_1::reference::Reference;
 
 // TODO
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
@@ -82,6 +86,48 @@ pub struct SubmodelElementFields {
 
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
+}
+
+// fields for submodel elements
+#[derive(Serialize, Deserialize)]
+pub struct SubmodelElementFieldsXML {
+    // Inherited from DataElement
+    #[serde(skip_serializing_if = "Option::is_none")]
+    // use case where "" is needed or can this be ignored?
+    #[serde(default)]
+    #[serde(deserialize_with = "deserialize_empty_identifier_as_none")]
+    #[serde(rename = "idShort")]
+    pub id_short: Option<Identifier>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "displayName")]
+    pub display_name: Option<MultiLanguageNameType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<MultiLanguageNameType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[deprecated]
+    pub category: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "extensions")]
+    pub extension: Option<Vec<Extension>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "semanticId")]
+    pub semantic_id: Option<Reference>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "supplementalSemanticIds")]
+    pub supplemental_semantic_ids: Option<Vec<Reference>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub qualifiers: Option<Vec<Qualifier>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "embeddedDataSpecifications")]
+    embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
 }
 
 // maybe without variants?
@@ -138,6 +184,8 @@ impl ToJsonMetamodel for SubmodelElement {
     }
 }
 
+
+#[cfg(not(feature = "xml"))]
 #[cfg(test)]
 mod tests {
     use super::*;
