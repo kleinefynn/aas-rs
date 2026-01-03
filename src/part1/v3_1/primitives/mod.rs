@@ -26,3 +26,32 @@ pub type MultiLanguageNameType = LangStringSet;
 
 pub type Uri = iref::UriRefBuf;
 pub type Iri = iref::IriRefBuf;
+
+pub(crate) mod xml {
+    use serde::{Deserialize, Serialize};
+    use crate::part1::v3_1::primitives::MultiLanguageNameType;
+
+    // needed for e.g.
+    // <displayName>
+    //      <langStringTextType>...</langStringTextType>
+    //      <langStringTextType>...</langStringTextType>
+    // </displayName>
+    #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+    pub(crate) struct LangStringTextType {
+        #[serde(rename = "langStringTextType")]
+        pub(crate) values: MultiLanguageNameType,
+    }
+
+    impl From<MultiLanguageNameType> for LangStringTextType {
+        fn from(value: MultiLanguageNameType) -> Self {
+            Self {
+                values: value
+            }
+        }
+    }
+    impl From<LangStringTextType> for MultiLanguageNameType {
+        fn from(value: LangStringTextType) -> Self {
+            value.values
+        }
+    }
+}

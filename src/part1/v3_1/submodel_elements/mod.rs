@@ -18,7 +18,9 @@ pub use submodel_element_collection::*;
 mod submodel_element_list;
 pub use submodel_element_list::*;
 
-use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+use crate::part1::v3_1::attributes::data_specification::{
+    EmbeddedDataSpecification, HasDataSpecification,
+};
 use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
@@ -40,15 +42,16 @@ use crate::part1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 use strum::Display;
 
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 use crate::part1::v3_1::attributes::extension::Extension;
 use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
 use crate::part1::v3_1::reference::Reference;
+#[cfg(feature = "openapi")]
+use utoipa::ToSchema;
 
 // TODO
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
-#[serde(tag = "modelType")]
+#[derive(Debug, Clone, PartialEq, Display)]
+#[cfg_attr(not(feature = "xml"), derive(Serialize, Deserialize))]
+#[cfg_attr(not(feature = "xml"), serde(tag = "modelType"))]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum SubmodelElement {
     RelationshipElement(RelationshipElement),
@@ -184,6 +187,156 @@ impl ToJsonMetamodel for SubmodelElement {
     }
 }
 
+#[cfg(feature = "xml")]
+mod xml {
+    use super::*;
+    use quick_xml::impl_deserialize_for_internally_tagged_enum;
+    use serde::Serializer;
+    use serde::ser::SerializeStruct;
+
+    impl_deserialize_for_internally_tagged_enum! {
+        SubmodelElement, "modelType",
+        ("RelationshipElement" => RelationshipElement(RelationshipElement)),
+        ("AnnotatedRelationshipElement" => AnnotatedRelationshipElement(AnnotatedRelationshipElement)),
+        ("BasicEventElement" => BasicEventElement(BasicEventElement)),
+        ("Blob" => Blob(Blob)),
+        ("Capability" => Capability(Capability)),
+        // TODO: is this needed? Deserializes??
+        ("DataElement" => DataElement(DataElement)),
+        ("Entity" => Entity(Entity)),
+        ("File" => File(File)),
+        ("MultiLanguageProperty" => MultiLanguageProperty(MultiLanguageProperty)),
+        ("Operation" => Operation(Operation)),
+        ("Property" => Property(Property)),
+        ("Range" => Range(Range)),
+        ("ReferenceElement" => ReferenceElement(ReferenceElement)),
+        ("SubmodelElementCollection" => SubmodelElementCollection(SubmodelElementCollection)),
+        ("SubmodelElementList" => SubmodelElementList(SubmodelElementList)),
+    }
+
+    impl Serialize for SubmodelElement {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            match self {
+                SubmodelElement::RelationshipElement(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("RelationshipElement", v)?;
+                    st.end()
+                }
+                SubmodelElement::AnnotatedRelationshipElement(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("AnnotatedRelationshipElement", v)?;
+                    st.end()
+                }
+                SubmodelElement::BasicEventElement(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("BasicEventElement", v)?;
+                    st.end()
+                }
+                SubmodelElement::Blob(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("Blob", v)?;
+                    st.end()
+                }
+                SubmodelElement::Capability(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("Capability", v)?;
+                    st.end()
+                }
+                SubmodelElement::DataElement(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("DataElement", v)?;
+                    st.end()
+                }
+                SubmodelElement::Entity(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("Entity", v)?;
+                    st.end()
+                }
+                SubmodelElement::File(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("File", v)?;
+                    st.end()
+                }
+                SubmodelElement::MultiLanguageProperty(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("MultiLanguageProperty", v)?;
+                    st.end()
+                }
+                SubmodelElement::Operation(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("Operation", v)?;
+                    st.end()
+                }
+                SubmodelElement::Property(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("Property", v)?;
+                    st.end()
+                }
+                SubmodelElement::Range(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("Range", v)?;
+                    st.end()
+                }
+                SubmodelElement::ReferenceElement(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("ReferenceElement", v)?;
+                    st.end()
+                }
+                SubmodelElement::SubmodelElementCollection(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("SubmodelElementCollection", v)?;
+                    st.end()
+                }
+                SubmodelElement::SubmodelElementList(v) => {
+                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
+                    st.serialize_field("SubmodelElementList", v)?;
+                    st.end()
+                }
+            }
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use crate::part1::v3_1::submodel_elements::{Blob, SubmodelElement};
+        use serde::{Deserialize, Serialize};
+
+        #[test]
+        fn serialize_xml_simple() {
+            #[derive(Serialize, Deserialize)]
+            struct SubmodelElements(Vec<SubmodelElement>);
+
+            let expected = SubmodelElements(vec![SubmodelElement::Blob(Blob::new(
+                Some("test.png".into()),
+                "image/png".into(),
+            ))]);
+
+            let xml = quick_xml::se::to_string(&expected).unwrap();
+
+            println!("{}", xml);
+        }
+
+        #[test]
+        fn deserialize_simple() {
+            #[derive(Serialize, Deserialize)]
+            struct Submodels {
+                #[serde(rename = "submodel")]
+                submodels: Vec<SubmodelElement>,
+            }
+            let xml = r#"
+            <submodels>
+                <submodel>
+                    <blob>
+                    </blob>
+                </submodel>
+            </submodels>
+            "#;
+        }
+    }
+}
 
 #[cfg(not(feature = "xml"))]
 #[cfg(test)]

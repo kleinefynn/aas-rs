@@ -24,7 +24,6 @@ mod xml {
         use crate::part1::v3_1::environment::Environment;
 
         #[test]
-        #[ignore]
         fn deserialize_xml() {
             let xml = include_str!("../../../tests/mvp-dpp-1.0.0.xml");
 

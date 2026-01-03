@@ -88,15 +88,9 @@ use serde::{Deserialize, Serialize};
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::core::Submodel;
     use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::reference::Reference;
     use crate::part1::v3_1::submodel_elements::SubmodelElement;
-
-    #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-    #[serde(rename = "Submodel")]
-    pub struct LangStringTextType {
-        #[serde(rename = "langStringTextType")]
-        pub(crate) values: MultiLanguageNameType,
-    }
     #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
     #[serde(rename = "Submodel")]
     pub(crate) struct SubmodelXML {
@@ -162,8 +156,8 @@ use serde::{Deserialize, Serialize};
                     administration: value.administration,
                     referable: Referable {
                         id_short: value.id_short,
-                        display_name: value.display_name.map(|v| v.values),
-                        description: value.description.map(|v| v.values),
+                        display_name: value.display_name.map(LangStringTextType::into),
+                        description: value.description.map(LangStringTextType::into),
                         category: value.category,
                         extensions: HasExtensions {
                             extension: value.extension,

@@ -4,7 +4,6 @@ use crate::part1::v3_1::attributes::identifiable::Identifiable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
 use crate::part1::v3_1::reference::Reference;
-use crate::part1::v3_1::reference::deserialize_optional_external_reference;
 use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use strum::{Display, EnumString};
@@ -178,11 +177,12 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
     use crate::part1::v3_1::attributes::identifiable::Identifiable;
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::core::{AssetAdministrationShell, AssetInformation, AssetInformationInner, Resource, SpecificAssetId};
-    use crate::part1::v3_1::primitives::{Identifier, Label, MultiLanguageNameType, Uri};
+    use crate::part1::v3_1::primitives::{Identifier, Label};
     use crate::part1::v3_1::reference::Reference;
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Deserializer, Serialize};
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     enum AssetKind {
@@ -318,10 +318,10 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
 
         #[serde(skip_serializing_if = "Option::is_none")]
         #[serde(rename = "displayName")]
-        pub display_name: Option<MultiLanguageNameType>,
+        pub display_name: Option<LangStringTextType>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
-        pub description: Option<MultiLanguageNameType>,
+        pub description: Option<LangStringTextType>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
         #[deprecated]
@@ -352,8 +352,8 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
                     administration: value.administration,
                     referable: Referable {
                         id_short: value.id_short,
-                        display_name: value.display_name,
-                        description: value.description,
+                        display_name: value.display_name.map(|v| v.values),
+                        description: value.description.map(|v| v.values),
                         category: value.category,
                         extensions: HasExtensions {
                             extension: value.extension,
@@ -376,8 +376,8 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
                 id: value.identifiable.id,
                 administration: value.identifiable.administration,
                 id_short: value.identifiable.referable.id_short,
-                display_name: value.identifiable.referable.display_name,
-                description: value.identifiable.referable.description,
+                display_name: value.identifiable.referable.display_name.map(|v| LangStringTextType { values: v }),
+                description: value.identifiable.referable.description.map(|v| LangStringTextType { values: v }),
                 category: value.identifiable.referable.category,
                 extension: value.identifiable.referable.extensions.extension,
                 embedded_data_specifications: value.data_specification.embedded_data_specifications,
@@ -398,7 +398,7 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
             AssetAdministrationShell, AssetInformation, AssetInformationInner, Resource,
         };
         use crate::part1::v3_1::key::Key;
-        use crate::part1::v3_1::primitives::{ContentType, Identifier, Uri};
+        use crate::part1::v3_1::primitives::{Identifier, Uri};
         use crate::part1::v3_1::reference::{Reference, ReferenceInner};
 
         #[test]
@@ -595,7 +595,7 @@ mod tests {
         assert_eq!(
             res,
             Resource {
-                path: UriRefBuf::from_str("file:://anywhere.json").unwrap(),
+                path: UriRefBuf::from_str("file://anywhere.json").unwrap(),
                 content_type: Some("application/json".into()),
             }
         )

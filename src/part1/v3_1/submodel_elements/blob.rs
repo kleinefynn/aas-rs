@@ -35,13 +35,13 @@ pub struct Blob {
 }
 
 impl Blob {
-    pub fn new(content_type: String) -> Self {
+    pub fn new(value: Option<String>, content_type: String) -> Self {
         Self {
             referable: Referable::default(),
             semantics: HasSemantics::default(),
             qualifiable: Qualifiable::default(),
             embedded_data_specifications: HasDataSpecification::default(),
-            value: None,
+            value,
             content_type,
         }
     }
@@ -114,7 +114,7 @@ mod tests {
 
     #[test]
     fn it_serializes() {
-        let blob = Blob::new(String::from(""));
+        let blob = Blob::new(None, String::from(""));
 
         let json = serde_json::to_string(&blob).unwrap();
 

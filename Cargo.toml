@@ -35,4 +35,5 @@ axum = { version = "0.8.7", optional = true, features = ["macros", "form"] }
 chrono = { version = "0.4.42", optional = true, features = ["serde"]  }
 
 # feature "xml"
-quick-xml = {version = "0.38.4", optional = true, features = ["serialize"]}
+# "serialize" for serde, "serde-types" for impl_deserialize_for_internally_tagged_enum macro
+quick-xml = {version = "0.38.4", optional = true, features = ["serialize", "serde-types"]}
