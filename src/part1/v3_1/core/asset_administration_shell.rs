@@ -3,7 +3,7 @@ use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::identifiable::Identifiable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
-use crate::part1::v3_1::reference::Reference;
+use crate::part1::v3_1::reference::{Reference, deserialize_optional_external_reference};
 use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use strum::{Display, EnumString};

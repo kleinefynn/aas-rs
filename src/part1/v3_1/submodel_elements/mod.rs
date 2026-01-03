@@ -49,8 +49,8 @@ use crate::part1::v3_1::reference::Reference;
 use utoipa::ToSchema;
 
 // TODO
-#[derive(Debug, Clone, PartialEq, Display)]
-#[cfg_attr(not(feature = "xml"), derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialEq, Display, Deserialize)]
+#[cfg_attr(not(feature = "xml"), derive(Serialize))]
 #[cfg_attr(not(feature = "xml"), serde(tag = "modelType"))]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum SubmodelElement {
@@ -190,29 +190,8 @@ impl ToJsonMetamodel for SubmodelElement {
 #[cfg(feature = "xml")]
 mod xml {
     use super::*;
-    use quick_xml::impl_deserialize_for_internally_tagged_enum;
     use serde::Serializer;
     use serde::ser::SerializeStruct;
-
-    impl_deserialize_for_internally_tagged_enum! {
-        SubmodelElement, "modelType",
-        ("RelationshipElement" => RelationshipElement(RelationshipElement)),
-        ("AnnotatedRelationshipElement" => AnnotatedRelationshipElement(AnnotatedRelationshipElement)),
-        ("BasicEventElement" => BasicEventElement(BasicEventElement)),
-        ("Blob" => Blob(Blob)),
-        ("Capability" => Capability(Capability)),
-        // TODO: is this needed? Deserializes??
-        ("DataElement" => DataElement(DataElement)),
-        ("Entity" => Entity(Entity)),
-        ("File" => File(File)),
-        ("MultiLanguageProperty" => MultiLanguageProperty(MultiLanguageProperty)),
-        ("Operation" => Operation(Operation)),
-        ("Property" => Property(Property)),
-        ("Range" => Range(Range)),
-        ("ReferenceElement" => ReferenceElement(ReferenceElement)),
-        ("SubmodelElementCollection" => SubmodelElementCollection(SubmodelElementCollection)),
-        ("SubmodelElementList" => SubmodelElementList(SubmodelElementList)),
-    }
 
     impl Serialize for SubmodelElement {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -321,19 +300,29 @@ mod xml {
 
         #[test]
         fn deserialize_simple() {
-            #[derive(Serialize, Deserialize)]
-            struct Submodels {
-                #[serde(rename = "submodel")]
-                submodels: Vec<SubmodelElement>,
-            }
+            #[derive(Serialize, Deserialize, Debug, PartialEq)]
+            struct SubmodelElements {
+                #[serde(rename = "$value")]
+                submodel_elements: Vec<SubmodelElement>};
+
             let xml = r#"
-            <submodels>
-                <submodel>
-                    <blob>
-                    </blob>
-                </submodel>
-            </submodels>
+            <SubmodelElements>
+                <Blob>
+                    <value>test.png</value>
+                    <contentType>image/png</contentType>
+                    </Blob>
+            </SubmodelElements>
             "#;
+
+            let expected = SubmodelElements{
+                submodel_elements: vec![SubmodelElement::Blob(Blob::new(
+                Some("test.png".into()),
+                "image/png".into(),
+            ))]};
+
+            let actual = quick_xml::de::from_str(&xml).unwrap();
+
+            assert_eq!(expected, actual);
         }
     }
 }

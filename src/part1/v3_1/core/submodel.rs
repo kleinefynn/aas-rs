@@ -78,7 +78,7 @@ impl ToJsonMetamodel for Submodel {
 mod xml {
     use crate::utilities::deserialize_empty_identifier_as_none;
 use serde::{Deserialize, Serialize};
-    use crate::part1::v3_1::attributes::administrative_information::AdministrativeInformation;
+    use crate::part1::v3_1::attributes::administrative_information::{AdministrativeInformation, Version};
     use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::identifiable::Identifiable;
@@ -87,10 +87,19 @@ use serde::{Deserialize, Serialize};
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::core::Submodel;
+    use crate::part1::v3_1::key::Key;
+    use crate::part1::v3_1::LangString;
     use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
-    use crate::part1::v3_1::reference::Reference;
-    use crate::part1::v3_1::submodel_elements::SubmodelElement;
+    use crate::part1::v3_1::reference::{Reference, ReferenceInner};
+    use crate::part1::v3_1::submodel_elements::{Blob, SubmodelElement};
+
+    #[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
+    struct SubmodelElementsXML {
+        #[serde(rename = "$value")]
+        submodel_elements: Vec<SubmodelElement>
+    }
+
     #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
     #[serde(rename = "Submodel")]
     pub(crate) struct SubmodelXML {
@@ -145,7 +154,7 @@ use serde::{Deserialize, Serialize};
         // --
         #[serde(skip_serializing_if = "Option::is_none")]
         #[serde(rename = "submodelElements")]
-        pub submodel_elements: Option<Vec<SubmodelElement>>,
+        pub submodel_elements: Option<SubmodelElementsXML>,
     }
 
     impl From<SubmodelXML> for super::Submodel {
@@ -170,7 +179,7 @@ use serde::{Deserialize, Serialize};
                     embedded_data_specifications: value.embedded_data_specifications,
                 },
                 kind: value.kind,
-                submodel_elements: value.submodel_elements,
+                submodel_elements: value.submodel_elements.and_then(|v| Some(v.submodel_elements)),
             }
         }
     }
@@ -190,7 +199,9 @@ use serde::{Deserialize, Serialize};
                 supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
                 qualifiers: value.qualifier.qualifiers,
                 embedded_data_specifications: value.data_specification.embedded_data_specifications,
-                submodel_elements: value.submodel_elements,
+                submodel_elements: value.submodel_elements.map(|v| SubmodelElementsXML {
+                    submodel_elements: v
+                }),
             }
         }
     }
@@ -319,6 +330,91 @@ use serde::{Deserialize, Serialize};
 
             assert_eq!(expected, actual);
         }
+    }
+
+    #[test]
+    fn deserialize_submodel_with_blob() {
+        let xml = r#"
+             <submodel>
+                  <idShort>Nameplate</idShort>
+                  <description>
+                    <langStringTextType>
+                      <language>en</language>
+                      <text>Contains the nameplate information attached to the product</text>
+                    </langStringTextType>
+                  </description>
+                  <administration>
+                    <version>3</version>
+                    <revision>0</revision>
+                    <templateId>https://admin-shell.io/IDTA 02006-3-0</templateId>
+                  </administration>
+                  <id>https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/3/0</id>
+                  <kind>Instance</kind>
+                  <semanticId>
+                    <type>ExternalReference</type>
+                    <keys>
+                      <key>
+                        <type>GlobalReference</type>
+                        <value>https://admin-shell.io/idta/nameplate/3/0/Nameplate</value>
+                      </key>
+                    </keys>
+                  </semanticId>
+                  <submodelElements>
+                    <Blob>
+                        <value>test.png</value>
+                        <contentType>image/png</contentType>
+                    </Blob>
+                  </submodelElements>
+                </submodel>
+            "#;
+
+        let expected = super::Submodel {
+            identifiable: Identifiable {
+                id: Identifier::try_from("https://admin-shell.io/idta/SubmodelTemplate/DigitalNameplate/3/0").unwrap(),
+                administration: Some(AdministrativeInformation {
+                    version: Version { version: Some("3".into()), revision: Some("0".into()) },
+                    creator: None,
+                    template_id: Some(Identifier::try_from("https://admin-shell.io/IDTA 02006-3-0").unwrap()),
+                    data_specification: Default::default(),
+                }),
+                referable: Referable {
+                    id_short: Some(Identifier::try_from("Nameplate").unwrap()),
+                    display_name: None,
+                    description: Some(vec![
+                        LangString::try_new(
+                            "en",
+                            "Contains the nameplate information attached to the product".into())
+                            .unwrap()
+                    ]),
+                    category: None,
+                    extensions: Default::default(),
+                },
+            },
+            kind: Some(super::ModellingKind::Instance),
+            semantics: HasSemantics {
+                semantic_id: Some(Reference::ExternalReference(ReferenceInner {
+                    referred_semantic_id: None,
+                    keys: vec![
+                        Key::GlobalReference("https://admin-shell.io/idta/nameplate/3/0/Nameplate".into()),
+                    ],
+                })),
+                supplemental_semantic_ids: None,
+            },
+            qualifier: Default::default(),
+            data_specification: Default::default(),
+            submodel_elements: Some(
+                vec![
+                    SubmodelElement::Blob(Blob::new(
+                        Some("test.png".into()),
+                        "image/png".into(),
+                    ))
+                ]
+            ),
+        };
+
+        let actual = quick_xml::de::from_str(xml).unwrap();
+
+        assert_eq!(expected, actual);
     }
 }
 
