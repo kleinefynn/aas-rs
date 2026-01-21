@@ -683,7 +683,7 @@
             </qualifier>
           </qualifiers>
           <valueType>xs:date</valueType>
-          <value>0000-00-00</value>
+          <value>1970-01-01</value>
         </property>
         <property>
           <idShort>CountryOfOrigin</idShort>
@@ -2166,7 +2166,7 @@
                     </qualifier>
                   </qualifiers>
                   <valueType>xs:dateTime</valueType>
-                  <value>0000-00-00T00:00:00</value>
+                  <value>1970-01-01T00:00:00</value>
                 </property>
               </value>
             </submodelElementCollection>
