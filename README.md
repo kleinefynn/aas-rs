@@ -24,18 +24,21 @@ I.e. you can find the types of Part 1 version 3.1 under `src/part_1/v3_1`.
 For 1.0 JSON, XML and .AASX Format should work.
 As many tests as possible. Test multiple demo Shells.
 
-## Todos:
+## Current State
+As of now, following features are implemented (but not tested thoroughly)
+- JSON de-/serialisation
+  - OPENAPI Spec generation
+  - Generic implementation of AAS Server API for Axum
+- XML de-/serialisation
 
-- [ ] Part 1 🚧
-    - [ ] Version 3.1.1 🚧
-        - [x] Type definitions
-        - [ ] Move DataSpecifications to part 3
-- [ ] Part 3a
-- [ ] Documentation 🚧
-- [] Tests 🚧
-- [ ] JSON 🚧
-    - [x] "Normal" De-/Serialization for APIs (Part 2)
-    - [] Metdadata only 🚧
-    - [] Value only 🚧
-- [] XML 🚧
-- [ ] AASX Package Format
+## To be done (contributions more than welcome!):
+- More Testing. Every bit should be tested 
+  - More tests of demo AAS.
+- AASX File Format (AAS Spec 5)
+- Cleaning up the code
+  - For better usability
+  - to support JSON and XML simultaneously
+- RDF Format
+- JSON Metadata/Value-Only
+- XML Metadata/Value-Only
+- Documentation. At best reference pages/anchors of official spec.
