@@ -1,9 +1,9 @@
-use crate::part1::v3_1::submodel_elements::Blob;
 use crate::part1::v3_1::submodel_elements::file::File;
 use crate::part1::v3_1::submodel_elements::multi_language_property::MultiLanguageProperty;
 use crate::part1::v3_1::submodel_elements::property::Property;
 use crate::part1::v3_1::submodel_elements::range::Range;
 use crate::part1::v3_1::submodel_elements::reference_element::ReferenceElement;
+use crate::part1::v3_1::submodel_elements::Blob;
 use crate::part1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 use strum::Display;
@@ -12,6 +12,10 @@ use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
+/*#[cfg_attr(feature = "xml", serde(
+    from = "xml::DataElementXMLProxy",
+    into = "xml::DataElementXMLProxy"
+))]*/
 pub enum DataElement {
     Blob(Blob),
     File(File),
@@ -35,3 +39,5 @@ impl ToJsonMetamodel for DataElement {
         }
     }
 }
+
+pub(crate) mod xml {}

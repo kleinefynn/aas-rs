@@ -21,9 +21,12 @@ pub use submodel_element_list::*;
 use crate::part1::v3_1::attributes::data_specification::{
     EmbeddedDataSpecification, HasDataSpecification,
 };
+use crate::part1::v3_1::attributes::extension::Extension;
 use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
+use crate::part1::v3_1::primitives::Identifier;
+use crate::part1::v3_1::reference::Reference;
 use crate::part1::v3_1::submodel_elements::basic_event::BasicEventElement;
 pub use crate::part1::v3_1::submodel_elements::blob::Blob;
 pub use crate::part1::v3_1::submodel_elements::capability::Capability;
@@ -42,13 +45,10 @@ use crate::part1::{MetamodelError, ToJsonMetamodel};
 use serde::{Deserialize, Serialize};
 use strum::Display;
 
-use crate::part1::v3_1::attributes::extension::Extension;
-use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
-use crate::part1::v3_1::reference::Reference;
+use crate::part1::v3_1::primitives::xml::LangStringTextType;
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
-// TODO
 #[derive(Debug, Clone, PartialEq, Display, Deserialize)]
 #[cfg_attr(not(feature = "xml"), derive(Serialize))]
 #[cfg_attr(not(feature = "xml"), serde(tag = "modelType"))]
@@ -104,10 +104,10 @@ pub struct SubmodelElementFieldsXML {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "displayName")]
-    pub display_name: Option<MultiLanguageNameType>,
+    pub display_name: Option<LangStringTextType>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<MultiLanguageNameType>,
+    pub description: Option<LangStringTextType>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[deprecated]
@@ -190,8 +190,8 @@ impl ToJsonMetamodel for SubmodelElement {
 #[cfg(feature = "xml")]
 mod xml {
     use super::*;
-    use serde::Serializer;
     use serde::ser::SerializeStruct;
+    use serde::Serializer;
 
     impl Serialize for SubmodelElement {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -303,7 +303,9 @@ mod xml {
             #[derive(Serialize, Deserialize, Debug, PartialEq)]
             struct SubmodelElements {
                 #[serde(rename = "$value")]
-                submodel_elements: Vec<SubmodelElement>};
+                submodel_elements: Vec<SubmodelElement>,
+            }
+            ;
 
             let xml = r#"
             <SubmodelElements>
@@ -314,11 +316,12 @@ mod xml {
             </SubmodelElements>
             "#;
 
-            let expected = SubmodelElements{
+            let expected = SubmodelElements {
                 submodel_elements: vec![SubmodelElement::Blob(Blob::new(
-                Some("test.png".into()),
-                "image/png".into(),
-            ))]};
+                    Some("test.png".into()),
+                    "image/png".into(),
+                ))]
+            };
 
             let actual = quick_xml::de::from_str(&xml).unwrap();
 
@@ -331,8 +334,8 @@ mod xml {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::part1::v3_1::LangString;
     use crate::part1::v3_1::primitives::Identifier;
+    use crate::part1::v3_1::LangString;
 
     #[test]
     fn deserialize_blob() {

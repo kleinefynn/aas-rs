@@ -17,3 +17,16 @@ pub mod part2;
 /// Utility functions like validating text to specific formats and deserializers to specific needs,
 /// like text with defined constraints.
 pub mod utilities;
+
+// Aufbau:
+// if feature xml: pub use xml::Struct
+// if feature json: pub use json::Struct
+// if both: pub use xml::Struct as StructXML,
+//          pub use json::Struct as StructJSON
+//          pub Struct (without Des, Ser)
+// dabei wird das macro generate.. genutzt.
+// in den jeweiligen modulen (xml, json) wird dann impl Ser, Der
+// implementiert. Dabei kann innerhalb der implementierung das geeignete
+// struct (z.B. für flatten) benutzt werden.
+
+// das wird erst umgesetzt, nachdem die erste Version von XML steht.

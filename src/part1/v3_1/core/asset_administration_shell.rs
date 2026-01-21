@@ -293,7 +293,7 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
     }
 
     #[derive(Debug, Serialize, Deserialize)]
-    pub(super) struct Submodels {
+    pub struct Submodels {
         #[serde(skip_serializing_if = "Option::is_none")]
         pub reference: Option<Vec<Reference>>,
     }
