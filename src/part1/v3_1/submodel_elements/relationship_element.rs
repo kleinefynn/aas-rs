@@ -1,20 +1,23 @@
+use crate::part1::ToJsonMetamodel;
 use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::reference::Reference;
 use crate::part1::v3_1::submodel_elements::data_element::DataElement;
-use crate::part1::ToJsonMetamodel;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::RelationshipElementXMLProxy",
-    into = "xml::RelationshipElementXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(
+        from = "xml::RelationshipElementXMLProxy",
+        into = "xml::RelationshipElementXMLProxy"
+    )
+)]
 pub struct RelationshipElement {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -29,7 +32,6 @@ pub struct RelationshipElement {
     #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
     // ----- end inheritance
-
     #[serde(skip_serializing_if = "Option::is_none")]
     first: Option<Reference>,
 
@@ -39,10 +41,13 @@ pub struct RelationshipElement {
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::AnnotatedRelationshipElementXMLProxy",
-    into = "xml::AnnotatedRelationshipElementXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(
+        from = "xml::AnnotatedRelationshipElementXMLProxy",
+        into = "xml::AnnotatedRelationshipElementXMLProxy"
+    )
+)]
 pub struct AnnotatedRelationshipElement {
     // Inherited from RelationshipElement
     #[serde(flatten)]
@@ -147,8 +152,12 @@ impl From<&AnnotatedRelationshipElement> for AnnotatedRelationshipElementMeta {
     }
 }
 
+#[cfg(all(feature = "json", test))]
 pub mod json {
-    use crate::part1::v3_1::submodel_elements::relationship_element::{AnnotatedRelationshipElement, AnnotatedRelationshipElementMeta, RelationshipElement, RelationshipElementMeta};
+    use crate::part1::v3_1::submodel_elements::relationship_element::{
+        AnnotatedRelationshipElement, AnnotatedRelationshipElementMeta, RelationshipElement,
+        RelationshipElementMeta,
+    };
     use crate::part1::{MetamodelError, ToJsonMetamodel};
 
     impl ToJsonMetamodel for RelationshipElement {
@@ -170,19 +179,22 @@ pub mod json {
     }
 }
 
-
 #[cfg(feature = "xml")]
 pub(crate) mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
-    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::primitives::Identifier;
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::reference::Reference;
     use crate::part1::v3_1::submodel_elements::data_element::DataElement;
-    use crate::part1::v3_1::submodel_elements::relationship_element::{AnnotatedRelationshipElement, RelationshipElement};
+    use crate::part1::v3_1::submodel_elements::relationship_element::{
+        AnnotatedRelationshipElement, RelationshipElement,
+    };
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Serialize};
 
@@ -226,7 +238,6 @@ pub(crate) mod xml {
         #[serde(rename = "embeddedDataSpecifications")]
         embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
         // end submodelfields
-
         #[serde(skip_serializing_if = "Option::is_none")]
         first: Option<Reference>,
 
@@ -274,7 +285,6 @@ pub(crate) mod xml {
         #[serde(rename = "embeddedDataSpecifications")]
         embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
         //-- end SubmodelElementFields
-
         #[serde(skip_serializing_if = "Option::is_none")]
         pub first: Option<Reference>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -296,9 +306,16 @@ pub(crate) mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
+                qualifiable: Qualifiable {
+                    qualifiers: value.qualifiers,
+                },
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
 
                 first: value.first,
                 second: value.second,
@@ -310,14 +327,22 @@ pub(crate) mod xml {
         fn from(value: RelationshipElement) -> Self {
             Self {
                 id_short: value.referable.id_short,
-                display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
                 supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
                 qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
 
                 first: value.first,
                 second: value.second,
@@ -337,9 +362,16 @@ pub(crate) mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
+                qualifiable: Qualifiable {
+                    qualifiers: value.qualifiers,
+                },
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
 
                 first: value.first,
                 second: value.second,
@@ -352,14 +384,22 @@ pub(crate) mod xml {
         fn from(value: AnnotatedRelationshipElement) -> Self {
             Self {
                 id_short: value.referable.id_short,
-                display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
                 supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
                 qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
 
                 first: value.first,
                 second: value.second,
@@ -368,13 +408,13 @@ pub(crate) mod xml {
         }
     }
 
-    #[cfg(tests)]
+    #[cfg(test)]
     mod tests {
         // TODO
     }
 }
 
-#[cfg(test)]
+#[cfg(all(feature = "json", test))]
 mod tests {
     use super::*;
     use crate::part1::v3_1::attributes::qualifiable::Qualifiable;

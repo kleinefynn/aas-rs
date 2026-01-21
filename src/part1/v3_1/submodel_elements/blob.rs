@@ -1,20 +1,17 @@
+use crate::part1::MetamodelError;
+use crate::part1::ToJsonMetamodel;
 use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::primitives::ContentType;
-use crate::part1::MetamodelError;
-use crate::part1::ToJsonMetamodel;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::BlobXML",
-    into = "xml::BlobXML"
-))]
+#[cfg_attr(feature = "xml", serde(from = "xml::BlobXML", into = "xml::BlobXML"))]
 pub struct Blob {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -96,7 +93,9 @@ impl ToJsonMetamodel for Blob {
 
 #[cfg(feature = "xml")]
 mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
     use crate::part1::v3_1::attributes::referable::Referable;
@@ -161,14 +160,22 @@ mod xml {
         fn from(value: Blob) -> Self {
             Self {
                 id_short: value.referable.id_short,
-                display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
                 supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
                 qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
                 value: value.value,
                 content_type: value.content_type,
             }
@@ -187,9 +194,16 @@ mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
+                qualifiable: Qualifiable {
+                    qualifiers: value.qualifiers,
+                },
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
                 value: value.value,
                 content_type: value.content_type,
             }

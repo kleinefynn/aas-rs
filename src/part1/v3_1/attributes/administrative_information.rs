@@ -85,7 +85,7 @@ impl<'de> Deserialize<'de> for Version {
 
 mod xml {
     use crate::part1::v3_1::attributes::administrative_information::{
-        AdministrativeInformation, Version, VersionError,
+        AdministrativeInformation, Version,
     };
     use crate::part1::v3_1::attributes::data_specification::{
         EmbeddedDataSpecification, HasDataSpecification,

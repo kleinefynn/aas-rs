@@ -1,3 +1,4 @@
+use crate::part1::ToJsonMetamodel;
 use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
@@ -5,7 +6,6 @@ use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::core::SpecificAssetId;
 use crate::part1::v3_1::primitives::Identifier;
 use crate::part1::v3_1::submodel_elements::SubmodelElement;
-use crate::part1::ToJsonMetamodel;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
 #[cfg(feature = "openapi")]
@@ -17,10 +17,10 @@ use utoipa::ToSchema;
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Display, EnumString)]
 #[serde(tag = "entityType")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::EntityXMLProxy",
-    into = "xml::EntityXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(from = "xml::EntityXMLProxy", into = "xml::EntityXMLProxy")
+)]
 pub enum Entity {
     /// There is no separate Asset Administration Shell for co-managed entities.
     /// Co-managed entities need to be part of a self-managed entity.
@@ -73,17 +73,19 @@ impl ToJsonMetamodel for Entity {
 }
 
 pub(crate) mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::core::SpecificAssetId;
-    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::primitives::Identifier;
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::reference::Reference;
-    use crate::part1::v3_1::submodel_elements::entity::{Entity, EntityInner};
     use crate::part1::v3_1::submodel_elements::SubmodelElement;
+    use crate::part1::v3_1::submodel_elements::entity::{Entity, EntityInner};
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Serialize};
 
@@ -151,40 +153,52 @@ pub(crate) mod xml {
     impl From<super::Entity> for EntityXMLProxy {
         fn from(value: super::Entity) -> Self {
             match value {
-                Entity::CoManagedEntity(value) => {
-                    Self {
-                        id_short: value.referable.id_short,
-                        display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                        description: value.referable.description.map(|values| LangStringTextType { values }),
-                        category: value.referable.category,
-                        extension: value.referable.extensions.extension,
-                        semantic_id: value.semantics.semantic_id,
-                        supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
-                        qualifiers: value.qualifiable.qualifiers,
-                        embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
-                        statements: value.statements,
-                        global_asset_id: value.global_asset_id,
-                        specific_asset_id: value.specific_asset_id,
-                        ty: EntityType::CoManagedEntity,
-                    }
-                }
-                Entity::SelfManagedEntity(value) => {
-                    Self {
-                        id_short: value.referable.id_short,
-                        display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                        description: value.referable.description.map(|values| LangStringTextType { values }),
-                        category: value.referable.category,
-                        extension: value.referable.extensions.extension,
-                        semantic_id: value.semantics.semantic_id,
-                        supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
-                        qualifiers: value.qualifiable.qualifiers,
-                        embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
-                        statements: value.statements,
-                        global_asset_id: value.global_asset_id,
-                        specific_asset_id: value.specific_asset_id,
-                        ty: EntityType::SelfManagedEntity,
-                    }
-                }
+                Entity::CoManagedEntity(value) => Self {
+                    id_short: value.referable.id_short,
+                    display_name: value
+                        .referable
+                        .display_name
+                        .map(|values| LangStringTextType { values }),
+                    description: value
+                        .referable
+                        .description
+                        .map(|values| LangStringTextType { values }),
+                    category: value.referable.category,
+                    extension: value.referable.extensions.extension,
+                    semantic_id: value.semantics.semantic_id,
+                    supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
+                    qualifiers: value.qualifiable.qualifiers,
+                    embedded_data_specifications: value
+                        .embedded_data_specifications
+                        .embedded_data_specifications,
+                    statements: value.statements,
+                    global_asset_id: value.global_asset_id,
+                    specific_asset_id: value.specific_asset_id,
+                    ty: EntityType::CoManagedEntity,
+                },
+                Entity::SelfManagedEntity(value) => Self {
+                    id_short: value.referable.id_short,
+                    display_name: value
+                        .referable
+                        .display_name
+                        .map(|values| LangStringTextType { values }),
+                    description: value
+                        .referable
+                        .description
+                        .map(|values| LangStringTextType { values }),
+                    category: value.referable.category,
+                    extension: value.referable.extensions.extension,
+                    semantic_id: value.semantics.semantic_id,
+                    supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
+                    qualifiers: value.qualifiable.qualifiers,
+                    embedded_data_specifications: value
+                        .embedded_data_specifications
+                        .embedded_data_specifications,
+                    statements: value.statements,
+                    global_asset_id: value.global_asset_id,
+                    specific_asset_id: value.specific_asset_id,
+                    ty: EntityType::SelfManagedEntity,
+                },
             }
         }
     }
@@ -201,9 +215,16 @@ pub(crate) mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
+                qualifiable: Qualifiable {
+                    qualifiers: value.qualifiers,
+                },
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
 
                 statements: value.statements,
                 global_asset_id: value.global_asset_id,
@@ -211,18 +232,14 @@ pub(crate) mod xml {
             };
 
             match value.ty {
-                EntityType::CoManagedEntity => {
-                    Self::CoManagedEntity(inner)
-                }
-                EntityType::SelfManagedEntity => {
-                    Self::SelfManagedEntity(inner)
-                }
+                EntityType::CoManagedEntity => Self::CoManagedEntity(inner),
+                EntityType::SelfManagedEntity => Self::SelfManagedEntity(inner),
             }
         }
     }
 }
 
-#[cfg(test)]
+#[cfg(all(feature = "json", test))]
 mod tests {
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::primitives::Identifier;

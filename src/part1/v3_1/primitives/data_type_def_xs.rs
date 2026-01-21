@@ -1,8 +1,8 @@
 use crate::part1::v3_1::primitives::Iri;
 use bigdecimal::BigDecimal;
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
 use serde_with::DisplayFromStr;
+use serde_with::serde_as;
 use strum::{Display, EnumString};
 use thiserror::Error;
 #[cfg(feature = "openapi")]
@@ -116,7 +116,7 @@ pub enum DataTypeXSDef {
 #[derive(Debug, Clone, Error)]
 pub enum ConversionError {
     #[error("Value is not parseable")]
-    ParseError
+    ParseError,
 }
 
 impl TryFrom<(DataTypeXSDef, Option<String>)> for DataXsd {
@@ -124,36 +124,173 @@ impl TryFrom<(DataTypeXSDef, Option<String>)> for DataXsd {
 
     fn try_from(value: (DataTypeXSDef, Option<String>)) -> Result<Self, Self::Error> {
         match value.0 {
-            DataTypeXSDef::Int => Ok(DataXsd::Int(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Long => Ok(DataXsd::Long(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Integer => Ok(DataXsd::Integer(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::NegativeInteger => Ok(DataXsd::NegativeInteger(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::NonNegativeInteger => Ok(DataXsd::NonNegativeInteger(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::NonPositiveInteger => Ok(DataXsd::NonPositiveInteger(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::PositiveInteger => Ok(DataXsd::PositiveInteger(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Short => Ok(DataXsd::Short(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
+            DataTypeXSDef::Int => Ok(DataXsd::Int(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Long => Ok(DataXsd::Long(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Integer => Ok(DataXsd::Integer(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::NegativeInteger => Ok(DataXsd::NegativeInteger(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::NonNegativeInteger => Ok(DataXsd::NonNegativeInteger(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::NonPositiveInteger => Ok(DataXsd::NonPositiveInteger(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::PositiveInteger => Ok(DataXsd::PositiveInteger(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Short => Ok(DataXsd::Short(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
             DataTypeXSDef::String => Ok(DataXsd::String(value.1)),
-            DataTypeXSDef::Boolean => Ok(DataXsd::Boolean(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Byte => Ok(DataXsd::Byte(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::UnsignedByte => Ok(DataXsd::UnsignedByte(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::UnsignedInt => Ok(DataXsd::UnsignedInt(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::UnsignedLong => Ok(DataXsd::UnsignedLong(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::UnsignedShort => Ok(DataXsd::UnsignedShort(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Decimal => Ok(DataXsd::Decimal(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Float => Ok(DataXsd::Float(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Double => Ok(DataXsd::Double(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Time => Ok(DataXsd::Time(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Date => Ok(DataXsd::Date(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::DateTime => Ok(DataXsd::DateTime(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Duration => Ok(DataXsd::Duration(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::GDay => Ok(DataXsd::GDay(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::GMonth => Ok(DataXsd::GMonth(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::GMonthDay => Ok(DataXsd::GMonthDay(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::GYear => Ok(DataXsd::GYear(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::GYearMonth => Ok(DataXsd::GYearMonth(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
-            DataTypeXSDef::Base64Binary => Ok(DataXsd::Base64Binary(value.1.map(|v| v.into_bytes()))),
+            DataTypeXSDef::Boolean => Ok(DataXsd::Boolean(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Byte => Ok(DataXsd::Byte(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::UnsignedByte => Ok(DataXsd::UnsignedByte(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::UnsignedInt => Ok(DataXsd::UnsignedInt(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::UnsignedLong => Ok(DataXsd::UnsignedLong(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::UnsignedShort => Ok(DataXsd::UnsignedShort(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Decimal => Ok(DataXsd::Decimal(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Float => Ok(DataXsd::Float(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Double => Ok(DataXsd::Double(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Time => Ok(DataXsd::Time(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Date => Ok(DataXsd::Date(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::DateTime => Ok(DataXsd::DateTime(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Duration => Ok(DataXsd::Duration(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::GDay => Ok(DataXsd::GDay(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::GMonth => Ok(DataXsd::GMonth(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::GMonthDay => Ok(DataXsd::GMonthDay(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::GYear => Ok(DataXsd::GYear(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::GYearMonth => Ok(DataXsd::GYearMonth(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
+            DataTypeXSDef::Base64Binary => {
+                Ok(DataXsd::Base64Binary(value.1.map(|v| v.into_bytes())))
+            }
             DataTypeXSDef::HexBinary => Ok(DataXsd::HexBinary(value.1.map(|v| v.into_bytes()))),
-            DataTypeXSDef::AnyURI => Ok(DataXsd::AnyURI(value.1.map(|v| v.parse().map_err(|_| ConversionError::ParseError)).transpose()?)),
+            DataTypeXSDef::AnyURI => Ok(DataXsd::AnyURI(
+                value
+                    .1
+                    .map(|v| v.parse().map_err(|_| ConversionError::ParseError))
+                    .transpose()?,
+            )),
         }
     }
 }

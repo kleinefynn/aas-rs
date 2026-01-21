@@ -10,10 +10,10 @@ use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::OperationXMLProxy",
-    into = "xml::OperationXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(from = "xml::OperationXMLProxy", into = "xml::OperationXMLProxy")
+)]
 pub struct Operation {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -48,13 +48,15 @@ impl ToJsonMetamodel for Operation {
 }
 
 pub(crate) mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
-    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::primitives::Identifier;
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::reference::Reference;
     use crate::part1::v3_1::submodel_elements::SubmodelElement;
     use crate::utilities::deserialize_empty_identifier_as_none;
@@ -122,9 +124,16 @@ pub(crate) mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
+                qualifiable: Qualifiable {
+                    qualifiers: value.qualifiers,
+                },
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
 
                 input_variable: value.input_variable,
                 output_variable: value.output_variable,
@@ -137,14 +146,22 @@ pub(crate) mod xml {
         fn from(value: super::Operation) -> Self {
             Self {
                 id_short: value.referable.id_short,
-                display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
                 supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
                 qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
 
                 input_variable: value.input_variable,
                 output_variable: value.output_variable,

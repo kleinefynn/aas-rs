@@ -9,7 +9,8 @@ use utoipa::ToSchema;
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct HasExtensions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "extensions")]
+    #[cfg_attr(feature = "xml", serde(rename = "$value"))]
+    #[cfg_attr(feature = "json", serde(rename = "extensions"))]
     pub extension: Option<Vec<Extension>>,
 }
 

@@ -9,7 +9,10 @@ use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(from = "xml::BasicEventElementXML", into = "xml::BasicEventElementXML"))]
+#[cfg_attr(
+    feature = "xml",
+    serde(from = "xml::BasicEventElementXML", into = "xml::BasicEventElementXML")
+)]
 pub struct BasicEventElement {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,
@@ -46,7 +49,13 @@ pub struct BasicEventElement {
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(from = "xml::BasicEventElementMetaXML", into = "xml::BasicEventElementMetaXML"))]
+#[cfg_attr(
+    feature = "xml",
+    serde(
+        from = "xml::BasicEventElementMetaXML",
+        into = "xml::BasicEventElementMetaXML"
+    )
+)]
 pub struct BasicEventElementMeta {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,
@@ -129,17 +138,19 @@ pub enum Direction {
 
 mod xml {
     use super::*;
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
+    use crate::part1::v3_1::attributes::extension::HasExtensions;
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
+    use crate::part1::v3_1::attributes::referable::Referable;
+    use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::{
         part1::v3_1::{attributes::extension::Extension, primitives::Identifier},
         utilities::deserialize_empty_identifier_as_none,
     };
     use serde::{Deserialize, Serialize};
-    use crate::part1::v3_1::attributes::extension::HasExtensions;
-    use crate::part1::v3_1::attributes::referable::Referable;
-    use crate::part1::v3_1::attributes::semantics::HasSemantics;
 
     #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
     pub struct BasicEventElementXML {
@@ -223,9 +234,16 @@ mod xml {
                             extension: value.extension,
                         },
                     },
-                    semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                    qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                    embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                    semantics: HasSemantics {
+                        semantic_id: value.semantic_id,
+                        supplemental_semantic_ids: value.supplemental_semantic_ids,
+                    },
+                    qualifiable: Qualifiable {
+                        qualifiers: value.qualifiers,
+                    },
+                    embedded_data_specifications: HasDataSpecification {
+                        embedded_data_specifications: value.embedded_data_specifications,
+                    },
                 },
                 observed: value.observed,
                 direction: value.direction,
@@ -242,14 +260,28 @@ mod xml {
         fn from(value: BasicEventElement) -> Self {
             Self {
                 id_short: value.submodel_element_fields.referable.id_short,
-                display_name: value.submodel_element_fields.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.submodel_element_fields.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .submodel_element_fields
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .submodel_element_fields
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.submodel_element_fields.referable.category,
                 extension: value.submodel_element_fields.referable.extensions.extension,
                 semantic_id: value.submodel_element_fields.semantics.semantic_id,
-                supplemental_semantic_ids: value.submodel_element_fields.semantics.supplemental_semantic_ids,
+                supplemental_semantic_ids: value
+                    .submodel_element_fields
+                    .semantics
+                    .supplemental_semantic_ids,
                 qualifiers: value.submodel_element_fields.qualifiable.qualifiers,
-                embedded_data_specifications: value.submodel_element_fields.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .submodel_element_fields
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
                 direction: value.direction,
                 observed: value.observed,
                 state: value.state,
@@ -342,9 +374,16 @@ mod xml {
                             extension: value.extension,
                         },
                     },
-                    semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                    qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                    embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                    semantics: HasSemantics {
+                        semantic_id: value.semantic_id,
+                        supplemental_semantic_ids: value.supplemental_semantic_ids,
+                    },
+                    qualifiable: Qualifiable {
+                        qualifiers: value.qualifiers,
+                    },
+                    embedded_data_specifications: HasDataSpecification {
+                        embedded_data_specifications: value.embedded_data_specifications,
+                    },
                 },
                 direction: value.direction,
                 state: value.state,
@@ -360,14 +399,28 @@ mod xml {
         fn from(value: BasicEventElementMeta) -> Self {
             Self {
                 id_short: value.submodel_element_fields.referable.id_short,
-                display_name: value.submodel_element_fields.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.submodel_element_fields.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .submodel_element_fields
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .submodel_element_fields
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.submodel_element_fields.referable.category,
                 extension: value.submodel_element_fields.referable.extensions.extension,
                 semantic_id: value.submodel_element_fields.semantics.semantic_id,
-                supplemental_semantic_ids: value.submodel_element_fields.semantics.supplemental_semantic_ids,
+                supplemental_semantic_ids: value
+                    .submodel_element_fields
+                    .semantics
+                    .supplemental_semantic_ids,
                 qualifiers: value.submodel_element_fields.qualifiable.qualifiers,
-                embedded_data_specifications: value.submodel_element_fields.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .submodel_element_fields
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
                 direction: value.direction,
                 state: value.state,
                 message_topic: value.message_topic,

@@ -6,7 +6,8 @@ use utoipa::ToSchema;
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct ValueList {
-    #[serde(rename = "valueReferencePairs")]
+    #[cfg_attr(feature = "json", serde(rename = "valueReferencePairs"))]
+    #[cfg_attr(feature = "xml", serde(rename = "$value"))]
     pub value_reference_pairs: Vec<ValueReferencePair>,
 }
 

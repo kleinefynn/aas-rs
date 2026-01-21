@@ -52,10 +52,7 @@ pub enum Key {
 
 pub mod xml {
     #[cfg(test)]
-    mod tests {
-
-    }
-
+    mod tests {}
 }
 
 #[cfg(test)]

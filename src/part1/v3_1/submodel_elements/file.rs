@@ -1,20 +1,20 @@
+use crate::part1::MetamodelError;
+use crate::part1::ToJsonMetamodel;
 use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::primitives::{ContentType, Uri};
-use crate::part1::MetamodelError;
-use crate::part1::ToJsonMetamodel;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 #[cfg_attr(all(feature = "openapi"), derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::FileXMLProxy",
-    into = "xml::FileXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(from = "xml::FileXMLProxy", into = "xml::FileXMLProxy")
+)]
 pub struct File {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -84,8 +84,10 @@ impl ToJsonMetamodel for File {
     }
 }
 
-mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+pub(crate) mod xml {
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
     use crate::part1::v3_1::attributes::referable::Referable;
@@ -109,10 +111,10 @@ mod xml {
 
         #[serde(skip_serializing_if = "Option::is_none")]
         #[serde(rename = "displayName")]
-        pub display_name: Option<LangStringTextType>,
+        pub(crate) display_name: Option<LangStringTextType>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
-        pub description: Option<LangStringTextType>,
+        pub(crate) description: Option<LangStringTextType>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
         #[deprecated]
@@ -123,15 +125,10 @@ mod xml {
         pub extension: Option<Vec<Extension>>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "semanticId")]
-        pub semantic_id: Option<Reference>,
+        pub semantics: Option<HasSemantics>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "supplementalSemanticIds")]
-        pub supplemental_semantic_ids: Option<Vec<Reference>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub qualifiers: Option<Vec<Qualifier>>,
+        pub qualifiers: Option<Qualifiable>,
 
         #[serde(skip_serializing_if = "Option::is_none")]
         #[serde(rename = "embeddedDataSpecifications")]
@@ -151,14 +148,21 @@ mod xml {
         fn from(value: File) -> Self {
             Self {
                 id_short: value.referable.id_short,
-                display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
-                semantic_id: value.semantics.semantic_id,
-                supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
-                qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
+                semantics: Some(value.semantics),
+                qualifiers: Some(value.qualifiable),
+                embedded_data_specifications: value
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
 
                 value: value.value,
                 content_type: value.content_type,
@@ -178,13 +182,87 @@ mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: value.semantics.unwrap_or_default(),
+                qualifiable: value.qualifiers.unwrap_or_default(),
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
 
                 value: value.value,
                 content_type: value.content_type,
             }
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        #[test]
+        fn test_deserialize_complex() {
+            let xml = r#"
+            <file>
+                  <idShort>AssemblyInstructions_DigitalFile</idShort>
+                  <description>
+                    <langStringTextType>
+                      <language>en</language>
+                      <text>Note: each DigitalFile represents the same content or Document version, but can be provided in different technical formats (PDF, PDFA, html, etc.) or by a link.</text>
+                    </langStringTextType>
+                  </description>
+                  <semanticId>
+                    <type>ExternalReference</type>
+                    <keys>
+                      <key>
+                        <type>GlobalReference</type>
+                        <value>0173-1#02-ABK126#003</value>
+                      </key>
+                    </keys>
+                  </semanticId>
+                  <qualifiers>
+                    <qualifier>
+                      <semanticId>
+                        <type>ExternalReference</type>
+                        <keys>
+                          <key>
+                            <type>GlobalReference</type>
+                            <value>https://admin-shell.io/SubmodelTemplates/Cardinality/1/0</value>
+                          </key>
+                        </keys>
+                      </semanticId>
+                      <type>Cardinality</type>
+                      <valueType>xs:string</valueType>
+                      <value>OneToMany</value>
+                    </qualifier>
+                    <qualifier>
+                      <semanticId>
+                        <type>ExternalReference</type>
+                        <keys>
+                          <key>
+                            <type>GlobalReference</type>
+                            <value>https://admin-shell.io/SubmodelTemplates/ExampleValue/1/0</value>
+                          </key>
+                        </keys>
+                      </semanticId>
+                      <type>ExampleValue</type>
+                      <valueType>xs:string</valueType>
+                      <value>docu_cecc_fullmanual_DE.PDF</value>
+                    </qualifier>
+                    <qualifier>
+                      <semanticId>
+                        <type>ExternalReference</type>
+                        <keys>
+                          <key>
+                            <type>GlobalReference</type>
+                            <value>https://admin-shell.io/SubmodelTemplates/AllowedIdShort/1/0</value>
+                          </key>
+                        </keys>
+                      </semanticId>
+                      <type>AllowedIdShort</type>
+                      <valueType>xs:string</valueType>
+                      <value>DigitalFile[\d{2,3}]</value>
+                    </qualifier>
+                  </qualifiers>
+                  <value>/aasx/files/safety_information.pdf</value>
+                  <contentType>application/pdf</contentType>
+                </file>"#;
         }
     }
 }

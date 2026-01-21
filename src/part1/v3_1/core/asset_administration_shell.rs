@@ -81,10 +81,7 @@ impl ToJsonMetamodel for AssetAdministrationShell {
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 #[cfg_attr(
     feature = "xml",
-    serde(
-        from = "xml::AssetInformationXML",
-        into = "xml::AssetInformationXML"
-    )
+    serde(from = "xml::AssetInformationXML", into = "xml::AssetInformationXML")
 )]
 pub enum AssetInformation {
     Instance(AssetInformationInner),
@@ -131,10 +128,7 @@ pub struct AssetInformationInner {
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 #[cfg_attr(
     feature = "xml",
-    serde(
-        from = "xml::SpecificAssetIdXML",
-        into = "xml::SpecificAssetIdXML"
-    )
+    serde(from = "xml::SpecificAssetIdXML", into = "xml::SpecificAssetIdXML")
 )]
 pub struct SpecificAssetId {
     #[serde(flatten)]
@@ -168,21 +162,24 @@ pub struct Resource {
 
 #[cfg(feature = "xml")]
 mod xml {
-    use crate::part1::v3_1::reference::deserialize_optional_external_reference;
-use crate::part1::v3_1::attributes::administrative_information::AdministrativeInformation;
+    use crate::part1::v3_1::attributes::administrative_information::AdministrativeInformation;
     use crate::part1::v3_1::attributes::data_specification::{
         EmbeddedDataSpecification, HasDataSpecification,
     };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::identifiable::Identifiable;
     use crate::part1::v3_1::attributes::referable::Referable;
-    use crate::part1::v3_1::core::{AssetAdministrationShell, AssetInformation, AssetInformationInner, Resource, SpecificAssetId};
+    use crate::part1::v3_1::attributes::semantics::HasSemantics;
+    use crate::part1::v3_1::core::{
+        AssetAdministrationShell, AssetInformation, AssetInformationInner, Resource,
+        SpecificAssetId,
+    };
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::primitives::{Identifier, Label};
     use crate::part1::v3_1::reference::Reference;
+    use crate::part1::v3_1::reference::deserialize_optional_external_reference;
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Deserializer, Serialize};
-    use crate::part1::v3_1::attributes::semantics::HasSemantics;
-    use crate::part1::v3_1::primitives::xml::LangStringTextType;
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
     enum AssetKind {
@@ -273,7 +270,10 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
     impl From<SpecificAssetIdXML> for SpecificAssetId {
         fn from(value: SpecificAssetIdXML) -> Self {
             Self {
-                has_semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
+                has_semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
                 name: value.name,
                 value: value.value,
                 external_subject_id: value.external_subject_id,
@@ -376,8 +376,16 @@ use crate::part1::v3_1::attributes::administrative_information::AdministrativeIn
                 id: value.identifiable.id,
                 administration: value.identifiable.administration,
                 id_short: value.identifiable.referable.id_short,
-                display_name: value.identifiable.referable.display_name.map(|v| LangStringTextType { values: v }),
-                description: value.identifiable.referable.description.map(|v| LangStringTextType { values: v }),
+                display_name: value
+                    .identifiable
+                    .referable
+                    .display_name
+                    .map(|v| LangStringTextType { values: v }),
+                description: value
+                    .identifiable
+                    .referable
+                    .description
+                    .map(|v| LangStringTextType { values: v }),
                 category: value.identifiable.referable.category,
                 extension: value.identifiable.referable.extensions.extension,
                 embedded_data_specifications: value.data_specification.embedded_data_specifications,

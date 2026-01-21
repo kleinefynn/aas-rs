@@ -28,8 +28,8 @@ pub type Uri = iref::UriRefBuf;
 pub type Iri = iref::IriRefBuf;
 
 pub(crate) mod xml {
-    use serde::{Deserialize, Serialize};
     use crate::part1::v3_1::primitives::MultiLanguageNameType;
+    use serde::{Deserialize, Serialize};
 
     // needed for e.g.
     // <displayName>
@@ -37,16 +37,14 @@ pub(crate) mod xml {
     //      <langStringTextType>...</langStringTextType>
     // </displayName>
     #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-    pub(crate) struct LangStringTextType {
-        #[serde(rename = "langStringTextType")]
+    pub struct LangStringTextType {
+        #[serde(rename = "$value")]
         pub(crate) values: MultiLanguageNameType,
     }
 
     impl From<MultiLanguageNameType> for LangStringTextType {
         fn from(value: MultiLanguageNameType) -> Self {
-            Self {
-                values: value
-            }
+            Self { values: value }
         }
     }
     impl From<LangStringTextType> for MultiLanguageNameType {

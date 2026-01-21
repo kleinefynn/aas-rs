@@ -2,16 +2,17 @@ use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
-use crate::part1::ToJsonMetamodel;
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    from = "xml::CapabilityXMLProxy",
-    into = "xml::CapabilityXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(from = "xml::CapabilityXMLProxy", into = "xml::CapabilityXMLProxy")
+)]
 pub struct Capability {
     // Inherited from DataElement
     pub referable: Referable,
@@ -34,13 +35,15 @@ impl Capability {
 
 #[cfg(feature = "xml")]
 mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{EmbeddedDataSpecification, HasDataSpecification};
+    use crate::part1::v3_1::attributes::data_specification::{
+        EmbeddedDataSpecification, HasDataSpecification,
+    };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
-    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::primitives::Identifier;
+    use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::reference::Reference;
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::de::Visitor;
@@ -82,14 +85,22 @@ mod xml {
         fn from(value: super::Capability) -> Self {
             Self {
                 id_short: value.referable.id_short,
-                display_name: value.referable.display_name.map(|values| LangStringTextType { values }),
-                description: value.referable.description.map(|values| LangStringTextType { values }),
+                display_name: value
+                    .referable
+                    .display_name
+                    .map(|values| LangStringTextType { values }),
+                description: value
+                    .referable
+                    .description
+                    .map(|values| LangStringTextType { values }),
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
                 supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
                 qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value.embedded_data_specifications.embedded_data_specifications,
+                embedded_data_specifications: value
+                    .embedded_data_specifications
+                    .embedded_data_specifications,
             }
         }
     }
@@ -105,14 +116,20 @@ mod xml {
                         extension: value.extension,
                     },
                 },
-                semantics: HasSemantics { semantic_id: value.semantic_id, supplemental_semantic_ids: value.supplemental_semantic_ids },
-                qualifiable: Qualifiable { qualifiers: value.qualifiers },
-                embedded_data_specifications: HasDataSpecification { embedded_data_specifications: value.embedded_data_specifications },
+                semantics: HasSemantics {
+                    semantic_id: value.semantic_id,
+                    supplemental_semantic_ids: value.supplemental_semantic_ids,
+                },
+                qualifiable: Qualifiable {
+                    qualifiers: value.qualifiers,
+                },
+                embedded_data_specifications: HasDataSpecification {
+                    embedded_data_specifications: value.embedded_data_specifications,
+                },
             }
         }
     }
 }
-
 
 mod json {
     use crate::part1::{MetamodelError, ToJsonMetamodel};
@@ -125,7 +142,6 @@ mod json {
         }
     }
 }
-
 
 // TODO: Test serialization and deserialization
 #[cfg(test)]

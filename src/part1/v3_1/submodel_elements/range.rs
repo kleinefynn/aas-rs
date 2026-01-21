@@ -23,10 +23,10 @@ pub struct RangeInner<T> {
 #[serde(tag = "valueType")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde(
-    try_from = "xml::RangeXMLProxy",
-    into = "xml::RangeXMLProxy"
-))]
+#[cfg_attr(
+    feature = "xml",
+    serde(try_from = "xml::RangeXMLProxy", into = "xml::RangeXMLProxy")
+)]
 pub enum Range {
     // basic types
     #[serde(rename = "xs:int")]
@@ -75,7 +75,7 @@ pub enum Range {
     UnsignedShort(RangeInner<u16>),
 
     #[serde(rename = "xs:decimal")]
-    #[schema(value_type = RangeInner<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = RangeInner<String>))]
     Decimal(RangeInner<BigDecimal>),
 
     #[serde(rename = "xs:float")]
@@ -86,18 +86,15 @@ pub enum Range {
 
     // Date Time related
     #[serde(rename = "xs:time")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = RangeInner<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = RangeInner<String>))]
     Time(RangeInner<iso8601::Time>),
 
     #[serde(rename = "xs:date")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = RangeInner<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = RangeInner<String>))]
     Date(RangeInner<iso8601::Date>),
 
     #[serde(rename = "xs:dateTime")]
-    #[cfg(feature = "openapi")]
-    #[schema(value_type = RangeInner<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = RangeInner<String>))]
     DateTime(RangeInner<iso8601::DateTime>),
 
     /// TODO: using proper type
@@ -134,7 +131,7 @@ pub enum Range {
     // string related
     // TODO: is this supported??
     #[serde(rename = "xs:anyURI")]
-    #[schema(value_type = RangeInner<String>)]
+    #[cfg_attr(feature = "openapi", schema(value_type = RangeInner<String>))]
     AnyURI(RangeInner<IriRefBuf>),
 }
 
@@ -186,88 +183,208 @@ pub(crate) mod xml {
         fn try_from(value: RangeXMLProxy) -> Result<Self, Self::Error> {
             let val = match value.value_type {
                 DataTypeXSDef::Int => Range::Int(RangeInner {
-                    min: value.min.map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Long => Range::Long(RangeInner {
-                    min: value.min.map(|v| v.parse::<i64>().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse::<i64>().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse::<i64>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse::<i64>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Integer => Range::Integer(RangeInner {
-                    min: value.min.map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::NegativeInteger => Range::NegativeInteger(RangeInner {
-                    min: value.min.map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse::<i32>().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::NonNegativeInteger => Range::NonNegativeInteger(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::NonPositiveInteger => Range::NonPositiveInteger(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::PositiveInteger => Range::PositiveInteger(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Short => Range::Short(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::String => Range::String(RangeInner {
                     min: value.min,
                     max: value.max,
                 }),
                 DataTypeXSDef::Boolean => Range::Boolean(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseBoolError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseBoolError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseBoolError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseBoolError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Byte => Range::Byte(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::UnsignedByte => Range::UnsignedByte(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::UnsignedInt => Range::UnsignedInt(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::UnsignedLong => Range::UnsignedLong(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::UnsignedShort => Range::UnsignedShort(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseIntError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseIntError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Decimal => Range::Decimal(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseDecimalError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseDecimalError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseDecimalError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseDecimalError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Float => Range::Float(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseFloatError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseFloatError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseFloatError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseFloatError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Double => Range::Double(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseFloatError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseFloatError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseFloatError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseFloatError))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Time => Range::Time(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::Parse)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::Parse)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::Parse))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::Parse))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Date => Range::Date(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::Parse)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::Parse)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::Parse))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::Parse))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::DateTime => Range::DateTime(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::Parse)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::Parse)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::Parse))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::Parse))
+                        .transpose()?,
                 }),
                 DataTypeXSDef::Duration => Range::Duration(RangeInner {
                     min: value.min,
@@ -302,11 +419,16 @@ pub(crate) mod xml {
                     max: value.max.map(|v| v.into_bytes()),
                 }),
                 DataTypeXSDef::AnyURI => Range::AnyURI(RangeInner {
-                    min: value.min.map(|v| v.parse().map_err(ConversionError::ParseUriError)).transpose()?,
-                    max: value.max.map(|v| v.parse().map_err(ConversionError::ParseUriError)).transpose()?,
+                    min: value
+                        .min
+                        .map(|v| v.parse().map_err(ConversionError::ParseUriError))
+                        .transpose()?,
+                    max: value
+                        .max
+                        .map(|v| v.parse().map_err(ConversionError::ParseUriError))
+                        .transpose()?,
                 }),
             };
-
 
             Ok(val)
         }
@@ -464,7 +586,7 @@ pub(crate) mod xml {
                     min: v.min.map(|v| v.to_string()),
                     max: v.max.map(|v| v.to_string()),
                     value_type: DataTypeXSDef::AnyURI,
-                }
+                },
             }
         }
     }
@@ -474,7 +596,7 @@ pub(crate) mod xml {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(feature = "json", test))]
 mod tests {
     use super::*;
 

@@ -49,26 +49,70 @@ use crate::part1::v3_1::primitives::xml::LangStringTextType;
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
+// alias are made to support for camelCase, PascalCase and lowercase.
 #[derive(Debug, Clone, PartialEq, Display, Deserialize)]
 #[cfg_attr(not(feature = "xml"), derive(Serialize))]
 #[cfg_attr(not(feature = "xml"), serde(tag = "modelType"))]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub enum SubmodelElement {
+    #[serde(
+        alias = "RelationshipElement",
+        alias = "relationshipElement",
+        alias = "relationshipelement"
+    )]
     RelationshipElement(RelationshipElement),
+    #[serde(
+        alias = "AnnotatedRelationshipElement",
+        alias = "annotatedRelationshipElement",
+        alias = "annotatedrelationshipelement"
+    )]
     AnnotatedRelationshipElement(AnnotatedRelationshipElement),
+    #[serde(
+        alias = "BasicEventElement",
+        alias = "basicEventElement",
+        alias = "basiceventelement"
+    )]
     BasicEventElement(BasicEventElement),
+    #[serde(alias = "Blob", alias = "blob", alias = "blob")]
     Blob(Blob),
+    #[serde(alias = "Capability", alias = "capability", alias = "capability")]
     Capability(Capability),
     // TODO: is this needed? Deserializes??
+    #[serde(alias = "DataElement", alias = "dataElement", alias = "dataelement")]
     DataElement(DataElement),
+    #[serde(alias = "Entity", alias = "entity", alias = "entity")]
     Entity(Entity),
+    #[serde(alias = "File", alias = "file", alias = "file")]
     File(File),
+    #[serde(
+        alias = "MultiLanguageProperty",
+        alias = "multiLanguageProperty",
+        alias = "multilanguageproperty"
+    )]
     MultiLanguageProperty(MultiLanguageProperty),
+    #[serde(alias = "Operation", alias = "operation", alias = "operation")]
     Operation(Operation),
+    #[serde(alias = "Property", alias = "property", alias = "property")]
     Property(Property),
+    #[serde(alias = "Range", alias = "range", alias = "range")]
     Range(Range),
+    #[serde(
+        alias = "ReferenceElement",
+        alias = "referenceElement",
+        alias = "referenceelement"
+    )]
     ReferenceElement(ReferenceElement),
+    #[serde(
+        alias = "SubmodelElementCollection",
+        alias = "submodelElementCollection",
+        alias = "submodelelementcollection"
+    )]
     SubmodelElementCollection(SubmodelElementCollection),
+    #[serde(
+        alias = "SubmodelElementList",
+        alias = "submodelElementList",
+        alias = "submodelelementlist"
+    )]
     SubmodelElementList(SubmodelElementList),
 }
 
@@ -151,6 +195,7 @@ pub enum AasSubmodelElements {
     Property,
     Range,
     ReferenceElement,
+    #[serde(alias = "SubmodelElementCollection")]
     SubmodelElementCollection,
     SubmodelElementList,
 }
@@ -190,8 +235,8 @@ impl ToJsonMetamodel for SubmodelElement {
 #[cfg(feature = "xml")]
 mod xml {
     use super::*;
-    use serde::ser::SerializeStruct;
     use serde::Serializer;
+    use serde::ser::SerializeStruct;
 
     impl Serialize for SubmodelElement {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -305,14 +350,13 @@ mod xml {
                 #[serde(rename = "$value")]
                 submodel_elements: Vec<SubmodelElement>,
             }
-            ;
 
             let xml = r#"
             <SubmodelElements>
-                <Blob>
+                <blob>
                     <value>test.png</value>
                     <contentType>image/png</contentType>
-                    </Blob>
+                </blob>
             </SubmodelElements>
             "#;
 
@@ -320,7 +364,7 @@ mod xml {
                 submodel_elements: vec![SubmodelElement::Blob(Blob::new(
                     Some("test.png".into()),
                     "image/png".into(),
-                ))]
+                ))],
             };
 
             let actual = quick_xml::de::from_str(&xml).unwrap();
@@ -334,8 +378,8 @@ mod xml {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::part1::v3_1::primitives::Identifier;
     use crate::part1::v3_1::LangString;
+    use crate::part1::v3_1::primitives::Identifier;
 
     #[test]
     fn deserialize_blob() {

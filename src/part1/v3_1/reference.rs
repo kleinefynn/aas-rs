@@ -38,7 +38,10 @@ pub struct ReferenceInner {
 #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
 #[serde(tag = "type")]
 #[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "xml", serde( from = "xml::ReferenceXML", into = "xml::ReferenceXML"))]
+#[cfg_attr(
+    feature = "xml",
+    serde(from = "xml::ReferenceXML", into = "xml::ReferenceXML")
+)]
 pub enum Reference {
     ExternalReference(ReferenceInner),
     ModelReference(ReferenceInner),
@@ -65,8 +68,7 @@ impl Deref for Reference {
 
     fn deref(&self) -> &Self::Target {
         match self {
-            Reference::ExternalReference(i) |
-            Reference::ModelReference(i) => i
+            Reference::ExternalReference(i) | Reference::ModelReference(i) => i,
         }
     }
 }
@@ -213,16 +215,16 @@ where
 
 #[cfg(feature = "xml")]
 pub mod xml {
-    use std::ops::Deref;
-    use serde::{Deserialize, Serialize};
-    use strum::{Display, EnumString};
     use crate::part1::v3_1::key::Key;
     use crate::part1::v3_1::reference::{Reference, ReferenceInner};
+    use serde::{Deserialize, Serialize};
+    use std::ops::Deref;
+    use strum::{Display, EnumString};
 
     #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
     enum ReferenceType {
         ExternalReference,
-        ModelReference
+        ModelReference,
     }
 
     #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -237,26 +239,23 @@ pub mod xml {
         pub keys: KeysXML,
     }
 
-
     impl From<ReferenceXML> for Reference {
         fn from(value: ReferenceXML) -> Self {
             match value.ty {
-                ReferenceType::ExternalReference => {
-                    Reference::ExternalReference(ReferenceInner {
-                        referred_semantic_id: value.referred_semantic_id
-                            .map(|v| *v)
-                            .map(|v| Box::new(Reference::from(v))),
-                        keys: value.keys.key
-                    })
-                }
-                ReferenceType::ModelReference => {
-                    Reference::ModelReference(ReferenceInner {
-                        referred_semantic_id: value.referred_semantic_id
-                            .map(|v| *v)
-                            .map(|v| Box::new(Reference::from(v))),
-                        keys: value.keys.key
-                    })
-                }
+                ReferenceType::ExternalReference => Reference::ExternalReference(ReferenceInner {
+                    referred_semantic_id: value
+                        .referred_semantic_id
+                        .map(|v| *v)
+                        .map(|v| Box::new(Reference::from(v))),
+                    keys: value.keys.key,
+                }),
+                ReferenceType::ModelReference => Reference::ModelReference(ReferenceInner {
+                    referred_semantic_id: value
+                        .referred_semantic_id
+                        .map(|v| *v)
+                        .map(|v| Box::new(Reference::from(v))),
+                    keys: value.keys.key,
+                }),
             }
         }
     }
@@ -264,24 +263,22 @@ pub mod xml {
     impl From<Reference> for ReferenceXML {
         fn from(value: Reference) -> Self {
             match value {
-                Reference::ExternalReference(inner) => {
-                    ReferenceXML {
-                        ty: ReferenceType::ExternalReference,
-                        keys: KeysXML { key: inner.keys },
-                        referred_semantic_id: inner.referred_semantic_id
-                            .map(|v| *v)
-                            .map(|v| Box::new(ReferenceXML::from(v)))
-                    }
-                }
-                Reference::ModelReference(inner) => {
-                    ReferenceXML {
-                        ty: ReferenceType::ModelReference,
-                        keys: KeysXML { key: inner.keys },
-                        referred_semantic_id: inner.referred_semantic_id
-                            .map(|v| *v)
-                            .map(|v| Box::new(ReferenceXML::from(v)))
-                    }
-                }
+                Reference::ExternalReference(inner) => ReferenceXML {
+                    ty: ReferenceType::ExternalReference,
+                    keys: KeysXML { key: inner.keys },
+                    referred_semantic_id: inner
+                        .referred_semantic_id
+                        .map(|v| *v)
+                        .map(|v| Box::new(ReferenceXML::from(v))),
+                },
+                Reference::ModelReference(inner) => ReferenceXML {
+                    ty: ReferenceType::ModelReference,
+                    keys: KeysXML { key: inner.keys },
+                    referred_semantic_id: inner
+                        .referred_semantic_id
+                        .map(|v| *v)
+                        .map(|v| Box::new(ReferenceXML::from(v))),
+                },
             }
         }
     }
@@ -295,8 +292,8 @@ pub mod xml {
 
     #[cfg(test)]
     mod tests {
-        use crate::part1::v3_1::key::{Key};
         use super::*;
+        use crate::part1::v3_1::key::Key;
 
         #[test]
         fn test_xml_serialize() {
@@ -304,10 +301,8 @@ pub mod xml {
                 ty: ReferenceType::ExternalReference,
                 referred_semantic_id: None,
                 keys: KeysXML {
-                    key: vec![
-                        Key::Blob("http://example/blob".into())
-                    ],
-                }
+                    key: vec![Key::Blob("http://example/blob".into())],
+                },
             };
 
             let xml = quick_xml::se::to_string(&reference).unwrap();
@@ -318,16 +313,27 @@ pub mod xml {
         #[test]
         fn deserialize_blob_reference_xml() {
             let xml = r#"
-        <Reference><type>ExternalReference</type><keys><key><type>Blob</type><value>http://example/blob</value></key></keys></Reference>"#;
+                <Reference>
+                    <type>ExternalReference</type>
+                    <keys>
+                        <key>
+                            <type>Blob</type>
+                            <value>http://example/blob</value>
+                        </key>
+                        <key>
+                            <type>Blob</type>
+                            <value>http://example/blob2</value>
+                        </key>
+                    </keys>
+                </Reference>"#;
 
-            let expected = Reference::ExternalReference(
-                ReferenceInner {
-                    referred_semantic_id: None,
-                    keys: vec![
-                        Key::Blob("http://example/blob".into())
-                    ],
-                }
-            );
+            let expected = Reference::ExternalReference(ReferenceInner {
+                referred_semantic_id: None,
+                keys: vec![
+                    Key::Blob("http://example/blob".into()),
+                    Key::Blob("http://example/blob2".into()),
+                ],
+            });
 
             let actual = quick_xml::de::from_str(xml).unwrap();
 
