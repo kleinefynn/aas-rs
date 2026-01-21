@@ -80,7 +80,7 @@ pub(crate) mod xml {
         EmbeddedDataSpecification, HasDataSpecification,
     };
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
-    use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
+    use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::attributes::semantics::xml::SupplementalSemanticIdsWrapper;
@@ -149,6 +149,7 @@ pub(crate) mod xml {
                     .referable
                     .description
                     .map(|values| LangStringTextType { values }),
+                #[allow(deprecated)]
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
@@ -173,6 +174,7 @@ pub(crate) mod xml {
                     id_short: value.id_short,
                     display_name: value.display_name.map(LangStringTextType::into),
                     description: value.description.map(LangStringTextType::into),
+                    #[allow(deprecated)]
                     category: value.category,
                     extensions: HasExtensions {
                         extension: value.extension,

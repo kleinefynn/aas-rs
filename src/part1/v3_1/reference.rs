@@ -218,7 +218,7 @@ pub mod xml {
     use crate::part1::v3_1::key::Key;
     use crate::part1::v3_1::reference::{Reference, ReferenceInner};
     use serde::{Deserialize, Serialize};
-    use std::ops::Deref;
+
     use strum::{Display, EnumString};
 
     #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]

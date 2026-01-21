@@ -40,6 +40,7 @@ pub struct EmbeddedDataSpecification {
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "json", serde(tag = "modelType"))]
+#[cfg_attr(feature = "openapi", derive(ToSchema))]
 #[serde(rename_all = "camelCase")]
 pub enum DataSpecificationContent {
     DataSpecificationIec61360(DataSpecificationIec61360),

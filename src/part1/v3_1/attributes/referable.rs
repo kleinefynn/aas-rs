@@ -1,7 +1,10 @@
 use crate::part1::v3_1::attributes::extension::HasExtensions;
 use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
-use crate::utilities::deserialize_empty_identifier_as_none;
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "json")]
+use crate::utilities::deserialize_empty_identifier_as_none;
+
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
@@ -38,8 +41,8 @@ pub struct Referable {
 pub(crate) mod xml {
     use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
     use crate::part1::v3_1::attributes::referable::Referable;
+    use crate::part1::v3_1::primitives::Identifier;
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
-    use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Serialize};
 
@@ -78,6 +81,7 @@ pub(crate) mod xml {
                 description: value
                     .description
                     .map(|values| LangStringTextType { values }),
+                #[allow(deprecated)]
                 category: value.category,
                 extension: value.extensions.extension,
             }
@@ -89,6 +93,7 @@ pub(crate) mod xml {
                 id_short: value.id_short,
                 display_name: value.display_name.map(LangStringTextType::into),
                 description: value.description.map(LangStringTextType::into),
+                #[allow(deprecated)]
                 category: value.category,
                 extensions: HasExtensions {
                     extension: value.extension,

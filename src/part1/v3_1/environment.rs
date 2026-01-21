@@ -28,18 +28,18 @@ mod xml {
     use serde::{Deserialize, Serialize};
 
     #[derive(Debug, Serialize, Deserialize)]
-    struct AssetAdministrationShellWrapper {
+    pub struct AssetAdministrationShellWrapper {
         #[serde(rename = "assetAdministrationShell")]
         values: Option<Vec<AssetAdministrationShell>>,
     }
     #[derive(Debug, Serialize, Deserialize)]
-    struct SubmodelWrapper {
+    pub struct SubmodelWrapper {
         #[serde(rename = "submodel")]
         values: Option<Vec<Submodel>>,
     }
 
     #[derive(Debug, Serialize, Deserialize)]
-    struct ConceptDescriptionWrapper {
+    pub struct ConceptDescriptionWrapper {
         #[serde(rename = "conceptDescription")]
         values: Option<Vec<ConceptDescription>>,
     }

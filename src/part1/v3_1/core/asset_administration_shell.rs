@@ -3,10 +3,14 @@ use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::identifiable::Identifiable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::primitives::{ContentType, Identifier, Label, Uri};
-use crate::part1::v3_1::reference::{Reference, deserialize_optional_external_reference};
+use crate::part1::v3_1::reference::Reference;
 use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use strum::{Display, EnumString};
+
+#[cfg(feature = "json")]
+use crate::part1::v3_1::reference::deserialize_optional_external_reference;
+
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
@@ -179,10 +183,10 @@ mod xml {
     use crate::part1::v3_1::reference::Reference;
     use crate::part1::v3_1::reference::deserialize_optional_external_reference;
     use crate::utilities::deserialize_empty_identifier_as_none;
-    use serde::{Deserialize, Deserializer, Serialize};
+    use serde::{Deserialize, Serialize};
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
-    enum AssetKind {
+    pub enum AssetKind {
         Instance,
         NotApplicable,
         Role,
@@ -354,6 +358,7 @@ mod xml {
                         id_short: value.id_short,
                         display_name: value.display_name.map(|v| v.values),
                         description: value.description.map(|v| v.values),
+                        #[allow(deprecated)]
                         category: value.category,
                         extensions: HasExtensions {
                             extension: value.extension,
@@ -386,6 +391,7 @@ mod xml {
                     .referable
                     .description
                     .map(|v| LangStringTextType { values: v }),
+                #[allow(deprecated)]
                 category: value.identifiable.referable.category,
                 extension: value.identifiable.referable.extensions.extension,
                 embedded_data_specifications: value.data_specification.embedded_data_specifications,

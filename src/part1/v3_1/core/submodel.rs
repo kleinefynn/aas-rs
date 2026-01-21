@@ -79,10 +79,8 @@ impl ToJsonMetamodel for Submodel {
 }
 #[cfg(feature = "xml")]
 mod xml {
-    use crate::part1::v3_1::LangString;
-    use crate::part1::v3_1::attributes::administrative_information::{
-        AdministrativeInformation, Version,
-    };
+
+    use crate::part1::v3_1::attributes::administrative_information::AdministrativeInformation;
     use crate::part1::v3_1::attributes::data_specification::{
         EmbeddedDataSpecification, HasDataSpecification,
     };
@@ -93,16 +91,16 @@ mod xml {
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::core::Submodel;
-    use crate::part1::v3_1::key::Key;
+
+    use crate::part1::v3_1::primitives::Identifier;
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
-    use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
-    use crate::part1::v3_1::reference::{Reference, ReferenceInner};
-    use crate::part1::v3_1::submodel_elements::{Blob, SubmodelElement};
+    use crate::part1::v3_1::reference::Reference;
+    use crate::part1::v3_1::submodel_elements::SubmodelElement;
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Serialize};
 
     #[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
-    struct SubmodelElementsXML {
+    pub struct SubmodelElementsXML {
         #[serde(rename = "$value")]
         submodel_elements: Vec<SubmodelElement>,
     }
@@ -174,6 +172,7 @@ mod xml {
                         id_short: value.id_short,
                         display_name: value.display_name.map(LangStringTextType::into),
                         description: value.description.map(LangStringTextType::into),
+                        #[allow(deprecated)]
                         category: value.category,
                         extensions: HasExtensions {
                             extension: value.extension,
@@ -214,6 +213,7 @@ mod xml {
                     .referable
                     .description
                     .map(|values| LangStringTextType { values }),
+                #[allow(deprecated)]
                 category: value.identifiable.referable.category,
                 extension: value.identifiable.referable.extensions.extension,
                 kind: value.kind,

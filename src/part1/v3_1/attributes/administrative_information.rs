@@ -92,7 +92,7 @@ mod xml {
     };
     use crate::part1::v3_1::primitives::Identifier;
     use crate::part1::v3_1::reference::Reference;
-    use serde::{Deserialize, Deserializer, Serialize, de};
+    use serde::{Deserialize, Serialize};
 
     #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
     pub(super) struct AdministrativeInformationXML {

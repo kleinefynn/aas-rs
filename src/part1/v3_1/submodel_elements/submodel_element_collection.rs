@@ -4,7 +4,6 @@ use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::submodel_elements::SubmodelElement;
-use crate::utilities::deserialize_empty_identifier_as_none;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
@@ -54,7 +53,6 @@ pub(crate) mod xml {
     use crate::part1::v3_1::attributes::semantics::HasSemantics;
     use crate::part1::v3_1::primitives::Identifier;
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
-    use crate::part1::v3_1::reference::Reference;
     use crate::part1::v3_1::submodel_elements::{SubmodelElement, SubmodelElementCollection};
     use crate::utilities::deserialize_empty_identifier_as_none;
     use serde::{Deserialize, Serialize};
@@ -110,6 +108,7 @@ pub(crate) mod xml {
                     id_short: value.id_short,
                     display_name: value.display_name.map(LangStringTextType::into),
                     description: value.description.map(LangStringTextType::into),
+                    #[allow(deprecated)]
                     category: value.category,
                     extensions: HasExtensions {
                         extension: value.extension,
@@ -138,6 +137,7 @@ pub(crate) mod xml {
                     .referable
                     .description
                     .map(|values| LangStringTextType { values }),
+                #[allow(deprecated)]
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantics: Some(value.semantics),

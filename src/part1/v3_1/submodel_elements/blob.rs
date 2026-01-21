@@ -168,6 +168,7 @@ mod xml {
                     .referable
                     .description
                     .map(|values| LangStringTextType { values }),
+                #[allow(deprecated)]
                 category: value.referable.category,
                 extension: value.referable.extensions.extension,
                 semantic_id: value.semantics.semantic_id,
@@ -189,6 +190,7 @@ mod xml {
                     id_short: value.id_short,
                     display_name: value.display_name.map(LangStringTextType::into),
                     description: value.description.map(LangStringTextType::into),
+                    #[allow(deprecated)]
                     category: value.category,
                     extensions: HasExtensions {
                         extension: value.extension,

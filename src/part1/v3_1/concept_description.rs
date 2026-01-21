@@ -2,6 +2,7 @@ use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::identifiable::Identifiable;
 use crate::part1::v3_1::reference::Reference;
 use serde::{Deserialize, Serialize};
+
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
@@ -33,10 +34,8 @@ pub struct ConceptDescription {
 
 pub(crate) mod xml {
     use crate::part1::v3_1::attributes::administrative_information::AdministrativeInformation;
-    use crate::part1::v3_1::attributes::data_specification::{
-        EmbeddedDataSpecification, HasDataSpecification,
-    };
-    use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
+    use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
+    use crate::part1::v3_1::attributes::extension::HasExtensions;
     use crate::part1::v3_1::attributes::identifiable::Identifiable;
     use crate::part1::v3_1::attributes::referable::Referable;
     use crate::part1::v3_1::concept_description::ConceptDescription;
@@ -86,7 +85,7 @@ pub(crate) mod xml {
     }
 
     #[derive(Debug, Serialize, Deserialize)]
-    struct IsCaseOfWrapper {
+    pub struct IsCaseOfWrapper {
         #[serde(rename = "$value")]
         #[serde(skip_serializing_if = "Option::is_none")]
         values: Option<Vec<Reference>>,
@@ -102,6 +101,7 @@ pub(crate) mod xml {
                         id_short: value.id_short,
                         display_name: value.display_name.map(LangStringTextType::into),
                         description: value.description.map(LangStringTextType::into),
+                        #[allow(deprecated)]
                         category: value.category,
                         extensions: value.extension.unwrap_or_default(),
                     },
@@ -127,6 +127,7 @@ pub(crate) mod xml {
                     .referable
                     .description
                     .map(|values| LangStringTextType { values }),
+                #[allow(deprecated)]
                 category: value.identifiable.referable.category,
                 extension: Some(value.identifiable.referable.extensions),
                 embedded_data_specifications: value.data_specification,
