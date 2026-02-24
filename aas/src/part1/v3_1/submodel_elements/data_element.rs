@@ -5,17 +5,10 @@ use crate::part1::v3_1::submodel_elements::property::Property;
 use crate::part1::v3_1::submodel_elements::range::Range;
 use crate::part1::v3_1::submodel_elements::reference_element::ReferenceElement;
 use crate::part1::{MetamodelError, ToJsonMetamodel};
-use serde::{Deserialize, Serialize};
-use strum::Display;
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
-/*#[cfg_attr(feature = "xml", serde(
-    from = "xml::DataElementXMLProxy",
-    into = "xml::DataElementXMLProxy"
-))]*/
+use strum::Display;
+
+#[derive(Debug, Clone, PartialEq, Display)]
 pub enum DataElement {
     Blob(Blob),
     File(File),
@@ -24,20 +17,3 @@ pub enum DataElement {
     Range(Range),
     ReferenceElement(ReferenceElement),
 }
-
-impl ToJsonMetamodel for DataElement {
-    type Error = MetamodelError;
-
-    fn to_json_metamodel(&self) -> Result<String, Self::Error> {
-        match self {
-            DataElement::Blob(element) => element.to_json_metamodel(),
-            DataElement::File(element) => element.to_json_metamodel(),
-            DataElement::MultiLanguageProperty(element) => element.to_json_metamodel(),
-            DataElement::Property(element) => element.to_json_metamodel(),
-            DataElement::Range(element) => Ok(element.to_json_metamodel().unwrap()),
-            DataElement::ReferenceElement(element) => Ok(element.to_json_metamodel().unwrap()),
-        }
-    }
-}
-
-pub(crate) mod xml {}

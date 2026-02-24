@@ -1,17 +1,12 @@
 use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
 use crate::part1::v3_1::attributes::identifiable::Identifiable;
 use crate::part1::v3_1::reference::Reference;
-use serde::{Deserialize, Serialize};
-
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
 /// The semantics of a property or other elements that may have a semantic description is defined
 /// by a concept description.
 /// The description of the concept should follow a standardized schema
 /// (realized as data specification template).
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[derive(Clone, PartialEq, Debug)]
 #[cfg_attr(
     feature = "xml",
     serde(
@@ -20,15 +15,10 @@ use utoipa::ToSchema;
     )
 )]
 pub struct ConceptDescription {
-    #[serde(flatten)]
     pub identifiable: Identifiable,
 
-    #[serde(flatten)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub data_specification: Option<HasDataSpecification>,
 
-    #[serde(rename = "isCaseOf")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_case_of: Option<Vec<Reference>>,
 }
 
@@ -43,51 +33,33 @@ pub(crate) mod xml {
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::reference::Reference;
     use crate::utilities::deserialize_empty_identifier_as_none;
-    use serde::{Deserialize, Serialize};
 
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Debug)]
     pub struct ConceptDescriptionXMLProxy {
         // Identifiable
         pub id: Identifier,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         pub administration: Option<AdministrativeInformation>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         // use case where "" is needed or can this be ignored?
-        #[serde(default)]
-        #[serde(deserialize_with = "deserialize_empty_identifier_as_none")]
-        #[serde(rename = "idShort")]
         pub id_short: Option<Identifier>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "displayName")]
         pub display_name: Option<LangStringTextType>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         pub description: Option<LangStringTextType>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         #[deprecated]
         pub category: Option<String>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "extensions")]
         pub extension: Option<HasExtensions>,
         // -----
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "embeddedDataSpecifications")]
         pub embedded_data_specifications: Option<HasDataSpecification>,
 
-        #[serde(rename = "isCaseOf")]
-        #[serde(skip_serializing_if = "Option::is_none")]
         pub is_case_of: Option<IsCaseOfWrapper>,
     }
 
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Debug)]
     pub struct IsCaseOfWrapper {
-        #[serde(rename = "$value")]
-        #[serde(skip_serializing_if = "Option::is_none")]
         values: Option<Vec<Reference>>,
     }
 

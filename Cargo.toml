@@ -1,2 +1,3 @@
 [workspace]
+resolver = "3"
 members = ["aas", "aas-bench", "aas-json", "aas-xml"]

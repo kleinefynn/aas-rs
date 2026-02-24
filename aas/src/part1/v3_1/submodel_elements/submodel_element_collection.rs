@@ -4,12 +4,8 @@ use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
 use crate::part1::v3_1::attributes::referable::Referable;
 use crate::part1::v3_1::attributes::semantics::HasSemantics;
 use crate::part1::v3_1::submodel_elements::SubmodelElement;
-use serde::{Deserialize, Serialize};
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[derive(Debug, Clone, PartialEq, Default)]
 #[cfg_attr(
     feature = "xml",
     serde(
@@ -18,18 +14,14 @@ use utoipa::ToSchema;
     )
 )]
 pub struct SubmodelElementCollection {
-    #[serde(flatten)]
     pub referable: Referable,
 
     // HasSemantics
-    #[serde(flatten)]
     pub semantics: HasSemantics,
 
     // Qualifiable
-    #[serde(flatten)]
     pub qualifiable: Qualifiable,
 
-    #[serde(flatten)]
     pub embedded_data_specifications: HasDataSpecification,
 
     value: Option<Vec<SubmodelElement>>,
@@ -55,49 +47,34 @@ pub(crate) mod xml {
     use crate::part1::v3_1::primitives::xml::LangStringTextType;
     use crate::part1::v3_1::submodel_elements::{SubmodelElement, SubmodelElementCollection};
     use crate::utilities::deserialize_empty_identifier_as_none;
-    use serde::{Deserialize, Serialize};
 
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Debug)]
     pub(crate) struct SubmodelElementCollectionXMLProxy {
         // Inherited from DataElement
-        #[serde(skip_serializing_if = "Option::is_none")]
+
         // use case where "" is needed or can this be ignored?
-        #[serde(default)]
-        #[serde(deserialize_with = "deserialize_empty_identifier_as_none")]
-        #[serde(rename = "idShort")]
         pub id_short: Option<Identifier>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "displayName")]
         pub display_name: Option<LangStringTextType>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         pub description: Option<LangStringTextType>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         #[deprecated]
         pub category: Option<String>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "extensions")]
         pub extension: Option<Vec<Extension>>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         pub semantics: Option<HasSemantics>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
         pub qualifiers: Option<Qualifiable>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "embeddedDataSpecifications")]
         embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
 
         value: Option<ValueXMLWrapper>,
     }
 
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Debug)]
     struct ValueXMLWrapper {
-        #[serde(rename = "$value")]
         value: Vec<SubmodelElement>,
     }
 

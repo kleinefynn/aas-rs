@@ -1,7 +1,4 @@
-use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
 pub type KeyReference = String;
 
@@ -20,9 +17,7 @@ pub type KeyReference = String;
 /// Other key types identify specific model elements (like Submodel, SubmodelElement, or Asset)
 /// within the same or another AAS,
 /// explicitly naming the referenced element to enable precise navigation within the AAS environment.
-#[derive(EnumString, Display, Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[serde(tag = "type", content = "value")]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[derive(EnumString, Display, Clone, PartialEq, Debug)]
 pub enum Key {
     AnnotatedRelationshipElement(KeyReference),
     AssetAdministrationShell(KeyReference),
@@ -48,30 +43,4 @@ pub enum Key {
     SubmodelElement(KeyReference),
     SubmodelElementCollection(KeyReference),
     SubmodelElementList(KeyReference),
-}
-
-pub mod xml {
-    #[cfg(test)]
-    mod tests {}
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn serialize() {
-        let json = r#"
-        {
-          "type": "Submodel",
-          "value": "https://example.com/idta/Submodel/Test"
-        }
-        "#;
-
-        let expected = Key::Submodel("https://example.com/idta/Submodel/Test".to_string());
-
-        let actual: Key = serde_json::from_str(json).expect("Not serializing");
-
-        assert_eq!(actual, expected);
-    }
 }

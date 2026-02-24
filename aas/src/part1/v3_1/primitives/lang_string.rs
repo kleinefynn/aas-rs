@@ -1,21 +1,13 @@
-use crate::utilities::{
-    deserialize_normalized_lang_tag, deserialize_normalized_text, validate_text,
-};
+use crate::utilities::validate_text;
 use oxilangtag::{LanguageTag, LanguageTagParseError};
-use serde::{Deserialize, Serialize};
+
 use std::str::FromStr;
 use thiserror::Error;
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[derive(Debug, Clone, PartialEq)]
+
 pub struct LangString {
-    #[serde(deserialize_with = "deserialize_normalized_lang_tag")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String, example = "en-EN"))]
     pub language: LanguageTag<String>,
-
-    #[serde(deserialize_with = "deserialize_normalized_text")]
     pub text: String,
 }
 
@@ -135,20 +127,5 @@ mod tests {
     #[should_panic]
     fn turtle_syntax_no_text_no_quotes() {
         LangString::from_str(r#"@EN"#).unwrap();
-    }
-
-    #[test]
-    fn test_deserialize() {
-        let json = r#"
-        {
-            "language": "EN",
-            "text": "Sample test text"
-        }"#;
-
-        let expected = LangString::try_new("EN", "Sample test text".to_string()).unwrap();
-
-        let deserialized = serde_json::from_str(json).expect("Should deserialize");
-
-        assert_eq!(expected, deserialized);
     }
 }

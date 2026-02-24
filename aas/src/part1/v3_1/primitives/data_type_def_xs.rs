@@ -1,115 +1,122 @@
 use crate::part1::v3_1::primitives::Iri;
 use bigdecimal::BigDecimal;
-use serde::{Deserialize, Serialize};
-use serde_with::DisplayFromStr;
-use serde_with::serde_as;
 use strum::{Display, EnumString};
 use thiserror::Error;
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
-/// Type mapping of XSDef types.
-#[serde_as]
-#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
+/// Represents the valueType/value pair typesafe. Used i.e., by Extension or Property.
+/// ValueType has to be always present, value can be optional.
+/// Default: String(None)
+#[derive(Clone, PartialEq, Debug, Display, EnumString)]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
-#[cfg_attr(feature = "openapi", schema(as = String))]
-pub enum DataTypeXSDef {
+pub enum DataXsd {
     // basic types
-    #[serde(rename = "xs:int")]
-    Int,
-    #[serde(rename = "xs:long")]
-    Long,
-    #[serde(rename = "xs:integer")]
-    Integer,
+    Int(Option<i32>),
 
-    #[serde(rename = "xs:negativeInteger")]
-    NegativeInteger,
+    Long(Option<i64>),
 
-    #[serde(rename = "xs:nonNegativeInteger")]
-    NonNegativeInteger,
+    Integer(Option<BigDecimal>),
 
-    #[serde(rename = "xs:nonPositiveInteger")]
-    NonPositiveInteger,
+    NegativeInteger(Option<BigDecimal>),
 
-    #[serde(rename = "xs:positiveInteger")]
-    PositiveInteger,
+    NonNegativeInteger(Option<BigDecimal>),
 
-    #[serde(rename = "xs:short")]
-    Short,
+    NonPositiveInteger(Option<BigDecimal>),
 
-    #[serde(rename = "xs:string")]
-    String,
+    PositiveInteger(Option<BigDecimal>),
 
-    #[serde(rename = "xs:boolean")]
-    Boolean,
-    #[serde(rename = "xs:byte")]
-    Byte,
+    Short(Option<u16>),
 
-    #[serde(rename = "xs:unsignedByte")]
-    UnsignedByte,
+    String(Option<String>),
 
-    #[serde(rename = "xs:unsignedInt")]
-    UnsignedInt,
+    Boolean(Option<bool>),
 
-    #[serde(rename = "xs:unsignedLong")]
-    UnsignedLong,
+    Byte(Option<i8>),
 
-    #[serde(rename = "xs:unsignedShort")]
-    UnsignedShort,
+    UnsignedByte(Option<u8>),
 
-    #[serde(rename = "xs:decimal")]
-    Decimal,
+    UnsignedInt(Option<u32>),
 
-    #[serde(rename = "xs:float")]
-    Float,
+    UnsignedLong(Option<u64>),
 
-    #[serde(rename = "xs:double")]
-    Double,
+    UnsignedShort(Option<u16>),
 
-    // Date Time related
-    #[serde(rename = "xs:time")]
-    Time,
+    Decimal(Option<BigDecimal>),
 
-    #[serde(rename = "xs:date")]
-    Date,
+    Float(Option<f32>),
 
-    #[serde(rename = "xs:dateTime")]
-    DateTime,
+    Double(Option<f64>),
 
-    #[serde(rename = "xs:duration")]
-    Duration,
+    Time(Option<iso8601::Time>),
+
+    Date(Option<iso8601::Date>),
+
+    DateTime(Option<iso8601::DateTime>),
+
+    Duration(Option<iso8601::Duration>),
 
     /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gDay")]
-    GDay,
+    GDay(Option<String>),
 
     /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gMonth")]
-    GMonth,
+    GMonth(Option<String>),
 
     /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gMonthDay")]
-    GMonthDay,
+    GMonthDay(Option<String>),
 
     /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gYear")]
-    GYear,
+    GYear(Option<String>),
 
     /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gYearMonth")]
-    GYearMonth,
+    GYearMonth(Option<String>),
 
     // binary
-    #[serde(rename = "xs:base64Binary")]
-    Base64Binary,
+    Base64Binary(Option<Vec<u8>>),
 
-    #[serde(rename = "xs:hexBinary")]
-    HexBinary,
+    HexBinary(Option<Vec<u8>>),
 
     // Miscellaneous types
     /// URI and IRI possible
-    #[serde(rename = "xs:anyURI")]
+    AnyURI(Option<Iri>),
+}
+
+/// Type mapping of XSDef types.
+#[derive(Clone, PartialEq, Debug, Display)]
+#[strum(prefix = "xs:", serialize_all = "camelCase")]
+pub enum DataTypeXSDef {
+    // basic types
+    Int,
+    Long,
+    Integer,
+    NegativeInteger,
+    NonNegativeInteger,
+    NonPositiveInteger,
+    PositiveInteger,
+    Short,
+    String,
+    Boolean,
+    Byte,
+    UnsignedByte,
+    UnsignedInt,
+    UnsignedLong,
+    UnsignedShort,
+    Decimal,
+    Float,
+    Double,
+    // Date Time related
+    Time,
+    Date,
+    DateTime,
+    Duration,
+    GDay,
+    GMonth,
+    GMonthDay,
+    GYear,
+    GYearMonth,
+    // binary
+    Base64Binary,
+    HexBinary,
+    // Miscellaneous types
+    /// URI and IRI possible
     AnyURI,
 }
 
@@ -369,265 +376,8 @@ impl From<DataXsd> for DataTypeXSDef {
     }
 }
 
-/// represents the valueType/value pair typesafe. Used i.e. by Extension or Property.
-/// ValueType has to be always present, value can be optional.
-/// Default: String(None)
-#[serde_as]
-#[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
-#[serde(tag = "valueType", content = "value")]
-#[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
-pub enum DataXsd {
-    // basic types
-    #[serde(rename = "xs:int")]
-    Int(Option<i32>),
-
-    #[serde(rename = "xs:long")]
-    Long(Option<i64>),
-
-    #[serde(rename = "xs:integer")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    Integer(Option<BigDecimal>),
-
-    #[serde(rename = "xs:negativeInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    NegativeInteger(Option<BigDecimal>),
-
-    #[serde(rename = "xs:nonNegativeInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    NonNegativeInteger(Option<BigDecimal>),
-
-    #[serde(rename = "xs:nonPositiveInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    NonPositiveInteger(Option<BigDecimal>),
-
-    #[serde(rename = "xs:positiveInteger")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    PositiveInteger(Option<BigDecimal>),
-
-    #[serde(rename = "xs:short")]
-    Short(Option<u16>),
-
-    #[serde(rename = "xs:string")]
-    String(Option<String>),
-
-    #[serde(rename = "xs:boolean")]
-    Boolean(Option<bool>),
-    #[serde(rename = "xs:byte")]
-    Byte(Option<i8>),
-
-    #[serde(rename = "xs:unsignedByte")]
-    UnsignedByte(Option<u8>),
-
-    #[serde(rename = "xs:unsignedInt")]
-    UnsignedInt(Option<u32>),
-
-    #[serde(rename = "xs:unsignedLong")]
-    UnsignedLong(Option<u64>),
-
-    #[serde(rename = "xs:unsignedShort")]
-    UnsignedShort(Option<u16>),
-
-    #[serde(rename = "xs:decimal")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    Decimal(Option<BigDecimal>),
-
-    #[serde(rename = "xs:float")]
-    Float(#[serde_as(as = "Option<DisplayFromStr>")] Option<f32>),
-
-    #[serde(rename = "xs:double")]
-    Double(#[serde_as(as = "Option<DisplayFromStr>")] Option<f64>),
-
-    #[serde(rename = "xs:time")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Time(Option<iso8601::Time>),
-
-    #[serde(rename = "xs:date")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Date(Option<iso8601::Date>),
-
-    #[serde(rename = "xs:dateTime")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    DateTime(Option<iso8601::DateTime>),
-
-    #[serde(rename = "xs:duration")]
-    #[cfg_attr(feature = "openapi", schema(value_type = String))]
-    Duration(Option<iso8601::Duration>),
-
-    /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gDay")]
-    GDay(Option<String>),
-
-    /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gMonth")]
-    GMonth(Option<String>),
-
-    /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gMonthDay")]
-    GMonthDay(Option<String>),
-
-    /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gYear")]
-    GYear(Option<String>),
-
-    /// TODO: using proper type or parsing
-    #[serde(rename = "xs:gYearMonth")]
-    GYearMonth(Option<String>),
-
-    // binary
-    #[serde(rename = "xs:base64Binary")]
-    Base64Binary(Option<Vec<u8>>),
-
-    #[serde(rename = "xs:hexBinary")]
-    HexBinary(Option<Vec<u8>>),
-
-    // Miscellaneous types
-    /// URI and IRI possible
-    #[serde(rename = "xs:anyURI")]
-    #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
-    AnyURI(Option<Iri>),
-}
-
 impl Default for DataXsd {
     fn default() -> Self {
         DataXsd::String(None)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn deserialize_xs_string() {
-        let json = r#""xs:string""#;
-
-        serde_json::from_str::<DataTypeXSDef>(&json).unwrap();
-    }
-
-    #[test]
-    fn deserialize_double_from_string() {
-        let json = r#"{
-            "valueType": "xs:double",
-            "value": "1.2"
-        }"#;
-
-        let expected = DataXsd::Double(Some(1.2));
-        let actual: DataXsd = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn deserialize_duration() {
-        let json = r#"{
-            "valueType": "xs:duration",
-            "value": "P1Y"
-        }"#;
-
-        let expected = DataXsd::Duration(Some(iso8601::Duration::YMDHMS {
-            year: 1,
-            month: 0,
-            day: 0,
-            hour: 0,
-            minute: 0,
-            second: 0,
-            millisecond: 0,
-        }));
-        let actual: DataXsd = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn deserialize_naive_date_time() {
-        let json = r#"{
-            "valueType": "xs:dateTime",
-            "value": "2001-10-26T21:32:52"
-        }"#;
-
-        let expected = DataXsd::DateTime(Some(iso8601::DateTime {
-            date: iso8601::Date::YMD {
-                year: 2001,
-                month: 10,
-                day: 26,
-            },
-            time: iso8601::Time {
-                hour: 21,
-                minute: 32,
-                second: 52,
-                millisecond: 0,
-                tz_offset_hours: 0,
-                tz_offset_minutes: 0,
-            },
-        }));
-        let actual: DataXsd = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn deserialize_naive_date_time_with_zone() {
-        let json = r#"{
-            "valueType": "xs:dateTime",
-            "value": "2001-10-26T21:32:52Z"
-        }"#;
-
-        let expected = DataXsd::DateTime(Some(iso8601::DateTime {
-            date: iso8601::Date::YMD {
-                year: 2001,
-                month: 10,
-                day: 26,
-            },
-            time: iso8601::Time {
-                hour: 21,
-                minute: 32,
-                second: 52,
-                millisecond: 0,
-                tz_offset_hours: 0,
-                tz_offset_minutes: 0,
-            },
-        }));
-
-        let actual: DataXsd = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn deserialize_time_with_zone() {
-        let json = r#"{
-            "valueType": "xs:time",
-            "value": "21:32:52Z"
-        }"#;
-
-        let expected = DataXsd::Time(Some(iso8601::Time {
-            hour: 21,
-            minute: 32,
-            second: 52,
-            millisecond: 0,
-            tz_offset_hours: 0,
-            tz_offset_minutes: 0,
-        }));
-        let actual: DataXsd = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn deserialize_date_with_zone() {
-        let json = r#"{
-            "valueType": "xs:date",
-            "value": "2001-10-26Z"
-        }"#;
-
-        let expected = DataXsd::Date(Some(iso8601::Date::YMD {
-            year: 2001,
-            month: 10,
-            day: 26,
-        }));
-        let actual: DataXsd = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expected, actual);
     }
 }

@@ -5,14 +5,12 @@ use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::ops::Deref;
 use thiserror::Error;
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
 /// Newtype-pattern around an identifier string
 /// Constraints:
-/// string with max 2048 and min 1 characters
+/// string with max 2048 and minimum one character
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct Identifier(String);
 
 #[derive(Error, Debug, PartialEq)]

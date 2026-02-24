@@ -6,3 +6,6 @@ edition = "2024"
 [dependencies]
 serde = { version = "1.0.228", features = ["derive"] }
 quick-xml = { version = "0.39.2", features = ["serialize", "serde-types"]}
+thiserror = "2.0.18"
+aas = { path = "../aas" }
+strum = { version = "0.28.0", features = ["derive"] }

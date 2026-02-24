@@ -5,11 +5,9 @@ use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::ops::Deref;
 use thiserror::Error;
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct Label(String);
 
 #[derive(Error, Debug)]

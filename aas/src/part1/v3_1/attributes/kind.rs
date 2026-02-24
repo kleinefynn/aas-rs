@@ -1,18 +1,14 @@
-use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use thiserror::Error;
 
-#[cfg(feature = "openapi")]
-use utoipa::ToSchema;
+#[derive(Clone, PartialEq, Debug)]
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
 pub struct HasKind {
     pub kind: ModellingKind,
 }
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+#[derive(Clone, PartialEq, Debug)]
+
 pub enum ModellingKind {
     Instance,
     Template,

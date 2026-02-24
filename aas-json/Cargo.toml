@@ -3,5 +3,13 @@ name = "aas-json"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+openapi = []
+
+
 [dependencies]
-serde = { version = "1.0.228"}
+serde = { version = "1.0.228", features = ["derive"] }
+strum = { version = "0.28.0", features = ["derive"] }
+thiserror = "2.0.18"
+aas = { path = "../aas" }
+utoipa = "5.4.0"
