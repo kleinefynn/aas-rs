@@ -198,5 +198,3 @@ This project is licensed under the MIT License - see [LICENSE](./LICENSE) file f
 - Serde Serialization: https://serde.rs/
 - OpenAPI Specification: https://spec.openapis.org/
 - Axum Web Framework: https://github.com/tokio-rs/axum
-
-If you find this project helpful, please consider giving it a star on GitHub!
