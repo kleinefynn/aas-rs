@@ -6,10 +6,9 @@ use utoipa::ToSchema;
 
 /// HasExtensions
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct HasExtensions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "xml", serde(rename = "$value"))]
     #[cfg_attr(feature = "json", serde(rename = "extensions"))]
     pub extension: Option<Vec<Extension>>,
 }
@@ -28,7 +27,7 @@ pub struct HasExtensions {
 /// - If present, the extensions list must contain at least one element.
 /// - Extension names must be unique within this container.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct Extension {
     pub name: String,
 

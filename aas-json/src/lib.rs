@@ -1,8 +1,3 @@
-use serde::{Deserialize, Deserializer, Serialize};
-
-
-
-
 //! This crate defines data types according to the
 //! [asset administration shell specifications](https://industrialdigitaltwin.org/en/content-hub/aasspecifications)
 //!
@@ -18,6 +13,9 @@ pub mod part1;
 /// Can be used with feature = "part2"
 #[cfg(feature = "part2")]
 pub mod part2;
+
+
+use serde::{Deserialize, Deserializer, Serialize};
 
 
 

@@ -10,7 +10,7 @@ use utoipa::ToSchema;
 
 /// Administrative metainformation for an element like version information
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct AdministrativeInformation {
     #[serde(flatten)]
     pub version: Version,
@@ -35,7 +35,7 @@ pub struct AdministrativeInformation {
 /// If there is no version, there is no revision.
 /// Revision is optional.
 #[derive(Clone, PartialEq, Debug, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct Version {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -44,7 +44,7 @@ pub struct Version {
 }
 
 #[derive(Debug, Error)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub enum VersionError {
     #[error("Revision can not exist without version")]
     RevisionNotApplicable,

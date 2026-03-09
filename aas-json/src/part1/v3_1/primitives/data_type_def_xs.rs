@@ -12,7 +12,6 @@ use utoipa::ToSchema;
 #[serde_as]
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
 #[cfg_attr(feature = "openapi", schema(as = String))]
 pub enum DataTypeXSDef {
     // basic types
@@ -376,7 +375,7 @@ impl From<DataXsd> for DataTypeXSDef {
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType", content = "value")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub enum DataXsd {
     // basic types
     #[serde(rename = "xs:int")]

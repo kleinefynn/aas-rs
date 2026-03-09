@@ -8,7 +8,7 @@ use utoipa::ToSchema;
 ///use crate::v3_1::asset_administration_shell::AdministrativeInformation;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct Identifiable {
     pub id: Identifier,
 

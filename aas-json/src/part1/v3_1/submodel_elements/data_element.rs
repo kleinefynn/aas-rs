@@ -11,7 +11,7 @@ use strum::Display;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 /*#[cfg_attr(feature = "xml", serde(
     from = "xml::DataElementXMLProxy",
     into = "xml::DataElementXMLProxy"
@@ -39,5 +39,3 @@ impl ToJsonMetamodel for DataElement {
         }
     }
 }
-
-pub(crate) mod xml {}

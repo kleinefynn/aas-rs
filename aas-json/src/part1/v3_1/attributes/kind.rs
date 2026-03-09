@@ -6,13 +6,13 @@ use thiserror::Error;
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct HasKind {
     pub kind: ModellingKind,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub enum ModellingKind {
     Instance,
     Template,

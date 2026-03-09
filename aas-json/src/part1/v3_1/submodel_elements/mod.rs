@@ -53,7 +53,7 @@ use utoipa::ToSchema;
 #[derive(Debug, Clone, PartialEq, Display, Deserialize)]
 #[cfg_attr(not(feature = "xml"), derive(Serialize))]
 #[cfg_attr(not(feature = "xml"), serde(tag = "modelType"))]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub enum SubmodelElement {
     #[serde(
         alias = "RelationshipElement",
@@ -118,7 +118,7 @@ pub enum SubmodelElement {
 
 /// Every SubmodelElement has these
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub struct SubmodelElementFields {
     #[serde(flatten)]
     pub referable: Referable,
@@ -179,7 +179,7 @@ pub struct SubmodelElementFieldsXML {
 
 // maybe without variants?
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 pub enum AasSubmodelElements {
     RelationshipElement,
     AnnotatedRelationshipElement,
@@ -233,219 +233,4 @@ impl ToJsonMetamodel for SubmodelElement {
 }
 
 #[cfg(feature = "xml")]
-mod xml {
-    use super::*;
-    use serde::Serializer;
-    use serde::ser::SerializeStruct;
 
-    impl Serialize for SubmodelElement {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-        {
-            match self {
-                SubmodelElement::RelationshipElement(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("RelationshipElement", v)?;
-                    st.end()
-                }
-                SubmodelElement::AnnotatedRelationshipElement(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("AnnotatedRelationshipElement", v)?;
-                    st.end()
-                }
-                SubmodelElement::BasicEventElement(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("BasicEventElement", v)?;
-                    st.end()
-                }
-                SubmodelElement::Blob(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("Blob", v)?;
-                    st.end()
-                }
-                SubmodelElement::Capability(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("Capability", v)?;
-                    st.end()
-                }
-                SubmodelElement::DataElement(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("DataElement", v)?;
-                    st.end()
-                }
-                SubmodelElement::Entity(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("Entity", v)?;
-                    st.end()
-                }
-                SubmodelElement::File(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("File", v)?;
-                    st.end()
-                }
-                SubmodelElement::MultiLanguageProperty(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("MultiLanguageProperty", v)?;
-                    st.end()
-                }
-                SubmodelElement::Operation(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("Operation", v)?;
-                    st.end()
-                }
-                SubmodelElement::Property(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("Property", v)?;
-                    st.end()
-                }
-                SubmodelElement::Range(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("Range", v)?;
-                    st.end()
-                }
-                SubmodelElement::ReferenceElement(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("ReferenceElement", v)?;
-                    st.end()
-                }
-                SubmodelElement::SubmodelElementCollection(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("SubmodelElementCollection", v)?;
-                    st.end()
-                }
-                SubmodelElement::SubmodelElementList(v) => {
-                    let mut st = serializer.serialize_struct("submodelElement", 1)?;
-                    st.serialize_field("SubmodelElementList", v)?;
-                    st.end()
-                }
-            }
-        }
-    }
-
-    #[cfg(test)]
-    mod tests {
-        use crate::part1::v3_1::submodel_elements::{Blob, SubmodelElement};
-        use serde::{Deserialize, Serialize};
-
-        #[test]
-        fn serialize_xml_simple() {
-            #[derive(Serialize, Deserialize)]
-            struct SubmodelElements(Vec<SubmodelElement>);
-
-            let expected = SubmodelElements(vec![SubmodelElement::Blob(Blob::new(
-                Some("test.png".into()),
-                "image/png".into(),
-            ))]);
-
-            let xml = quick_xml::se::to_string(&expected).unwrap();
-
-            println!("{}", xml);
-        }
-
-        #[test]
-        fn deserialize_simple() {
-            #[derive(Serialize, Deserialize, Debug, PartialEq)]
-            struct SubmodelElements {
-                #[serde(rename = "$value")]
-                submodel_elements: Vec<SubmodelElement>,
-            }
-
-            let xml = r#"
-            <SubmodelElements>
-                <blob>
-                    <value>test.png</value>
-                    <contentType>image/png</contentType>
-                </blob>
-            </SubmodelElements>
-            "#;
-
-            let expected = SubmodelElements {
-                submodel_elements: vec![SubmodelElement::Blob(Blob::new(
-                    Some("test.png".into()),
-                    "image/png".into(),
-                ))],
-            };
-
-            let actual = quick_xml::de::from_str(&xml).unwrap();
-
-            assert_eq!(expected, actual);
-        }
-    }
-}
-
-#[cfg(not(feature = "xml"))]
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::part1::v3_1::LangString;
-    use crate::part1::v3_1::primitives::Identifier;
-
-    #[test]
-    fn deserialize_blob() {
-        let expect = SubmodelElement::Blob(Blob::default());
-
-        let json = r#"
-        {
-            "modelType":"Blob",
-            "value": null,
-            "contentType": ""
-        }
-        "#;
-
-        let blob: Blob = serde_json::from_str(json).unwrap();
-
-        assert_eq!(expect, SubmodelElement::Blob(blob));
-    }
-
-    #[test]
-    fn serialize_blob() {
-        let expected = r#"{
-  "modelType": "Blob",
-  "idShort": "AnShortId",
-  "displayName": [
-    {
-      "language": "en",
-      "text": "Sample text"
-    }
-  ],
-  "description": [
-    {
-      "language": "en",
-      "text": "Sample description"
-    }
-  ],
-  "value": "sample base64 string not in base64",
-  "contentType": "application/json"
-}"#;
-        let actual = SubmodelElement::Blob(Blob {
-            referable: Referable {
-                id_short: Some(Identifier::try_from("AnShortId").unwrap()),
-                display_name: Some(vec![
-                    LangString::try_new("en", "Sample text".into()).unwrap(),
-                ]),
-                description: Some(vec![
-                    LangString::try_new("en", "Sample description".into()).unwrap(),
-                ]),
-                category: None,
-                extensions: Default::default(),
-            },
-            semantics: Default::default(),
-            qualifiable: Default::default(),
-            embedded_data_specifications: Default::default(),
-            value: Some("sample base64 string not in base64".into()),
-            content_type: "application/json".to_string(),
-        });
-
-        let actual = serde_json::to_string_pretty(&actual).unwrap();
-
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn serialize_metamodel_blob() {
-        let actual = SubmodelElement::Blob(Blob::default());
-
-        println!("{}", &actual.to_json_metamodel().unwrap());
-    }
-}

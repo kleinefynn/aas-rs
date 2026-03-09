@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 #[cfg_attr(
     feature = "xml",
     serde(
@@ -40,7 +40,7 @@ pub struct RelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(feature = "openapi", derive(ToSchema))]
+
 #[cfg_attr(
     feature = "xml",
     serde(
@@ -71,7 +71,7 @@ pub struct AnnotatedRelationshipElement {
     pub annotations: Option<Vec<DataElement>>,
 }
 
-#[cfg(feature = "json")]
+
 pub mod json {
     use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
     use crate::part1::v3_1::attributes::qualifiable::Qualifiable;
@@ -87,7 +87,7 @@ pub mod json {
     use utoipa::ToSchema;
 
     #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-    #[cfg_attr(feature = "openapi", derive(ToSchema))]
+
     pub struct RelationshipElementMeta {
         // Inherited from DataElement
         #[serde(flatten)]
@@ -105,7 +105,7 @@ pub mod json {
     }
 
     #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-    #[cfg_attr(feature = "openapi", derive(ToSchema))]
+
     #[allow(unused)]
     pub struct AnnotatedRelationshipElementMeta {
         // Inherited from DataElement
@@ -234,240 +234,4 @@ pub mod json {
 }
 
 #[cfg(feature = "xml")]
-pub(crate) mod xml {
-    use crate::part1::v3_1::attributes::data_specification::{
-        EmbeddedDataSpecification, HasDataSpecification,
-    };
-    use crate::part1::v3_1::attributes::extension::{Extension, HasExtensions};
-    use crate::part1::v3_1::attributes::qualifiable::{Qualifiable, Qualifier};
-    use crate::part1::v3_1::attributes::referable::Referable;
-    use crate::part1::v3_1::attributes::semantics::HasSemantics;
-    use crate::part1::v3_1::primitives::Identifier;
-    use crate::part1::v3_1::primitives::xml::LangStringTextType;
-    use crate::part1::v3_1::reference::Reference;
-    use crate::part1::v3_1::submodel_elements::data_element::DataElement;
-    use crate::part1::v3_1::submodel_elements::relationship_element::{
-        AnnotatedRelationshipElement, RelationshipElement,
-    };
-    use crate::utilities::deserialize_empty_identifier_as_none;
-    use serde::{Deserialize, Serialize};
 
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct RelationshipElementXMLProxy {
-        // Inherited from DataElement
-        #[serde(skip_serializing_if = "Option::is_none")]
-        // use case where "" is needed or can this be ignored?
-        #[serde(default)]
-        #[serde(deserialize_with = "deserialize_empty_identifier_as_none")]
-        #[serde(rename = "idShort")]
-        pub id_short: Option<Identifier>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "displayName")]
-        pub display_name: Option<LangStringTextType>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub description: Option<LangStringTextType>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[deprecated]
-        pub category: Option<String>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "extensions")]
-        pub extension: Option<Vec<Extension>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "semanticId")]
-        pub semantic_id: Option<Reference>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "supplementalSemanticIds")]
-        pub supplemental_semantic_ids: Option<Vec<Reference>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub qualifiers: Option<Vec<Qualifier>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "embeddedDataSpecifications")]
-        embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
-        // end submodelfields
-        #[serde(skip_serializing_if = "Option::is_none")]
-        first: Option<Reference>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        second: Option<Reference>,
-    }
-
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct AnnotatedRelationshipElementXMLProxy {
-        // Inherited from DataElement
-        #[serde(skip_serializing_if = "Option::is_none")]
-        // use case where "" is needed or can this be ignored?
-        #[serde(default)]
-        #[serde(deserialize_with = "deserialize_empty_identifier_as_none")]
-        #[serde(rename = "idShort")]
-        pub id_short: Option<Identifier>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "displayName")]
-        pub display_name: Option<LangStringTextType>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub description: Option<LangStringTextType>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[deprecated]
-        pub category: Option<String>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "extensions")]
-        pub extension: Option<Vec<Extension>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "semanticId")]
-        pub semantic_id: Option<Reference>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "supplementalSemanticIds")]
-        pub supplemental_semantic_ids: Option<Vec<Reference>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub qualifiers: Option<Vec<Qualifier>>,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(rename = "embeddedDataSpecifications")]
-        embedded_data_specifications: Option<Vec<EmbeddedDataSpecification>>,
-        //-- end SubmodelElementFields
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub first: Option<Reference>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub second: Option<Reference>,
-        // ---- end RelationshipElement
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pub annotations: Option<Vec<DataElement>>,
-    }
-
-    impl From<RelationshipElementXMLProxy> for RelationshipElement {
-        fn from(value: RelationshipElementXMLProxy) -> Self {
-            Self {
-                referable: Referable {
-                    id_short: value.id_short,
-                    display_name: value.display_name.map(LangStringTextType::into),
-                    description: value.description.map(LangStringTextType::into),
-                    #[allow(deprecated)]
-                    category: value.category,
-                    extensions: HasExtensions {
-                        extension: value.extension,
-                    },
-                },
-                semantics: HasSemantics {
-                    semantic_id: value.semantic_id,
-                    supplemental_semantic_ids: value.supplemental_semantic_ids,
-                },
-                qualifiable: Qualifiable {
-                    qualifiers: value.qualifiers,
-                },
-                embedded_data_specifications: HasDataSpecification {
-                    embedded_data_specifications: value.embedded_data_specifications,
-                },
-
-                first: value.first,
-                second: value.second,
-            }
-        }
-    }
-
-    impl From<RelationshipElement> for RelationshipElementXMLProxy {
-        fn from(value: RelationshipElement) -> Self {
-            Self {
-                id_short: value.referable.id_short,
-                display_name: value
-                    .referable
-                    .display_name
-                    .map(|values| LangStringTextType { values }),
-                description: value
-                    .referable
-                    .description
-                    .map(|values| LangStringTextType { values }),
-                #[allow(deprecated)]
-                category: value.referable.category,
-                extension: value.referable.extensions.extension,
-                semantic_id: value.semantics.semantic_id,
-                supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
-                qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value
-                    .embedded_data_specifications
-                    .embedded_data_specifications,
-
-                first: value.first,
-                second: value.second,
-            }
-        }
-    }
-
-    impl From<AnnotatedRelationshipElementXMLProxy> for AnnotatedRelationshipElement {
-        fn from(value: AnnotatedRelationshipElementXMLProxy) -> Self {
-            Self {
-                referable: Referable {
-                    id_short: value.id_short,
-                    display_name: value.display_name.map(LangStringTextType::into),
-                    description: value.description.map(LangStringTextType::into),
-                    #[allow(deprecated)]
-                    category: value.category,
-                    extensions: HasExtensions {
-                        extension: value.extension,
-                    },
-                },
-                semantics: HasSemantics {
-                    semantic_id: value.semantic_id,
-                    supplemental_semantic_ids: value.supplemental_semantic_ids,
-                },
-                qualifiable: Qualifiable {
-                    qualifiers: value.qualifiers,
-                },
-                embedded_data_specifications: HasDataSpecification {
-                    embedded_data_specifications: value.embedded_data_specifications,
-                },
-
-                first: value.first,
-                second: value.second,
-                annotations: value.annotations,
-            }
-        }
-    }
-
-    impl From<AnnotatedRelationshipElement> for AnnotatedRelationshipElementXMLProxy {
-        fn from(value: AnnotatedRelationshipElement) -> Self {
-            Self {
-                id_short: value.referable.id_short,
-                display_name: value
-                    .referable
-                    .display_name
-                    .map(|values| LangStringTextType { values }),
-                description: value
-                    .referable
-                    .description
-                    .map(|values| LangStringTextType { values }),
-                #[allow(deprecated)]
-                category: value.referable.category,
-                extension: value.referable.extensions.extension,
-                semantic_id: value.semantics.semantic_id,
-                supplemental_semantic_ids: value.semantics.supplemental_semantic_ids,
-                qualifiers: value.qualifiable.qualifiers,
-                embedded_data_specifications: value
-                    .embedded_data_specifications
-                    .embedded_data_specifications,
-
-                first: value.first,
-                second: value.second,
-                annotations: value.annotations,
-            }
-        }
-    }
-
-    #[cfg(test)]
-    mod tests {
-        // TODO
-    }
-}
