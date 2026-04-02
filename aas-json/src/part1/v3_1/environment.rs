@@ -3,10 +3,6 @@ use crate::part1::v3_1::core::{AssetAdministrationShell, Submodel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::EnvironmentXMLProxy", into = "xml::EnvironmentXMLProxy")
-)]
 pub struct Environment {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "assetAdministrationShells")]
@@ -19,6 +15,3 @@ pub struct Environment {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub concept_descriptions: Option<Vec<ConceptDescription>>,
 }
-
-#[cfg(feature = "xml")]
-

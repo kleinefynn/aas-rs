@@ -8,22 +8,13 @@ use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 use strum::{Display, EnumString};
 
-
 use crate::part1::v3_1::reference::deserialize_optional_external_reference;
 
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-
 #[serde(rename = "assetAdministrationShell")]
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::AssetAdministrationShellXML",
-        into = "xml::AssetAdministrationShellXML"
-    )
-)]
 pub struct AssetAdministrationShell {
     #[serde(rename = "assetInformation")]
     pub asset_information: AssetInformation,
@@ -82,11 +73,6 @@ impl ToJsonMetamodel for AssetAdministrationShell {
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, EnumString, Display)]
 #[serde(tag = "assetKind")]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::AssetInformationXML", into = "xml::AssetInformationXML")
-)]
 pub enum AssetInformation {
     Instance(AssetInformationInner),
     NotApplicable(AssetInformationInner),
@@ -129,11 +115,6 @@ pub struct AssetInformationInner {
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::SpecificAssetIdXML", into = "xml::SpecificAssetIdXML")
-)]
 pub struct SpecificAssetId {
     #[serde(flatten)]
     pub has_semantics: HasSemantics,
@@ -153,7 +134,6 @@ pub struct SpecificAssetId {
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-
 pub struct Resource {
     #[cfg_attr(feature = "openapi", schema(value_type = String))]
     pub path: Uri,
@@ -163,6 +143,3 @@ pub struct Resource {
     #[cfg_attr(feature = "openapi", schema(value_type = Option<String>))]
     pub content_type: Option<ContentType>,
 }
-
-#[cfg(feature = "xml")]
-

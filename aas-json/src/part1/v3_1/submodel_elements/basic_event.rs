@@ -8,10 +8,6 @@ use strum::{Display, EnumString};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::BasicEventElementXML", into = "xml::BasicEventElementXML")
-)]
 pub struct BasicEventElement {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,
@@ -47,13 +43,6 @@ pub struct BasicEventElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::BasicEventElementMetaXML",
-        into = "xml::BasicEventElementMetaXML"
-    )
-)]
 pub struct BasicEventElementMeta {
     #[serde(flatten)]
     submodel_element_fields: SubmodelElementFields,

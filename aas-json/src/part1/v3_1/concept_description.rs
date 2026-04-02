@@ -11,13 +11,6 @@ use utoipa::ToSchema;
 /// The description of the concept should follow a standardized schema
 /// (realized as data specification template).
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::ConceptDescriptionXMLProxy",
-        into = "xml::ConceptDescriptionXMLProxy"
-    )
-)]
 pub struct ConceptDescription {
     #[serde(flatten)]
     pub identifiable: Identifiable,

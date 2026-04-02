@@ -11,14 +11,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::MultiLanguagePropertyXML",
-        into = "xml::MultiLanguagePropertyXML"
-    )
-)]
 pub struct MultiLanguageProperty {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -90,6 +82,3 @@ impl ToJsonMetamodel for MultiLanguageProperty {
         serde_json::to_string(&meta).map_err(|e| MetamodelError::FailedSerialisation(e))
     }
 }
-
-#[cfg(feature = "xml")]
-

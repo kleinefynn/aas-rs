@@ -15,13 +15,6 @@ use utoipa::ToSchema;
 
 /// A submodel element list is an ordered list of submodel elements.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::SubmodelElementListXMLProxy",
-        into = "xml::SubmodelElementListXMLProxy"
-    )
-)]
 pub struct SubmodelElementList {
     #[serde(flatten)]
     pub referable: Referable,

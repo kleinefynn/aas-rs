@@ -1,17 +1,14 @@
 use crate::part1::v3_1::attributes::extension::HasExtensions;
-use crate::part1::v3_1::primitives::{Identifier, MultiLanguageNameType};
+use crate::part1::v3_1::primitives::MultiLanguageNameType;
+use aas::part1::v3_1::primitives::Identifier;
 use serde::{Deserialize, Serialize};
 
-use crate::utilities::deserialize_empty_identifier_as_none;
+use aas::utilities::deserialize_empty_identifier_as_none;
 
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::ReferableXMLProxy", into = "xml::ReferableXMLProxy")
-)]
 pub struct Referable {
     #[serde(skip_serializing_if = "Option::is_none")]
     // use case where "" is needed or can this be ignored?

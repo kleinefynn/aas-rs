@@ -9,10 +9,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::OperationXMLProxy", into = "xml::OperationXMLProxy")
-)]
 pub struct Operation {
     // Inherited from DataElement
     #[serde(flatten)]

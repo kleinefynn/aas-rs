@@ -9,10 +9,8 @@ use thiserror::Error;
 use utoipa::ToSchema;
 
 /// Type mapping of XSDef types.
-#[serde_as]
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize)]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg_attr(feature = "openapi", schema(as = String))]
 pub enum DataTypeXSDef {
     // basic types
     #[serde(rename = "xs:int")]
@@ -371,11 +369,10 @@ impl From<DataXsd> for DataTypeXSDef {
 /// represents the valueType/value pair typesafe. Used i.e. by Extension or Property.
 /// ValueType has to be always present, value can be optional.
 /// Default: String(None)
-#[serde_as]
+
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType", content = "value")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-
 pub enum DataXsd {
     // basic types
     #[serde(rename = "xs:int")]

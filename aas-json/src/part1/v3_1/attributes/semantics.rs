@@ -5,10 +5,6 @@ use utoipa::ToSchema;
 
 // HasSemantics
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::HasSemanticsXMLProxy", into = "xml::HasSemanticsXMLProxy")
-)]
 pub struct HasSemantics {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "semanticId")]

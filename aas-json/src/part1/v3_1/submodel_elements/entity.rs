@@ -16,10 +16,6 @@ use utoipa::ToSchema;
 /// These parts are called entities. Not all entities have a global asset ID.
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Display, EnumString)]
 #[serde(tag = "entityType")]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::EntityXMLProxy", into = "xml::EntityXMLProxy")
-)]
 pub enum Entity {
     /// There is no separate Asset Administration Shell for co-managed entities.
     /// Co-managed entities need to be part of a self-managed entity.

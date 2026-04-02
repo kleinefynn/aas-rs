@@ -13,3 +13,7 @@ strum = { version = "0.28.0", features = ["derive"] }
 thiserror = "2.0.18"
 aas = { path = "../aas" }
 utoipa = "5.4.0"
+bigdecimal = "0.4.10"
+iso8601 = { version = "0.6.3", features = ["serde"] }
+serde_json = { version = "1.0.149", features = ["arbitrary_precision"] }
+iref = { version = "4.0.0", features = ["serde"] }

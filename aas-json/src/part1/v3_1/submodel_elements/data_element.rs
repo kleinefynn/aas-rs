@@ -11,11 +11,6 @@ use strum::Display;
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Display)]
-
-/*#[cfg_attr(feature = "xml", serde(
-    from = "xml::DataElementXMLProxy",
-    into = "xml::DataElementXMLProxy"
-))]*/
 pub enum DataElement {
     Blob(Blob),
     File(File),

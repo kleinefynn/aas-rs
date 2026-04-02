@@ -10,8 +10,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-
-#[cfg_attr(feature = "xml", serde(from = "xml::BlobXML", into = "xml::BlobXML"))]
 pub struct Blob {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -90,6 +88,3 @@ impl ToJsonMetamodel for Blob {
             .map_err(|e| MetamodelError::FailedSerialisation(e))
     }
 }
-
-#[cfg(feature = "xml")]
-

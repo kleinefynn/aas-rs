@@ -11,10 +11,6 @@ use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
 #[cfg_attr(all(feature = "openapi"), derive(ToSchema))]
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::FileXMLProxy", into = "xml::FileXMLProxy")
-)]
 pub struct File {
     // Inherited from DataElement
     #[serde(flatten)]

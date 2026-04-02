@@ -1,6 +1,7 @@
 use crate::part1::v3_1::primitives::data_type_def_xs::DataXsd;
 use crate::part1::v3_1::reference::Reference;
 use serde::{Deserialize, Serialize};
+
 #[cfg(feature = "openapi")]
 use utoipa::ToSchema;
 

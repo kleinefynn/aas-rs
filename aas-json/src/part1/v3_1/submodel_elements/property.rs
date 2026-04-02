@@ -10,11 +10,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::PropertyXMLProxy", into = "xml::PropertyXMLProxy")
-)]
 pub struct Property {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -73,6 +68,3 @@ impl From<&Property> for PropertyMeta {
         }
     }
 }
-
-#[cfg(feature = "xml")]
-

@@ -10,14 +10,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::RelationshipElementXMLProxy",
-        into = "xml::RelationshipElementXMLProxy"
-    )
-)]
 pub struct RelationshipElement {
     // Inherited from DataElement
     #[serde(flatten)]
@@ -40,14 +32,6 @@ pub struct RelationshipElement {
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::AnnotatedRelationshipElementXMLProxy",
-        into = "xml::AnnotatedRelationshipElementXMLProxy"
-    )
-)]
 pub struct AnnotatedRelationshipElement {
     // Inherited from RelationshipElement
     #[serde(flatten)]
@@ -70,7 +54,6 @@ pub struct AnnotatedRelationshipElement {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotations: Option<Vec<DataElement>>,
 }
-
 
 pub mod json {
     use crate::part1::v3_1::attributes::data_specification::HasDataSpecification;
@@ -105,7 +88,6 @@ pub mod json {
     }
 
     #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-
     #[allow(unused)]
     pub struct AnnotatedRelationshipElementMeta {
         // Inherited from DataElement
@@ -232,6 +214,3 @@ pub mod json {
         }
     }
 }
-
-#[cfg(feature = "xml")]
-

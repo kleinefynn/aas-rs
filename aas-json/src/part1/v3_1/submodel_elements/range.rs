@@ -22,10 +22,6 @@ pub struct RangeInner<T> {
 #[derive(Clone, PartialEq, Debug, Display, Deserialize, Serialize, EnumString)]
 #[serde(tag = "valueType")]
 #[strum(prefix = "xs:", serialize_all = "camelCase")]
-#[cfg_attr(
-    feature = "xml",
-    serde(try_from = "xml::RangeXMLProxy", into = "xml::RangeXMLProxy")
-)]
 pub enum Range {
     // basic types
     #[serde(rename = "xs:int")]

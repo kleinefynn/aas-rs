@@ -9,13 +9,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
-#[cfg_attr(
-    feature = "xml",
-    serde(
-        from = "xml::SubmodelElementCollectionXMLProxy",
-        into = "xml::SubmodelElementCollectionXMLProxy"
-    )
-)]
 pub struct SubmodelElementCollection {
     #[serde(flatten)]
     pub referable: Referable,

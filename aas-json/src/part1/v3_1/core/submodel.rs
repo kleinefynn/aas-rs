@@ -11,11 +11,6 @@ use utoipa::ToSchema;
 
 // make it an enum of ModellingKind?
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::SubmodelXML", into = "xml::SubmodelXML")
-)]
 pub struct Submodel {
     #[serde(flatten)]
     pub identifiable: Identifiable,
@@ -77,5 +72,3 @@ impl ToJsonMetamodel for Submodel {
         serde_json::to_string(&meta)
     }
 }
-#[cfg(feature = "xml")]
-

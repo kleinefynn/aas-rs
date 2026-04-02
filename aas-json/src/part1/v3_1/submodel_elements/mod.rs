@@ -50,10 +50,8 @@ use crate::part1::v3_1::primitives::xml::LangStringTextType;
 use utoipa::ToSchema;
 
 // alias are made to support for camelCase, PascalCase and lowercase.
-#[derive(Debug, Clone, PartialEq, Display, Deserialize)]
-#[cfg_attr(not(feature = "xml"), derive(Serialize))]
-#[cfg_attr(not(feature = "xml"), serde(tag = "modelType"))]
-
+#[derive(Debug, Clone, PartialEq, Display, Serialize, Deserialize)]
+#[serde(tag = "modelType")]
 pub enum SubmodelElement {
     #[serde(
         alias = "RelationshipElement",
@@ -231,6 +229,3 @@ impl ToJsonMetamodel for SubmodelElement {
         })
     }
 }
-
-#[cfg(feature = "xml")]
-

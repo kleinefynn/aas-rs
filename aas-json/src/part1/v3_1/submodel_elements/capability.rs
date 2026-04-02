@@ -8,11 +8,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::CapabilityXMLProxy", into = "xml::CapabilityXMLProxy")
-)]
 pub struct Capability {
     // Inherited from DataElement
     pub referable: Referable,
@@ -32,6 +27,3 @@ impl Capability {
         }
     }
 }
-
-#[cfg(feature = "xml")]
-

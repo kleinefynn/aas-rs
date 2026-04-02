@@ -8,7 +8,6 @@ use strum::{Display, EnumString};
 use utoipa::ToSchema;
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize, Default)]
-
 #[serde(rename = "Reference")]
 pub struct ReferenceInner {
     /// E.g. semantic id of a standard submodel
@@ -37,11 +36,6 @@ pub struct ReferenceInner {
 /// enabling precise targeting of nested submodels, submodel elements, or fragments.
 #[derive(EnumString, Clone, PartialEq, Debug, Deserialize, Serialize, Display)]
 #[serde(tag = "type")]
-
-#[cfg_attr(
-    feature = "xml",
-    serde(from = "xml::ReferenceXML", into = "xml::ReferenceXML")
-)]
 pub enum Reference {
     ExternalReference(ReferenceInner),
     ModelReference(ReferenceInner),
@@ -212,6 +206,3 @@ where
 
     deserializer.deserialize_option(SubmodelsVisitor)
 }
-
-#[cfg(feature = "xml")]
-
